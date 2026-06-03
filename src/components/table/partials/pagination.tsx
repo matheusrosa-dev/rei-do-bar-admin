@@ -8,7 +8,7 @@ type Props = {
 
 export const Pagination = ({ meta, onChangePage }: Props) => {
   return (
-    <div className="flex items-center justify-end gap-2 text-sm text-gray-400">
+    <div className="flex items-center justify-end gap-2 text-sm text-gray-400 select-none">
       <button
         type="button"
         onClick={() => onChangePage(meta.page - 1)}

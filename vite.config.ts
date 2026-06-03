@@ -19,7 +19,7 @@ export default defineConfig({
     alias: {
       "@components": "/src/components/index.ts",
       "@shared": "/src/shared/",
-      "@services": "/src/shared/services/",
+      "@services": "/src/shared/services/index.ts",
     },
   },
 });

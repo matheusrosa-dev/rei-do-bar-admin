@@ -6,6 +6,9 @@ export type GetProdutsResponse = IPagination<IProduct>;
 export type GetProducts = (queries?: {
   page?: number;
   limit?: number;
+  categoryId?: string;
+  isActive?: boolean;
+  stockOrder?: "asc" | "desc";
 }) => Promise<GetProdutsResponse>;
 
 export type UseProductsService = () => {

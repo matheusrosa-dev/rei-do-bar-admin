@@ -11,7 +11,7 @@ export const LoadingBody = ({ limit, colCount }: Props) => {
         <tr key={i} className="animate-pulse">
           {Array.from({ length: colCount }).map((_, j) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: skeleton cells have no identity
-            <td key={j} className="px-5 py-8">
+            <td key={j} className="px-5 py-[2.1rem]">
               <div className="h-4 w-24 rounded bg-white/10" />
             </td>
           ))}

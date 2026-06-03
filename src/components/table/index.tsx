@@ -4,7 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ErrorBody, LoadingBody, Pagination } from "./partials";
+import { EmptyBody, ErrorBody, LoadingBody, Pagination } from "./partials";
 
 type Props<T> = {
   data: T[];
@@ -31,7 +31,8 @@ export function Table<T>({
   const colCount = table.getAllLeafColumns().length;
 
   const showError = !!isError && !isLoading;
-  const showContent = !isError && !isLoading;
+  const showEmpty = !isError && !isLoading && data.length === 0;
+  const showContent = !isError && !isLoading && data.length > 0;
 
   return (
     <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
@@ -57,6 +58,8 @@ export function Table<T>({
         {isLoading && <LoadingBody limit={limit} colCount={colCount} />}
 
         {showError && <ErrorBody colCount={colCount} />}
+
+        {showEmpty && <EmptyBody colCount={colCount} />}
 
         {showContent && (
           <tbody className="divide-y divide-white/5">

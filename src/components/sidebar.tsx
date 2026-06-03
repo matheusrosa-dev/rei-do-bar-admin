@@ -7,7 +7,7 @@ const navItems = [
 
 export function Sidebar() {
   return (
-    <aside className="flex flex-col w-60 min-h-screen border-r border-white/10 bg-white/[0.03]">
+    <aside className="flex flex-col w-60 min-h-screen border-r border-white/10 bg-white/3">
       <div className="px-5 py-5 border-b border-white/10">
         <span className="text-white font-bold text-lg tracking-tight">
           Rei do Bar

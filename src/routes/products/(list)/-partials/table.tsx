@@ -49,7 +49,7 @@ const productColumns: ColumnDef<IProduct>[] = [
   },
   {
     accessorKey: "isActive",
-    header: "Ativo",
+    header: "Status",
     cell: ({ getValue }) => {
       const active = getValue<boolean>();
       return (

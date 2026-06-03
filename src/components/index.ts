@@ -3,3 +3,4 @@ export { Sidebar } from "./sidebar";
 export { ImagePreview } from "./image-preview";
 export { Input } from "./form/input";
 export { Button } from "./form/button";
+export { Select } from "./form/select";

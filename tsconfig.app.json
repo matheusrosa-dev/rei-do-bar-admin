@@ -23,7 +23,7 @@
     "noFallthroughCasesInSwitch": true,
 
     "paths": {
-      "@services/*": ["./src/shared/services/*"],
+      "@services": ["./src/shared/services/index.ts"],
       "@components": ["./src/components/index.ts"],
       "@shared/*": ["./src/shared/*"]
     }
