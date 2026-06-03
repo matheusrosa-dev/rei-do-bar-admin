@@ -15,4 +15,11 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     tailwindcss(),
   ],
+  resolve: {
+    alias: {
+      "@components": "/src/components/index.ts",
+      "@shared": "/src/shared/",
+      "@services": "/src/shared/services/",
+    },
+  },
 });
