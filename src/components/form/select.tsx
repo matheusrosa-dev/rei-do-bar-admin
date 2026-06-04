@@ -10,8 +10,8 @@ type Props = {
   label?: string;
   placeholder?: string;
   options: Option[];
-  value?: string;
-  onValueChange?: (value: string) => void;
+  value: string | null;
+  onValueChange: (value: string) => void;
   active?: boolean;
 };
 
@@ -33,7 +33,10 @@ export function Select({
         </span>
       )}
 
-      <RadixSelect.Root value={value} onValueChange={onValueChange}>
+      <RadixSelect.Root
+        value={value ?? undefined}
+        onValueChange={onValueChange}
+      >
         <RadixSelect.Trigger
           className={`
             flex items-center justify-between gap-2

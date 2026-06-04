@@ -5,7 +5,7 @@ import { Filters, Table } from "./-partials";
 import { Button, PageWrapper } from "@components";
 import { validateSearch } from "./-helpers";
 
-export const Route = createFileRoute("/products/(list)/")({
+export const Route = createFileRoute("/produtos/(list)/")({
   validateSearch,
   component: Index,
 });
@@ -24,7 +24,7 @@ function Index() {
   const { getProducts } = useProductsService();
   const { getCategories } = useCategoriesService();
 
-  const productsQuery = useQuery({
+  const { data: products, ...productsQuery } = useQuery({
     queryKey: [
       getProducts.key,
       page,
@@ -45,7 +45,7 @@ function Index() {
     retry: false,
   });
 
-  const categoriesQuery = useQuery({
+  const { data: categories, ...categoriesQuery } = useQuery({
     queryKey: [getCategories.key],
     queryFn: getCategories.fn,
     retry: false,
@@ -55,25 +55,25 @@ function Index() {
     <PageWrapper
       title="Produtos"
       headerContent={() => (
-        <Link to="/products/create">
+        <Link to="/produtos/criar">
           <Button>Criar produto</Button>
         </Link>
       )}
     >
       <div className="mb-4">
         <Filters
-          categories={categoriesQuery.data ?? []}
+          categories={categories ?? []}
           onRefetch={productsQuery.refetch}
           isRefetching={productsQuery.isRefetching}
         />
       </div>
 
       <Table
-        data={productsQuery.data?.items ?? []}
-        meta={productsQuery.data?.meta}
+        data={products?.items ?? []}
+        meta={products?.meta}
         limit={LIMIT}
-        isLoading={productsQuery.isLoading}
-        isError={productsQuery.isError}
+        isLoading={productsQuery.isLoading || categoriesQuery.isLoading}
+        isError={productsQuery.isError || categoriesQuery.isError}
       />
     </PageWrapper>
   );

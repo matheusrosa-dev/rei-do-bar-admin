@@ -1,27 +1,47 @@
-import type { InputHTMLAttributes } from "react";
+import { useCallback } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
-type Props = InputHTMLAttributes<HTMLInputElement> & {
+type Props = {
   label: string;
+  value: number;
+  onChange: (value: number) => void;
   error?: string;
+  disabled?: boolean;
+  className?: string;
 };
 
-export function Input({
-  placeholder,
-  className,
+export function CurrencyInput({
   label,
+  value,
+  onChange,
   error,
-  ...props
+  disabled,
+  className,
 }: Props) {
+  const formatted = new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(value ? value / 100 : 0);
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const digits = e.target.value.replace(/\D/g, "");
+      onChange?.(Number(digits));
+    },
+    [onChange],
+  );
+
   return (
     <label className="flex flex-col gap-1.5 w-full">
       <span className="text-zinc-300 text-sm font-medium">{label}</span>
 
       <input
-        placeholder={placeholder}
+        value={formatted}
+        onChange={handleChange}
+        disabled={disabled}
         className={twMerge(
-          `border text-white placeholder-zinc-500 rounded-lg px-4 py-2.5 text-sm outline-none
+          `border text-white rounded-lg px-4 py-2.5 text-sm outline-none
            focus:ring-1 transition disabled:cursor-not-allowed disabled:opacity-50
           ${
             error
@@ -30,11 +50,10 @@ export function Input({
           }`,
           className,
         )}
-        {...props}
       />
 
       <AnimatePresence>
-        {!!(error && !props?.disabled) && (
+        {!!(error && !disabled) && (
           <motion.span
             className="text-red-500 text-xs select-none overflow-hidden"
             initial={{ height: 0, opacity: 0 }}

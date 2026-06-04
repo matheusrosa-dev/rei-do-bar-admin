@@ -35,7 +35,7 @@ export function Table<T>({
   const showContent = !isError && !isLoading && data.length > 0;
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm">
+    <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5">
       <table className="w-full text-sm text-left">
         <thead className="border-b border-white/10">
           {headers.map((headerGroup) => (

@@ -24,11 +24,11 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
     sortKey,
     sortDirection,
   } = useSearch({
-    from: "/products/(list)/",
+    from: "/produtos/(list)/",
   });
 
   const navigate = useNavigate({
-    from: "/products/",
+    from: "/produtos/",
   });
 
   const categoryOptions = [

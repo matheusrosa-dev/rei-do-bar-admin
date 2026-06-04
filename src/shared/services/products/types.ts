@@ -14,9 +14,15 @@ export type GetProducts = (queries?: {
   sortDirection?: SortDirection;
 }) => Promise<GetProdutsResponse>;
 
+export type GetProductById = (productId: string) => Promise<IProduct>;
+
 export type UseProductsService = () => {
   getProducts: {
     fn: GetProducts;
+    key: string;
+  };
+  getProductById: {
+    fn: GetProductById;
     key: string;
   };
 };

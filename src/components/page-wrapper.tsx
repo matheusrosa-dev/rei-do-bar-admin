@@ -38,7 +38,7 @@ export const PageWrapper = ({
               })
             }
             type="button"
-            className="text-white flex items-center gap-2 font-medium cursor-pointer mb-5"
+            className="text-white flex items-center gap-2 font-medium cursor-pointer mb-5 w-fit pr-2"
           >
             <MdOutlineArrowBackIosNew />
             Voltar

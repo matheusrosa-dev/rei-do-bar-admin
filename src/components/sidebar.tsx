@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { MdShoppingBasket } from "react-icons/md";
 
 const navItems = [
-  { to: "/products", label: "Produtos", icon: MdShoppingBasket },
+  { to: "/produtos", label: "Produtos", icon: MdShoppingBasket },
 ] as const;
 
 export function Sidebar() {
