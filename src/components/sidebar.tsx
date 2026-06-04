@@ -8,7 +8,7 @@ const navItems = [
 export function Sidebar() {
   return (
     <aside className="flex flex-col w-60 min-h-screen border-r border-white/10 bg-white/3">
-      <div className="px-5 py-5 border-b border-white/10">
+      <div className="px-5 h-18 flex items-center justify-center border-b border-white/10">
         <span className="text-white font-bold text-lg tracking-tight">
           Rei do Bar
         </span>

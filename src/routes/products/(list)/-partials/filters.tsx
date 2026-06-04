@@ -1,5 +1,7 @@
-import { Select } from "@components";
+import { Select, SortSelect } from "@components";
+import type { SortDirection } from "@shared/interfaces";
 import type { ICategory } from "@shared/models";
+import type { GetProductsSortKey } from "@shared/services/products/types";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { FiRefreshCw, FiX } from "react-icons/fi";
 
@@ -15,17 +17,12 @@ const STATUS_OPTIONS = [
   { value: "false", label: "Inativo" },
 ];
 
-const STOCK_ORDER_OPTIONS = [
-  { value: "all", label: "Padrão" },
-  { value: "asc", label: "Menor estoque" },
-  { value: "desc", label: "Maior estoque" },
-];
-
 export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
   const {
     categoryId = "all",
     isActive,
-    stockOrder,
+    sortKey,
+    sortDirection,
   } = useSearch({
     from: "/products/(list)/",
   });
@@ -59,28 +56,25 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
     });
   };
 
-  const onChangeStockOrderFilter = (value: string) => {
+  const onChangeSorting = (
+    key: GetProductsSortKey,
+    direction: SortDirection | undefined,
+  ) => {
     navigate({
       search: (prev) => ({
         ...prev,
-        stockOrder: value === "asc" || value === "desc" ? value : undefined,
         page: undefined,
+        sortKey: direction ? key : undefined,
+        sortDirection: direction,
       }),
     });
   };
 
   const statusValue =
     isActive === true ? "true" : isActive === false ? "false" : "all";
-  const stockOrderValue = stockOrder ?? "all";
 
   const hasActiveFilters =
-    categoryId !== "all" || statusValue !== "all" || stockOrderValue !== "all";
-
-  const clearFilters = () => {
-    navigate({
-      search: () => ({ page: undefined }),
-    });
-  };
+    categoryId !== "all" || statusValue !== "all" || sortKey;
 
   return (
     <div className="flex items-end gap-3">
@@ -105,19 +99,27 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
         />
       </div>
       <div className="w-40">
-        <Select
+        <SortSelect
           label="Estoque"
-          placeholder="Padrão"
-          options={STOCK_ORDER_OPTIONS}
-          value={stockOrderValue}
-          onValueChange={onChangeStockOrderFilter}
-          active={stockOrderValue !== "all"}
+          value={sortKey === "stock" ? sortDirection : undefined}
+          onChange={(value) => onChangeSorting("stock", value)}
+        />
+      </div>
+      <div className="w-40">
+        <SortSelect
+          label="Destaque"
+          value={sortKey === "sortOrder" ? sortDirection : undefined}
+          onChange={(value) => onChangeSorting("sortOrder", value)}
         />
       </div>
       {hasActiveFilters && (
         <button
           type="button"
-          onClick={clearFilters}
+          onClick={() =>
+            navigate({
+              search: () => ({}),
+            })
+          }
           className="flex items-center gap-1.5 px-3 py-2.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer"
         >
           <FiX className="size-4" />

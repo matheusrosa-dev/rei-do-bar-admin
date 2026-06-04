@@ -48,6 +48,14 @@ const productColumns: ColumnDef<IProduct>[] = [
     },
   },
   {
+    accessorKey: "sortOrder",
+    header: "Destaque",
+    cell: ({ getValue }) => {
+      const sortOrder = getValue<number>();
+      return sortOrder || "-";
+    },
+  },
+  {
     accessorKey: "isActive",
     header: "Status",
     cell: ({ getValue }) => {
