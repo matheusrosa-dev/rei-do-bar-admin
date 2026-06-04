@@ -3,18 +3,20 @@ import {
   CurrencyInput,
   ImagePreview,
   Input,
-  NumberInput,
+  PageError,
+  PageLoading,
   PageWrapper,
   Select,
   Textarea,
   Toggle,
 } from "@components";
 import { useCategoriesService, useProductsService } from "@services";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { defaultValues, resolver, type Form } from "./-helpers";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/produtos/editar/$productId")({
   component: RouteComponent,
@@ -24,22 +26,41 @@ function RouteComponent() {
   const [formReady, setFormReady] = useState(false);
 
   const { productId } = Route.useParams();
-  const { getProductById } = useProductsService();
+  const { getProductById, updateProduct } = useProductsService();
   const { getCategories } = useCategoriesService();
 
   const { data: product, ...productQuery } = useQuery({
     queryKey: [getProductById.key, productId],
     queryFn: () => getProductById.fn(productId),
     retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const { data: categories, ...categoriesQuery } = useQuery({
     queryKey: [getCategories.key],
-    queryFn: () => getCategories.fn(),
+    queryFn: getCategories.fn,
     retry: false,
+    refetchOnWindowFocus: false,
   });
 
-  const isLoading = productQuery.isLoading || categoriesQuery.isLoading;
+  const updateProductMutation = useMutation({
+    mutationFn: updateProduct,
+    onSuccess: () => {
+      toast.success("Produto salvo com sucesso");
+
+      setFormReady(false);
+      productQuery.refetch();
+    },
+    onError: () => {
+      toast.error("Ocorreu um erro ao editar o produto!");
+    },
+  });
+
+  const isLoading =
+    productQuery.isLoading ||
+    categoriesQuery.isLoading ||
+    productQuery.isRefetching;
+
   const isError = productQuery.isError || categoriesQuery.isError;
 
   const form = useForm<Form>({
@@ -48,7 +69,17 @@ function RouteComponent() {
   });
 
   const onSubmit = (formData: Form) => {
-    console.log(formData);
+    updateProductMutation.mutate({
+      productId,
+      body: {
+        name: formData.name,
+        description: formData.description || null,
+        imageUrl: formData.imageUrl,
+        price: formData.price,
+        isActive: formData.isActive,
+        categoryId: formData.categoryId,
+      },
+    });
   };
 
   useEffect(
@@ -56,10 +87,9 @@ function RouteComponent() {
       if (!isLoading && !isError && product) {
         form.reset({
           name: product.name,
-          description: product.description,
+          description: product.description || "",
           imageUrl: product.imageUrl,
           price: product.price,
-          stock: product.stock,
           categoryId: product.categoryId,
           isActive: product.isActive,
         });
@@ -69,8 +99,15 @@ function RouteComponent() {
     [isLoading, isError, product, form.reset],
   );
 
-  if (isLoading || isError || !product || !categories || !formReady)
-    return null;
+  if (isLoading) {
+    return <PageLoading title="Editar produto" goBackTo="/produtos" />;
+  }
+
+  if (isError || !categories || !product) {
+    return <PageError title="Editar produto" goBackTo="/produtos" />;
+  }
+
+  if (!formReady) return null;
 
   return (
     <PageWrapper title="Editar produto" goBackTo="/produtos">
@@ -87,6 +124,7 @@ function RouteComponent() {
           label="Url da imagem"
           {...form.register("imageUrl")}
           error={form.formState.errors.imageUrl?.message}
+          disabled={updateProductMutation.isPending}
         />
 
         <div className="flex gap-4">
@@ -94,6 +132,7 @@ function RouteComponent() {
             label="Nome"
             {...form.register("name")}
             error={form.formState.errors.name?.message}
+            disabled={updateProductMutation.isPending}
           />
         </div>
 
@@ -101,6 +140,7 @@ function RouteComponent() {
           label="Descrição"
           rows={4}
           {...form.register("description")}
+          disabled={updateProductMutation.isPending}
         />
 
         <div className="flex gap-4">
@@ -113,14 +153,9 @@ function RouteComponent() {
                 value={field.value}
                 onChange={field.onChange}
                 error={fieldState.error?.message}
+                disabled={updateProductMutation.isPending}
               />
             )}
-          />
-
-          <NumberInput
-            label="Estoque"
-            placeholder="0"
-            {...form.register("stock")}
           />
 
           <Controller
@@ -134,7 +169,8 @@ function RouteComponent() {
                   value: item.id,
                 }))}
                 value={field.value}
-                onValueChange={field.onChange}
+                onChange={field.onChange}
+                disabled={updateProductMutation.isPending}
               />
             )}
           />
@@ -148,12 +184,15 @@ function RouteComponent() {
               checked={field.value}
               onCheckedChange={field.onChange}
               label="Ativo?"
+              disabled={updateProductMutation.isPending}
             />
           )}
         />
 
         <div className="flex justify-end">
-          <Button type="submit">Salvar</Button>
+          <Button type="submit" disabled={updateProductMutation.isPending}>
+            Salvar
+          </Button>
         </div>
       </form>
     </PageWrapper>

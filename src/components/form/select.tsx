@@ -11,8 +11,9 @@ type Props = {
   placeholder?: string;
   options: Option[];
   value: string | null;
-  onValueChange: (value: string) => void;
+  onChange: (value: string) => void;
   active?: boolean;
+  disabled?: boolean;
 };
 
 export function Select({
@@ -20,8 +21,9 @@ export function Select({
   placeholder = "Selecionar...",
   options,
   value,
-  onValueChange,
+  onChange,
   active,
+  disabled,
 }: Props) {
   return (
     <div className="flex flex-col gap-1.5 select-none w-full">
@@ -33,15 +35,13 @@ export function Select({
         </span>
       )}
 
-      <RadixSelect.Root
-        value={value ?? undefined}
-        onValueChange={onValueChange}
-      >
+      <RadixSelect.Root value={value ?? undefined} onValueChange={onChange}>
         <RadixSelect.Trigger
+          disabled={disabled}
           className={`
             flex items-center justify-between gap-2
             border text-sm rounded-lg px-4 py-2.5
-            text-white outline-none cursor-pointer
+            text-white outline-none not-disabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50
             focus:border-amber-500 focus:ring-1 focus:ring-amber-500
             data-placeholder:text-zinc-500
             transition

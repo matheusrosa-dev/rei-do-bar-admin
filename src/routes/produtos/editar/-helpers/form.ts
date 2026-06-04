@@ -7,8 +7,7 @@ const schema = yup.object({
   description: yup.string().optional(),
   imageUrl: yup.string().url("Url inválida").required("Campo obrigatório"),
   price: yup.number().required("Campo obrigatório").min(100, "Preço inválido"),
-  stock: yup.number().required("Campo obrigatório"),
-  categoryId: yup.string().required("Campo obrigatório").nullable(),
+  categoryId: yup.string().required("Campo obrigatório"),
   isActive: yup.boolean().required("Campo obrigatório"),
 });
 
@@ -17,9 +16,8 @@ export type Form = yup.InferType<typeof schema>;
 export const defaultValues: Form = {
   name: "",
   imageUrl: "",
-  categoryId: null,
+  categoryId: "",
   price: 0,
-  stock: 0,
   isActive: false,
 };
 

@@ -16,6 +16,14 @@ export type GetProducts = (queries?: {
 
 export type GetProductById = (productId: string) => Promise<IProduct>;
 
+export type UpdateProduct = (props: {
+  productId: string;
+  body: Pick<
+    IProduct,
+    "name" | "description" | "imageUrl" | "price" | "isActive" | "categoryId"
+  >;
+}) => Promise<IProduct>;
+
 export type UseProductsService = () => {
   getProducts: {
     fn: GetProducts;
@@ -25,4 +33,5 @@ export type UseProductsService = () => {
     fn: GetProductById;
     key: string;
   };
+  updateProduct: UpdateProduct;
 };

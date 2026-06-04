@@ -4,6 +4,7 @@ import type {
   GetProductById,
   GetProducts,
   GetProdutsResponse,
+  UpdateProduct,
   UseProductsService,
 } from "./types";
 
@@ -24,6 +25,12 @@ export const useProductsService: UseProductsService = () => {
     return response.data.data;
   };
 
+  const updateProduct: UpdateProduct = async ({ productId, body }) => {
+    const response = await api.put<IProduct>(`${baseUrl}/${productId}`, body);
+
+    return response.data.data;
+  };
+
   return {
     getProducts: {
       fn: getProducts,
@@ -33,5 +40,6 @@ export const useProductsService: UseProductsService = () => {
       fn: getProductById,
       key: "get-product-by-id",
     },
+    updateProduct,
   };
 };

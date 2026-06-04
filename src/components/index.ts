@@ -1,6 +1,8 @@
 export { Table } from "./table";
 export { Sidebar } from "./sidebar";
-export { PageWrapper } from "./page-wrapper";
+export { PageWrapper } from "./page/page-wrapper";
+export { PageError } from "./page/page-error";
+export { PageLoading } from "./page/page-loading";
 export { ImagePreview } from "./image-preview";
 export { Input } from "./form/input";
 export { CurrencyInput } from "./form/currency-input";
@@ -9,4 +11,4 @@ export { Toggle } from "./form/toggle";
 export { Textarea } from "./form/textarea";
 export { Button } from "./form/button";
 export { Select } from "./form/select";
-export { SortSelect } from "./sort-select";
+export { SortSelect } from "./form/sort-select";

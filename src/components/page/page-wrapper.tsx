@@ -1,8 +1,8 @@
 import { useNavigate } from "@tanstack/react-router";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
-import type { FileRouteTypes } from "../routeTree.gen";
+import type { FileRouteTypes } from "../../routeTree.gen";
 
-type Props = {
+export type Props = {
   title: string;
   children: React.ReactNode;
   headerContent?: () => React.ReactNode;

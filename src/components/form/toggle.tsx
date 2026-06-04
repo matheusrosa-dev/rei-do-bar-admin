@@ -10,9 +10,7 @@ type Props = {
 
 export function Toggle({ label, checked, onCheckedChange, disabled }: Props) {
   return (
-    <label
-      className={`flex flex-col gap-1.5 w-fit ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
-    >
+    <label className="flex flex-col gap-1.5 w-fit">
       <span className="text-zinc-300 text-sm font-medium select-none">
         {label}
       </span>

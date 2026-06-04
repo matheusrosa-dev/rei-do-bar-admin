@@ -1,5 +1,5 @@
 import { SortDirection } from "@shared/interfaces";
-import { Select } from "./form/select";
+import { Select } from "./select";
 
 type Props = {
   label: string;
@@ -20,7 +20,7 @@ export const SortSelect = ({ label, value, onChange }: Props) => {
       placeholder="Padrão"
       options={SORT_OPTIONS}
       value={value ?? "all"}
-      onValueChange={(value: "all" | SortDirection) =>
+      onChange={(value: "all" | SortDirection) =>
         onChange(value === "all" ? undefined : value)
       }
       active={!!value}
