@@ -8,6 +8,7 @@ import type {
   GetProducts,
   GetProdutsResponse,
   IncrementStock,
+  RemoveProduct,
   UpdateProduct,
   UseProductsService,
 } from "./types";
@@ -41,6 +42,10 @@ export const useProductsService: UseProductsService = () => {
     );
 
     return response.data.data;
+  };
+
+  const removeProduct: RemoveProduct = async (productId) => {
+    await api.delete(`${baseUrl}/${productId}`);
   };
 
   const deactivateProduct: DeactivateProduct = async (productId) => {
@@ -83,5 +88,6 @@ export const useProductsService: UseProductsService = () => {
     deactivateProduct,
     incrementStock,
     decrementStock,
+    removeProduct,
   };
 };

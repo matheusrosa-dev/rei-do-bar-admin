@@ -38,6 +38,8 @@ export type DecrementStock = (props: {
   body: { amount: number };
 }) => Promise<IProduct>;
 
+export type RemoveProduct = (productId: string) => Promise<void>;
+
 export type UseProductsService = () => {
   getProducts: {
     fn: GetProducts;
@@ -52,4 +54,5 @@ export type UseProductsService = () => {
   deactivateProduct: DeactivateProduct;
   incrementStock: IncrementStock;
   decrementStock: DecrementStock;
+  removeProduct: RemoveProduct;
 };
