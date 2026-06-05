@@ -8,7 +8,6 @@ const schema = yup.object({
   imageUrl: yup.string().url("Url inválida").required("Campo obrigatório"),
   price: yup.number().required("Campo obrigatório").min(100, "Preço inválido"),
   categoryId: yup.string().required("Campo obrigatório"),
-  isActive: yup.boolean().required("Campo obrigatório"),
 });
 
 export type Form = yup.InferType<typeof schema>;
@@ -18,7 +17,6 @@ export const defaultValues: Form = {
   imageUrl: "",
   categoryId: "",
   price: 0,
-  isActive: false,
 };
 
 export const resolver = yupResolver(schema) as Resolver<Form>;

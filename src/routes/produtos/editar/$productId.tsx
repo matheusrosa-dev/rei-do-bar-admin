@@ -1,32 +1,16 @@
-import {
-  Button,
-  CurrencyInput,
-  ImagePreview,
-  Input,
-  PageError,
-  PageLoading,
-  PageWrapper,
-  Select,
-  Textarea,
-  Toggle,
-} from "@components";
+import { PageError, PageLoading, PageWrapper } from "@components";
 import { useCategoriesService, useProductsService } from "@services";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Controller, useForm } from "react-hook-form";
-import { defaultValues, resolver, type Form } from "./-helpers";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { Actions, BasicData } from "./-partials";
 
 export const Route = createFileRoute("/produtos/editar/$productId")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [formReady, setFormReady] = useState(false);
-
   const { productId } = Route.useParams();
-  const { getProductById, updateProduct } = useProductsService();
+  const { getProductById } = useProductsService();
   const { getCategories } = useCategoriesService();
 
   const { data: product, ...productQuery } = useQuery({
@@ -43,61 +27,12 @@ function RouteComponent() {
     refetchOnWindowFocus: false,
   });
 
-  const updateProductMutation = useMutation({
-    mutationFn: updateProduct,
-    onSuccess: () => {
-      toast.success("Produto salvo com sucesso");
-
-      setFormReady(false);
-      productQuery.refetch();
-    },
-    onError: () => {
-      toast.error("Ocorreu um erro ao editar o produto!");
-    },
-  });
-
   const isLoading =
     productQuery.isLoading ||
     categoriesQuery.isLoading ||
     productQuery.isRefetching;
 
   const isError = productQuery.isError || categoriesQuery.isError;
-
-  const form = useForm<Form>({
-    defaultValues,
-    resolver,
-  });
-
-  const onSubmit = (formData: Form) => {
-    updateProductMutation.mutate({
-      productId,
-      body: {
-        name: formData.name,
-        description: formData.description || null,
-        imageUrl: formData.imageUrl,
-        price: formData.price,
-        isActive: formData.isActive,
-        categoryId: formData.categoryId,
-      },
-    });
-  };
-
-  useEffect(
-    function fillForm() {
-      if (!isLoading && !isError && product) {
-        form.reset({
-          name: product.name,
-          description: product.description || "",
-          imageUrl: product.imageUrl,
-          price: product.price,
-          categoryId: product.categoryId,
-          isActive: product.isActive,
-        });
-        setFormReady(true);
-      }
-    },
-    [isLoading, isError, product, form.reset],
-  );
 
   if (isLoading) {
     return <PageLoading title="Editar produto" goBackTo="/produtos" />;
@@ -107,94 +42,13 @@ function RouteComponent() {
     return <PageError title="Editar produto" goBackTo="/produtos" />;
   }
 
-  if (!formReady) return null;
-
   return (
     <PageWrapper title="Editar produto" goBackTo="/produtos">
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4 p-5 rounded-xl border border-white/10 bg-white/5 w-full max-w-5xl"
-      >
-        <ImagePreview
-          src={product.imageUrl}
-          className="size-24 rounded-md object-contain bg-white/5"
-        />
+      <div className="flex flex-col gap-4 max-w-4xl">
+        <BasicData product={product} categories={categories} />
 
-        <Input
-          label="Url da imagem"
-          {...form.register("imageUrl")}
-          error={form.formState.errors.imageUrl?.message}
-          disabled={updateProductMutation.isPending}
-        />
-
-        <div className="flex gap-4">
-          <Input
-            label="Nome"
-            {...form.register("name")}
-            error={form.formState.errors.name?.message}
-            disabled={updateProductMutation.isPending}
-          />
-        </div>
-
-        <Textarea
-          label="Descrição"
-          rows={4}
-          {...form.register("description")}
-          disabled={updateProductMutation.isPending}
-        />
-
-        <div className="flex gap-4">
-          <Controller
-            control={form.control}
-            name="price"
-            render={({ field, fieldState }) => (
-              <CurrencyInput
-                label="Preço"
-                value={field.value}
-                onChange={field.onChange}
-                error={fieldState.error?.message}
-                disabled={updateProductMutation.isPending}
-              />
-            )}
-          />
-
-          <Controller
-            control={form.control}
-            name="categoryId"
-            render={({ field }) => (
-              <Select
-                label="Categoria"
-                options={categories.map((item) => ({
-                  label: item.name,
-                  value: item.id,
-                }))}
-                value={field.value}
-                onChange={field.onChange}
-                disabled={updateProductMutation.isPending}
-              />
-            )}
-          />
-        </div>
-
-        <Controller
-          control={form.control}
-          name="isActive"
-          render={({ field }) => (
-            <Toggle
-              checked={field.value}
-              onCheckedChange={field.onChange}
-              label="Ativo?"
-              disabled={updateProductMutation.isPending}
-            />
-          )}
-        />
-
-        <div className="flex justify-end">
-          <Button type="submit" disabled={updateProductMutation.isPending}>
-            Salvar
-          </Button>
-        </div>
-      </form>
+        <Actions product={product} />
+      </div>
     </PageWrapper>
   );
 }

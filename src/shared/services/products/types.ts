@@ -20,8 +20,22 @@ export type UpdateProduct = (props: {
   productId: string;
   body: Pick<
     IProduct,
-    "name" | "description" | "imageUrl" | "price" | "isActive" | "categoryId"
+    "name" | "description" | "imageUrl" | "price" | "categoryId"
   >;
+}) => Promise<IProduct>;
+
+export type ActivateProduct = (productId: string) => Promise<IProduct>;
+
+export type DeactivateProduct = (productId: string) => Promise<IProduct>;
+
+export type IncrementStock = (props: {
+  productId: string;
+  body: { amount: number };
+}) => Promise<IProduct>;
+
+export type DecrementStock = (props: {
+  productId: string;
+  body: { amount: number };
 }) => Promise<IProduct>;
 
 export type UseProductsService = () => {
@@ -34,4 +48,8 @@ export type UseProductsService = () => {
     key: string;
   };
   updateProduct: UpdateProduct;
+  activateProduct: ActivateProduct;
+  deactivateProduct: DeactivateProduct;
+  incrementStock: IncrementStock;
+  decrementStock: DecrementStock;
 };

@@ -1,9 +1,13 @@
 import type { IProduct } from "@shared/models";
 import { api } from "../api";
 import type {
+  ActivateProduct,
+  DeactivateProduct,
+  DecrementStock,
   GetProductById,
   GetProducts,
   GetProdutsResponse,
+  IncrementStock,
   UpdateProduct,
   UseProductsService,
 } from "./types";
@@ -31,6 +35,40 @@ export const useProductsService: UseProductsService = () => {
     return response.data.data;
   };
 
+  const activateProduct: ActivateProduct = async (productId) => {
+    const response = await api.patch<IProduct>(
+      `${baseUrl}/${productId}/activate`,
+    );
+
+    return response.data.data;
+  };
+
+  const deactivateProduct: DeactivateProduct = async (productId) => {
+    const response = await api.patch<IProduct>(
+      `${baseUrl}/${productId}/deactivate`,
+    );
+
+    return response.data.data;
+  };
+
+  const incrementStock: IncrementStock = async ({ productId, body }) => {
+    const response = await api.patch<IProduct>(
+      `${baseUrl}/${productId}/increment-stock`,
+      body,
+    );
+
+    return response.data.data;
+  };
+
+  const decrementStock: DecrementStock = async ({ productId, body }) => {
+    const response = await api.patch<IProduct>(
+      `${baseUrl}/${productId}/decrement-stock`,
+      body,
+    );
+
+    return response.data.data;
+  };
+
   return {
     getProducts: {
       fn: getProducts,
@@ -41,5 +79,9 @@ export const useProductsService: UseProductsService = () => {
       key: "get-product-by-id",
     },
     updateProduct,
+    activateProduct,
+    deactivateProduct,
+    incrementStock,
+    decrementStock,
   };
 };

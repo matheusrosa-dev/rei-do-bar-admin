@@ -2,7 +2,7 @@
 import * as RadixSwitch from "@radix-ui/react-switch";
 
 type Props = {
-  label: string;
+  label?: string;
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   disabled?: boolean;
@@ -11,9 +11,11 @@ type Props = {
 export function Toggle({ label, checked, onCheckedChange, disabled }: Props) {
   return (
     <label className="flex flex-col gap-1.5 w-fit">
-      <span className="text-zinc-300 text-sm font-medium select-none">
-        {label}
-      </span>
+      {label && (
+        <span className="text-zinc-300 text-sm font-medium select-none text-center">
+          {label}
+        </span>
+      )}
 
       <RadixSwitch.Root
         checked={checked}

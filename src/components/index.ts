@@ -12,3 +12,7 @@ export { Textarea } from "./form/textarea";
 export { Button } from "./form/button";
 export { Select } from "./form/select";
 export { SortSelect } from "./form/sort-select";
+export { Wrapper } from "./wrapper";
+export { StatusBadge } from "./status-badge";
+export { Modal } from "./modal/modal";
+export { ConfirmModal } from "./modal/confirm-modal";

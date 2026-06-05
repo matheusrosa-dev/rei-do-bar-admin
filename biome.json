@@ -21,6 +21,12 @@
       "suspicious": {
         "noUnknownAtRules": "off"
       },
+      "complexity": {
+        "useLiteralKeys": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "warn"
+      },
       "style": {
         "noNonNullAssertion": "off"
       }

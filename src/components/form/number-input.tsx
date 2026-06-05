@@ -5,6 +5,7 @@ import { twMerge } from "tailwind-merge";
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   error?: string;
+  labelClassname?: string;
 };
 
 const BLOCKED_KEYS = ["e", "E", "+", "-", ".", ","];
@@ -14,6 +15,7 @@ export function NumberInput({
   className,
   label,
   error,
+  labelClassname,
   onKeyDown,
   ...props
 }: Props) {
@@ -24,7 +26,11 @@ export function NumberInput({
 
   return (
     <label className="flex flex-col gap-1.5 w-full">
-      <span className="text-zinc-300 text-sm font-medium">{label}</span>
+      <span
+        className={twMerge("text-zinc-300 text-sm font-medium", labelClassname)}
+      >
+        {label}
+      </span>
 
       <input
         type="number"

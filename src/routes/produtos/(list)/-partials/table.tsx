@@ -1,5 +1,9 @@
 import type { IProduct } from "@shared/models";
-import { ImagePreview, Table as TableComponent } from "@components";
+import {
+  ImagePreview,
+  StatusBadge,
+  Table as TableComponent,
+} from "@components";
 import { formatPrice } from "@shared/helpers/number";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useNavigate } from "@tanstack/react-router";
@@ -51,9 +55,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       cell: ({ getValue }) => {
         const stock = getValue<number>();
         return stock === 0 ? (
-          <span className="select-none inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-500/15 text-orange-400">
-            Esgotado
-          </span>
+          <StatusBadge variant="alert">Esgotado</StatusBadge>
         ) : (
           stock
         );
@@ -73,15 +75,9 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       cell: ({ getValue }) => {
         const active = getValue<boolean>();
         return (
-          <span
-            className={`select-none inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
-              active
-                ? "bg-green-500/15 text-green-400"
-                : "bg-red-500/15 text-red-400"
-            }`}
-          >
+          <StatusBadge variant={active ? "active" : "inactive"}>
             {active ? "Ativo" : "Inativo"}
-          </span>
+          </StatusBadge>
         );
       },
     },
