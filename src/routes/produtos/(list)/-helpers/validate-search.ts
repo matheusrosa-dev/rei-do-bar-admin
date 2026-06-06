@@ -6,6 +6,7 @@ type Search = {
   sortDirection?: SortDirection;
   isActive?: boolean;
   page?: number;
+  searchTerm?: string;
   categoryId?: string;
 };
 
@@ -17,10 +18,14 @@ export const validateSearch = (search: Record<string, unknown>): Search => {
   const categoryId =
     typeof search.categoryId === "string" ? search.categoryId : undefined;
 
+  const searchTerm =
+    typeof search.searchTerm === "string" ? search.searchTerm : undefined;
+
   return {
     isActive,
     page,
     categoryId,
+    searchTerm,
 
     ...formatSort(search),
   };

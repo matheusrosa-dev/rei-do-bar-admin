@@ -12,6 +12,7 @@ type Props<T> = {
   isLoading?: boolean;
   isError?: boolean;
   limit: number;
+  onRowClick?: (row: T) => void;
 };
 
 export function Table<T>({
@@ -20,6 +21,7 @@ export function Table<T>({
   isLoading,
   isError,
   limit,
+  onRowClick,
 }: Props<T>) {
   const table = useReactTable({
     data,
@@ -64,7 +66,11 @@ export function Table<T>({
         {showContent && (
           <tbody className="divide-y divide-white/5">
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="transition-colors hover:bg-white/5">
+              <tr
+                key={row.id}
+                onClick={() => onRowClick?.(row.original)}
+                className={`transition-colors hover:bg-white/5 ${onRowClick ? "cursor-pointer" : ""}`}
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="px-5 py-3.5 text-gray-200">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

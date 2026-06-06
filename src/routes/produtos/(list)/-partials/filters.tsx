@@ -1,8 +1,9 @@
-import { Select, SortSelect } from "@components";
+import { Input, Select, SortSelect } from "@components";
 import type { SortDirection } from "@shared/interfaces";
 import type { ICategory } from "@shared/models";
 import type { GetProductsSortKey } from "@shared/services/products/types";
 import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { FiRefreshCw, FiX } from "react-icons/fi";
 
 type Props = {
@@ -23,9 +24,12 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
     isActive,
     sortKey,
     sortDirection,
+    searchTerm,
   } = useSearch({
     from: "/produtos/(list)/",
   });
+
+  const [searchInput, setSearchInput] = useState(searchTerm ?? "");
 
   const navigate = useNavigate({
     from: "/produtos/",
@@ -70,14 +74,36 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
     });
   };
 
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          searchTerm: searchInput || undefined,
+          page: undefined,
+        }),
+      });
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [searchInput, navigate]);
+
   const statusValue =
     isActive === true ? "true" : isActive === false ? "false" : "all";
 
   const hasActiveFilters =
-    categoryId !== "all" || statusValue !== "all" || sortKey;
+    categoryId !== "all" || statusValue !== "all" || sortKey || !!searchTerm;
 
   return (
     <div className="flex items-end gap-3">
+      <div className="w-64">
+        <Input
+          label="Pesquisar"
+          placeholder="Nome do produto..."
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+      </div>
       <div className="w-52">
         <Select
           label="Categoria"
@@ -115,11 +141,10 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
       {hasActiveFilters && (
         <button
           type="button"
-          onClick={() =>
-            navigate({
-              search: () => ({}),
-            })
-          }
+          onClick={() => {
+            setSearchInput("");
+            navigate({ search: () => ({}) });
+          }}
           className="flex items-center gap-1.5 px-3 py-2.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer"
         >
           <FiX className="size-4" />

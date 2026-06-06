@@ -19,6 +19,7 @@ function Index() {
     isActive,
     sortDirection,
     sortKey,
+    searchTerm,
   } = Route.useSearch();
 
   const { getProducts } = useProductsService();
@@ -32,6 +33,7 @@ function Index() {
       isActive,
       sortDirection,
       sortKey,
+      searchTerm,
     ],
     queryFn: () =>
       getProducts.fn({
@@ -41,6 +43,7 @@ function Index() {
         isActive,
         sortDirection,
         sortKey,
+        searchTerm,
       }),
     retry: false,
   });

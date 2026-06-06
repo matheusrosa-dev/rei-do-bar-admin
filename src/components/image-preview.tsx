@@ -11,7 +11,7 @@ type Props = {
 export function ImagePreview({ src, alt = "Imagem", className }: Props) {
   return (
     <Dialog.Root>
-      <Dialog.Trigger asChild>
+      <Dialog.Trigger onClick={(e) => e.stopPropagation()} className="block">
         <img
           src={src}
           alt={alt}

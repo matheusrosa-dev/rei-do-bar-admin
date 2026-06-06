@@ -9,12 +9,16 @@ import {
   Wrapper,
 } from "@components";
 import { Controller, useForm } from "react-hook-form";
-import { defaultValues, resolver, type Form } from "./helpers";
 import type { ICategory, IProduct } from "@shared/models";
 import { useEffect, useState } from "react";
 import { useProductsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  defaultValues,
+  resolver,
+  type Form,
+} from "../../../-shared/basic-data-form";
 
 type Props = {
   product: IProduct;
@@ -27,18 +31,18 @@ export const BasicData = ({ product, categories }: Props) => {
   const { getProductById, updateProduct } = useProductsService();
   const queryClient = useQueryClient();
 
-  const form = useForm<Form>({
+  const form = useForm({
     defaultValues,
     resolver,
   });
 
   const updateProductMutation = useMutation({
     mutationFn: updateProduct,
-    onSuccess: (updateProduct) => {
+    onSuccess: (updatedProduct) => {
       toast.success("Produto atualizado com sucesso!");
       queryClient.setQueryData(
         [getProductById.key, product.id],
-        () => updateProduct,
+        () => updatedProduct,
       );
     },
     onError: () => {
@@ -89,9 +93,7 @@ export const BasicData = ({ product, categories }: Props) => {
           />
 
           <div className="flex flex-col  gap-2">
-            <h2 className="text-amber-500 text-lg font-bold text-center">
-              {product.name}
-            </h2>
+            <h2 className="text-amber-500 text-lg font-bold">{product.name}</h2>
             <StatusBadge variant={product.isActive ? "active" : "inactive"}>
               {product.isActive ? "Ativo" : "Inativo"}
             </StatusBadge>
@@ -105,6 +107,7 @@ export const BasicData = ({ product, categories }: Props) => {
         <div className="flex gap-4">
           <Input
             label="Imagem"
+            placeholder="Insira a URL da imagem"
             {...form.register("imageUrl")}
             error={form.formState.errors.imageUrl?.message}
             disabled={updateProductMutation.isPending}
@@ -114,6 +117,7 @@ export const BasicData = ({ product, categories }: Props) => {
         <div className="flex gap-4">
           <Input
             label="Nome"
+            placeholder="Insira o nome do produto"
             {...form.register("name")}
             error={form.formState.errors.name?.message}
             disabled={updateProductMutation.isPending}
@@ -123,6 +127,7 @@ export const BasicData = ({ product, categories }: Props) => {
         <Textarea
           label="Descrição"
           rows={4}
+          placeholder="Insira a descrição do produto"
           {...form.register("description")}
           disabled={updateProductMutation.isPending}
         />
@@ -145,7 +150,7 @@ export const BasicData = ({ product, categories }: Props) => {
           <Controller
             control={form.control}
             name="categoryId"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Select
                 label="Categoria"
                 options={categories.map((item) => ({
@@ -153,6 +158,8 @@ export const BasicData = ({ product, categories }: Props) => {
                   value: item.id,
                 }))}
                 value={field.value}
+                clearable
+                error={fieldState.error?.message}
                 onChange={field.onChange}
                 disabled={updateProductMutation.isPending}
               />

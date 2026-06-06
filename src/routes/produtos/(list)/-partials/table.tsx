@@ -9,7 +9,7 @@ import { formatPrice } from "@shared/helpers/number";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useNavigate } from "@tanstack/react-router";
 import type { IPagination } from "@shared/interfaces";
-import { LuPencil, LuTrash2 } from "react-icons/lu";
+import { LuTrash2 } from "react-icons/lu";
 import { useProductsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -103,35 +103,20 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <div>
-          <button
-            type="button"
-            onClick={() =>
-              navigate({
-                to: "/produtos/editar/$productId",
-                params: { productId: row.original.id },
-              })
-            }
-            className="cursor-pointer p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-            title="Editar produto"
-          >
-            <LuPencil size={16} />
-          </button>
-
-          <button
-            type="button"
-            onClick={() =>
-              setModalOpen({
-                mode: "remove-product",
-                productId: row.original.id,
-              })
-            }
-            className="cursor-pointer p-2 rounded-md text-red-500 hover:bg-red-500/10 transition-colors"
-            title="Editar produto"
-          >
-            <LuTrash2 size={16} />
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setModalOpen({
+              mode: "remove-product",
+              productId: row.original.id,
+            });
+          }}
+          className="cursor-pointer p-2 rounded-md text-red-500 hover:bg-red-500/10 transition-colors"
+          title="Remover produto"
+        >
+          <LuTrash2 size={16} />
+        </button>
       ),
     },
   ];
@@ -156,6 +141,12 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         isLoading={isLoading}
         isError={isError}
         limit={limit}
+        onRowClick={(row) =>
+          navigate({
+            to: "/produtos/editar/$productId",
+            params: { productId: row.id },
+          })
+        }
       />
 
       {meta?.totalPages && (

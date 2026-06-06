@@ -10,6 +10,7 @@ export type GetProducts = (queries?: {
   limit?: number;
   categoryId?: string;
   isActive?: boolean;
+  searchTerm?: string;
   sortKey?: GetProductsSortKey;
   sortDirection?: SortDirection;
 }) => Promise<GetProdutsResponse>;
@@ -23,6 +24,13 @@ export type UpdateProduct = (props: {
     "name" | "description" | "imageUrl" | "price" | "categoryId"
   >;
 }) => Promise<IProduct>;
+
+export type CreateProduct = (
+  body: Pick<
+    IProduct,
+    "name" | "description" | "imageUrl" | "price" | "categoryId"
+  >,
+) => Promise<IProduct>;
 
 export type ActivateProduct = (productId: string) => Promise<IProduct>;
 
@@ -55,4 +63,5 @@ export type UseProductsService = () => {
   incrementStock: IncrementStock;
   decrementStock: DecrementStock;
   removeProduct: RemoveProduct;
+  createProduct: CreateProduct;
 };

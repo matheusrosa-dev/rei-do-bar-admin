@@ -2,6 +2,7 @@ import type { IProduct } from "@shared/models";
 import { api } from "../api";
 import type {
   ActivateProduct,
+  CreateProduct,
   DeactivateProduct,
   DecrementStock,
   GetProductById,
@@ -74,6 +75,12 @@ export const useProductsService: UseProductsService = () => {
     return response.data.data;
   };
 
+  const createProduct: CreateProduct = async (body) => {
+    const response = await api.post<IProduct>(`${baseUrl}`, body);
+
+    return response.data.data;
+  };
+
   return {
     getProducts: {
       fn: getProducts,
@@ -89,5 +96,6 @@ export const useProductsService: UseProductsService = () => {
     incrementStock,
     decrementStock,
     removeProduct,
+    createProduct,
   };
 };
