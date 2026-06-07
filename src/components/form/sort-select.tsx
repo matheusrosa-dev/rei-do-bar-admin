@@ -20,9 +20,14 @@ export const SortSelect = ({ label, value, onChange }: Props) => {
       placeholder="Padrão"
       options={SORT_OPTIONS}
       value={value ?? "all"}
-      onChange={(value: "all" | SortDirection) =>
-        onChange(value === "all" ? undefined : value)
-      }
+      onChange={(value) => {
+        if (value === "all" || !value) {
+          onChange(undefined);
+          return;
+        }
+
+        onChange(value as SortDirection);
+      }}
       active={!!value}
     />
   );

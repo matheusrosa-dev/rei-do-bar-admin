@@ -1,2 +1,2 @@
 npm run lint:fix
-npx tsc --noEmit
+npx tsc --noEmit -p tsconfig.app.json

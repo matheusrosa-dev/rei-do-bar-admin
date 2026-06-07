@@ -112,7 +112,7 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
             placeholder="Todas as categorias"
             options={categoryOptions}
             value={categoryId}
-            onChange={onChangeCategoryFilter}
+            onChange={(newValue) => onChangeCategoryFilter(newValue || "all")}
             active={categoryId !== "all"}
           />
         </div>
@@ -123,7 +123,7 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
             placeholder="Todos"
             options={STATUS_OPTIONS}
             value={statusValue}
-            onChange={onChangeStatusFilter}
+            onChange={(newValue) => onChangeStatusFilter(newValue || "all")}
             active={statusValue !== "all"}
           />
         </div>
