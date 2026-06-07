@@ -1,13 +1,51 @@
 import type { ICategory } from "@shared/models";
 import { api } from "../api";
-import type { GetCategories, UseCategoriesService } from "./types";
+import type {
+  ActivateCategory,
+  CreateCategory,
+  DeactivateCategory,
+  GetCategories,
+  RemoveCategory,
+  UpdateCategory,
+  UseCategoriesService,
+} from "./types";
 
 export const useCategoriesService: UseCategoriesService = () => {
   const baseUrl = "/categories";
 
-  const getCategories: GetCategories = async () => {
-    const response = await api.get<ICategory[]>(baseUrl);
+  const getCategories: GetCategories = async (query) => {
+    const response = await api.get<ICategory[]>(baseUrl, { params: query });
 
+    return response.data.data;
+  };
+
+  const removeCategory: RemoveCategory = async (categoryId) => {
+    await api.delete(`${baseUrl}/${categoryId}`);
+  };
+
+  const createCategory: CreateCategory = async (body) => {
+    const response = await api.post<ICategory>(baseUrl, body);
+    return response.data.data;
+  };
+
+  const activateCategory: ActivateCategory = async (categoryId) => {
+    const response = await api.patch<ICategory>(
+      `${baseUrl}/${categoryId}/activate`,
+    );
+
+    return response.data.data;
+  };
+
+  const deactivateCategory: DeactivateCategory = async (categoryId) => {
+    const response = await api.patch<ICategory>(
+      `${baseUrl}/${categoryId}/deactivate`,
+    );
+
+    return response.data.data;
+  };
+
+  const updateCategory: UpdateCategory = async ({ categoryId, body }) => {
+    const response = await api.put<ICategory>(`${baseUrl}/${categoryId}`, body);
     return response.data.data;
   };
 
@@ -16,5 +54,10 @@ export const useCategoriesService: UseCategoriesService = () => {
       fn: getCategories,
       key: "get-categories",
     },
+    removeCategory,
+    createCategory,
+    updateCategory,
+    activateCategory,
+    deactivateCategory,
   };
 };

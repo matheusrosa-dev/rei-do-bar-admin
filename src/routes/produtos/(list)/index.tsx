@@ -50,7 +50,7 @@ function Index() {
 
   const { data: categories, ...categoriesQuery } = useQuery({
     queryKey: [getCategories.key],
-    queryFn: getCategories.fn,
+    queryFn: () => getCategories.fn(),
     retry: false,
   });
 

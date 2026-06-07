@@ -43,7 +43,6 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       queryClient.invalidateQueries({ queryKey: [getProducts.key] });
       setModalOpen(null);
     },
-    onError: () => toast.error("Ocorreu um erro ao tentar remover o produto."),
   });
 
   const productColumns: ColumnDef<IProduct>[] = [
@@ -66,6 +65,11 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       accessorKey: "price",
       header: "Preço",
       cell: ({ getValue }) => formatPrice(getValue<number>()),
+    },
+    {
+      accessorKey: "category",
+      header: "Categoria",
+      cell: ({ getValue }) => getValue<IProduct>()?.name,
     },
     {
       accessorKey: "stock",

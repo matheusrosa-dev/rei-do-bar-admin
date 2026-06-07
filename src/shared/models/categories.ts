@@ -3,4 +3,5 @@ export interface ICategory {
   name: string;
   pluralName: string;
   isActive: boolean;
+  productsCount: number;
 }

@@ -32,8 +32,8 @@ function RouteComponent() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: [getCategories.key],
-    queryFn: getCategories.fn,
+    queryKey: [getCategories.key, "active"],
+    queryFn: () => getCategories.fn({ isActive: true }),
     retry: false,
     refetchOnWindowFocus: false,
   });
@@ -51,9 +51,6 @@ function RouteComponent() {
         to: "/produtos/editar/$productId",
         params: { productId: createdProduct.id },
       });
-    },
-    onError: () => {
-      toast.error("Ocorreu um erro ao criar o produto.");
     },
   });
 

@@ -10,15 +10,11 @@ import {
 } from "@components";
 import { Controller, useForm } from "react-hook-form";
 import type { ICategory, IProduct } from "@shared/models";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useProductsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import {
-  defaultValues,
-  resolver,
-  type Form,
-} from "../../../-shared/basic-data-form";
+import { resolver, type Form } from "../../../-shared/basic-data-form";
 
 type Props = {
   product: IProduct;
@@ -26,13 +22,17 @@ type Props = {
 };
 
 export const BasicData = ({ product, categories }: Props) => {
-  const [formReady, setFormReady] = useState(false);
-
   const { getProductById, updateProduct } = useProductsService();
   const queryClient = useQueryClient();
 
-  const form = useForm({
-    defaultValues,
+  const form = useForm<Form>({
+    values: {
+      name: product.name,
+      description: product.description || "",
+      imageUrl: product.imageUrl,
+      price: product.price,
+      categoryId: product.categoryId,
+    },
     resolver,
   });
 
@@ -44,9 +44,6 @@ export const BasicData = ({ product, categories }: Props) => {
         [getProductById.key, product.id],
         () => updatedProduct,
       );
-    },
-    onError: () => {
-      toast.error("Ocorreu um erro ao editar o produto.");
     },
   });
 
@@ -63,18 +60,10 @@ export const BasicData = ({ product, categories }: Props) => {
     });
   };
 
-  useEffect(function fillForm() {
-    form.reset({
-      name: product.name,
-      description: product.description || "",
-      imageUrl: product.imageUrl,
-      price: product.price,
-      categoryId: product.categoryId,
-    });
-    setFormReady(true);
-  }, []);
-
-  if (!formReady) return null;
+  const categoriesWithDeactivated = useMemo(() => {
+    if (product.category.isActive) return categories;
+    return [...categories, product.category];
+  }, [product, categories]);
 
   return (
     <Wrapper>
@@ -153,7 +142,7 @@ export const BasicData = ({ product, categories }: Props) => {
             render={({ field, fieldState }) => (
               <Select
                 label="Categoria"
-                options={categories.map((item) => ({
+                options={categoriesWithDeactivated.map((item) => ({
                   label: item.name,
                   value: item.id,
                 }))}

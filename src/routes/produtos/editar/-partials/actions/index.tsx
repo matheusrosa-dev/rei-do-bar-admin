@@ -1,4 +1,4 @@
-import { Toggle, Wrapper } from "@components";
+import { Toggle, Tooltip, Wrapper } from "@components";
 import type { IProduct } from "@shared/models";
 import { useState } from "react";
 import type { ModalOpen } from "./types";
@@ -47,11 +47,6 @@ export const Actions = ({ product }: Props) => {
 
       setModalOpen(null);
     },
-    onError: () => {
-      toast.error(
-        `Ocorreu um erro ao ${product.isActive ? "desativar" : "ativar"} o produto`,
-      );
-    },
   });
 
   const changeStockMutation = useMutation({
@@ -78,9 +73,6 @@ export const Actions = ({ product }: Props) => {
 
       setModalOpen(null);
     },
-    onError: () => {
-      toast.error(`Ocorreu um erro ao atualizar o estoque.`);
-    },
   });
 
   return (
@@ -91,13 +83,21 @@ export const Actions = ({ product }: Props) => {
         <hr className="border-white/10" />
 
         <div className="flex gap-12 items-center">
-          <Toggle
-            checked={product.isActive}
-            onCheckedChange={(value) =>
-              setModalOpen(value ? "activate" : "deactivate")
-            }
-            label="Status"
-          />
+          <Tooltip
+            disabled={product.category.isActive}
+            content={"A categoria deste produto está desativada."}
+          >
+            <span>
+              <Toggle
+                checked={product.isActive}
+                disabled={!product.category.isActive}
+                onCheckedChange={(value) =>
+                  setModalOpen(value ? "activate" : "deactivate")
+                }
+                label="Status"
+              />
+            </span>
+          </Tooltip>
 
           <div>
             <h2 className="text-zinc-300 text-sm font-medium select-none text-center">

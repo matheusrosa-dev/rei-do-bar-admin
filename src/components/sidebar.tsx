@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { MdShoppingBasket } from "react-icons/md";
+import { BiCategory } from "react-icons/bi";
 
 const navItems = [
   { to: "/produtos", label: "Produtos", icon: MdShoppingBasket },
+  { to: "/categorias", label: "Categorias", icon: BiCategory },
 ] as const;
 
 export function Sidebar() {

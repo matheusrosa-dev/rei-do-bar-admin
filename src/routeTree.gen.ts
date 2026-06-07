@@ -9,10 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProdutosCriarIndexRouteImport } from './routes/produtos/criar/index'
 import { Route as ProdutoslistIndexRouteImport } from './routes/produtos/(list)/index'
+import { Route as CategoriaslistIndexRouteImport } from './routes/categorias/(list)/index'
 import { Route as ProdutosEditarProductIdRouteImport } from './routes/produtos/editar/$productId'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProdutosCriarIndexRoute = ProdutosCriarIndexRouteImport.update({
   id: '/produtos/criar/',
   path: '/produtos/criar/',
@@ -23,6 +30,11 @@ const ProdutoslistIndexRoute = ProdutoslistIndexRouteImport.update({
   path: '/produtos/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriaslistIndexRoute = CategoriaslistIndexRouteImport.update({
+  id: '/categorias/(list)/',
+  path: '/categorias/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProdutosEditarProductIdRoute = ProdutosEditarProductIdRouteImport.update({
   id: '/produtos/editar/$productId',
   path: '/produtos/editar/$productId',
@@ -30,41 +42,68 @@ const ProdutosEditarProductIdRoute = ProdutosEditarProductIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
+  '/categorias/': typeof CategoriaslistIndexRoute
   '/produtos/': typeof ProdutoslistIndexRoute
   '/produtos/criar/': typeof ProdutosCriarIndexRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
+  '/categorias': typeof CategoriaslistIndexRoute
   '/produtos': typeof ProdutoslistIndexRoute
   '/produtos/criar': typeof ProdutosCriarIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
+  '/categorias/(list)/': typeof CategoriaslistIndexRoute
   '/produtos/(list)/': typeof ProdutoslistIndexRoute
   '/produtos/criar/': typeof ProdutosCriarIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/produtos/editar/$productId' | '/produtos/' | '/produtos/criar/'
+  fullPaths:
+    | '/'
+    | '/produtos/editar/$productId'
+    | '/categorias/'
+    | '/produtos/'
+    | '/produtos/criar/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/produtos/editar/$productId' | '/produtos' | '/produtos/criar'
+  to:
+    | '/'
+    | '/produtos/editar/$productId'
+    | '/categorias'
+    | '/produtos'
+    | '/produtos/criar'
   id:
     | '__root__'
+    | '/'
     | '/produtos/editar/$productId'
+    | '/categorias/(list)/'
     | '/produtos/(list)/'
     | '/produtos/criar/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   ProdutosEditarProductIdRoute: typeof ProdutosEditarProductIdRoute
+  CategoriaslistIndexRoute: typeof CategoriaslistIndexRoute
   ProdutoslistIndexRoute: typeof ProdutoslistIndexRoute
   ProdutosCriarIndexRoute: typeof ProdutosCriarIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/produtos/criar/': {
       id: '/produtos/criar/'
       path: '/produtos/criar'
@@ -79,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutoslistIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categorias/(list)/': {
+      id: '/categorias/(list)/'
+      path: '/categorias'
+      fullPath: '/categorias/'
+      preLoaderRoute: typeof CategoriaslistIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/produtos/editar/$productId': {
       id: '/produtos/editar/$productId'
       path: '/produtos/editar/$productId'
@@ -90,7 +136,9 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   ProdutosEditarProductIdRoute: ProdutosEditarProductIdRoute,
+  CategoriaslistIndexRoute: CategoriaslistIndexRoute,
   ProdutoslistIndexRoute: ProdutoslistIndexRoute,
   ProdutosCriarIndexRoute: ProdutosCriarIndexRoute,
 }

@@ -24,8 +24,14 @@
       "complexity": {
         "useLiteralKeys": "off"
       },
+      "a11y": {
+        "noStaticElementInteractions": "off",
+        "useKeyWithClickEvents": "off"
+      },
       "correctness": {
-        "useExhaustiveDependencies": "warn"
+        "useExhaustiveDependencies": "warn",
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error"
       },
       "style": {
         "noNonNullAssertion": "off"
