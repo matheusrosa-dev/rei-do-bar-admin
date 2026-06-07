@@ -17,3 +17,4 @@ export { StatusBadge } from "./status-badge";
 export { Modal } from "./modal/modal";
 export { ConfirmModal } from "./modal/confirm-modal";
 export { Tooltip } from "./tooltip";
+export { RefetchButton } from "./refetch-button";

@@ -2,7 +2,7 @@ import { useCategoriesService } from "@services";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { CreateModal, Table } from "./-partials";
-import { Button, PageWrapper } from "@components";
+import { Button, PageWrapper, RefetchButton } from "@components";
 import { useState } from "react";
 
 export const Route = createFileRoute("/categorias/(list)/")({
@@ -29,6 +29,13 @@ function Index() {
         </Button>
       )}
     >
+      <div className="flex mb-4 justify-end">
+        <RefetchButton
+          onRefetch={categoriesQuery.refetch}
+          isRefetching={categoriesQuery.isRefetching}
+        />
+      </div>
+
       <Table
         data={categories ?? []}
         isLoading={categoriesQuery.isLoading}

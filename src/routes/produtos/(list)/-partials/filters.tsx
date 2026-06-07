@@ -1,10 +1,10 @@
-import { Input, Select, SortSelect } from "@components";
+import { Input, RefetchButton, Select, SortSelect } from "@components";
 import type { SortDirection } from "@shared/interfaces";
 import type { ICategory } from "@shared/models";
 import type { GetProductsSortKey } from "@shared/services/products/types";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { FiRefreshCw, FiX } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 
 type Props = {
   categories: ICategory[];
@@ -151,17 +151,12 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
           Limpar filtros
         </button>
       )}
-      <button
-        type="button"
-        onClick={onRefetch}
-        disabled={isRefetching}
-        className="select-none ml-auto flex items-center gap-1.5 px-3 py-2.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <FiRefreshCw
-          className={`size-4 ${isRefetching ? "animate-spin" : ""}`}
-        />
-        Atualizar
-      </button>
+
+      <RefetchButton
+        onRefetch={onRefetch}
+        isRefetching={isRefetching}
+        className="ml-auto"
+      />
     </div>
   );
 };
