@@ -96,48 +96,55 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
 
   return (
     <div className="flex items-end gap-3">
-      <div className="w-64">
-        <Input
-          label="Pesquisar"
-          placeholder="Nome do produto..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
+      <div className="flex gap-3 flex-wrap">
+        <div className="w-64">
+          <Input
+            label="Pesquisar"
+            placeholder="Nome do produto..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </div>
+
+        <div className="w-52">
+          <Select
+            label="Categoria"
+            placeholder="Todas as categorias"
+            options={categoryOptions}
+            value={categoryId}
+            onChange={onChangeCategoryFilter}
+            active={categoryId !== "all"}
+          />
+        </div>
+
+        <div className="w-28">
+          <Select
+            label="Status"
+            placeholder="Todos"
+            options={STATUS_OPTIONS}
+            value={statusValue}
+            onChange={onChangeStatusFilter}
+            active={statusValue !== "all"}
+          />
+        </div>
+
+        <div className="w-40">
+          <SortSelect
+            label="Estoque"
+            value={sortKey === "stock" ? sortDirection : undefined}
+            onChange={(value) => onChangeSorting("stock", value)}
+          />
+        </div>
+
+        <div className="w-40">
+          <SortSelect
+            label="Destaque"
+            value={sortKey === "sortOrder" ? sortDirection : undefined}
+            onChange={(value) => onChangeSorting("sortOrder", value)}
+          />
+        </div>
       </div>
-      <div className="w-52">
-        <Select
-          label="Categoria"
-          placeholder="Todas as categorias"
-          options={categoryOptions}
-          value={categoryId}
-          onChange={onChangeCategoryFilter}
-          active={categoryId !== "all"}
-        />
-      </div>
-      <div className="w-28">
-        <Select
-          label="Status"
-          placeholder="Todos"
-          options={STATUS_OPTIONS}
-          value={statusValue}
-          onChange={onChangeStatusFilter}
-          active={statusValue !== "all"}
-        />
-      </div>
-      <div className="w-40">
-        <SortSelect
-          label="Estoque"
-          value={sortKey === "stock" ? sortDirection : undefined}
-          onChange={(value) => onChangeSorting("stock", value)}
-        />
-      </div>
-      <div className="w-40">
-        <SortSelect
-          label="Destaque"
-          value={sortKey === "sortOrder" ? sortDirection : undefined}
-          onChange={(value) => onChangeSorting("sortOrder", value)}
-        />
-      </div>
+
       {hasActiveFilters && (
         <button
           type="button"

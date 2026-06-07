@@ -121,7 +121,7 @@ export const BasicData = ({ product, categories }: Props) => {
           disabled={updateProductMutation.isPending}
         />
 
-        <div className="flex gap-4">
+        <div className="flex gap-4 flex-wrap">
           <Controller
             control={form.control}
             name="price"

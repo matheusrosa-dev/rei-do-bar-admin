@@ -12,4 +12,11 @@ const schema = yup.object({
 
 export type Form = yup.InferType<typeof schema>;
 
+export const defaultValues: Form = {
+  name: "",
+  imageUrl: "",
+  categoryId: "",
+  price: 0,
+};
+
 export const resolver = yupResolver(schema) as Resolver<Form>;

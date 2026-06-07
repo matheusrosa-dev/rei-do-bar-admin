@@ -116,7 +116,7 @@ function RouteComponent() {
             disabled={createProductMutation.isPending}
           />
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-wrap">
             <Controller
               control={form.control}
               name="price"
