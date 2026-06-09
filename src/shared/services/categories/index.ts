@@ -5,6 +5,7 @@ import type {
   CreateCategory,
   DeactivateCategory,
   GetCategories,
+  GetCategoriesResponse,
   RemoveCategory,
   UpdateCategory,
   UseCategoriesService,
@@ -14,7 +15,9 @@ export const useCategoriesService: UseCategoriesService = () => {
   const baseUrl = "/categories";
 
   const getCategories: GetCategories = async (query) => {
-    const response = await api.get<ICategory[]>(baseUrl, { params: query });
+    const response = await api.get<GetCategoriesResponse>(baseUrl, {
+      params: query,
+    });
 
     return response.data.data;
   };

@@ -70,15 +70,15 @@ function RouteComponent() {
   };
 
   if (isLoading) {
-    return <PageLoading title="Criar produto" goBackTo="/produtos" />;
+    return <PageLoading title="Criar produto" goBack />;
   }
 
   if (isError || !categories) {
-    return <PageError title="Criar produto" goBackTo="/produtos" />;
+    return <PageError title="Criar produto" goBack />;
   }
 
   return (
-    <PageWrapper title="Criar produto" goBackTo="/produtos">
+    <PageWrapper title="Criar produto" goBack>
       <Wrapper className="max-w-4xl">
         <form
           className="flex flex-col gap-4"
@@ -116,7 +116,7 @@ function RouteComponent() {
             disabled={createProductMutation.isPending}
           />
 
-          <div className="flex gap-4 flex-wrap">
+          <div className="grid md:grid-cols-2 gap-4">
             <Controller
               control={form.control}
               name="price"

@@ -1,5 +1,4 @@
 import { Toggle, Tooltip, Wrapper } from "@components";
-import type { IProduct } from "@shared/models";
 import { useState } from "react";
 import type { ModalOpen } from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,9 +11,10 @@ import {
   type StatusModalVariant,
   type StockModalVariant,
 } from "./partials";
+import type { IProductWithCategory } from "@shared/models";
 
 type Props = {
-  product: IProduct;
+  product: IProductWithCategory;
 };
 
 export const Actions = ({ product }: Props) => {

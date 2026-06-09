@@ -1,22 +1,18 @@
-import { useNavigate } from "@tanstack/react-router";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
-import type { FileRouteTypes } from "../../routeTree.gen";
 
 export type Props = {
   title: string;
   children: React.ReactNode;
   headerContent?: () => React.ReactNode;
-  goBackTo?: FileRouteTypes["to"];
+  goBack?: boolean;
 };
 
 export const PageWrapper = ({
   title,
   children,
   headerContent: HeaderContent,
-  goBackTo,
+  goBack,
 }: Props) => {
-  const navigate = useNavigate();
-
   return (
     <div className="h-full flex flex-col">
       <header className="flex justify-between items-center px-5 h-18 border-b border-white/10 bg-white/3 select-none">
@@ -30,13 +26,9 @@ export const PageWrapper = ({
       </header>
 
       <div className="p-5 overflow-auto flex-1 flex flex-col">
-        {goBackTo && (
+        {goBack && (
           <button
-            onClick={() =>
-              navigate({
-                to: goBackTo,
-              })
-            }
+            onClick={() => window.history.back()}
             type="button"
             className="text-white flex items-center gap-2 font-medium cursor-pointer mb-5 w-fit pr-2"
           >

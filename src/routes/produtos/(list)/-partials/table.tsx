@@ -1,4 +1,4 @@
-import type { IProduct } from "@shared/models";
+import type { IProductWithCategory } from "@shared/models";
 import {
   ConfirmModal,
   ImagePreview,
@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 type Props = {
-  data: IProduct[];
+  data: IProductWithCategory[];
   meta?: IPagination<unknown>["meta"];
   limit: number;
   isLoading?: boolean;
@@ -45,7 +45,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const productColumns: ColumnDef<IProduct>[] = [
+  const productColumns: ColumnDef<IProductWithCategory>[] = [
     {
       accessorKey: "imageUrl",
       header: "Imagem",
@@ -69,7 +69,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     {
       accessorKey: "category",
       header: "Categoria",
-      cell: ({ getValue }) => getValue<IProduct>()?.name,
+      cell: ({ getValue }) => getValue<IProductWithCategory>()?.name,
     },
     {
       accessorKey: "stock",

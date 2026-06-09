@@ -1,4 +1,4 @@
-import type { IProduct } from "@shared/models";
+import type { IProductWithCategory } from "@shared/models";
 import { api } from "../api";
 import type {
   ActivateProduct,
@@ -26,19 +26,24 @@ export const useProductsService: UseProductsService = () => {
   };
 
   const getProductById: GetProductById = async (productId) => {
-    const response = await api.get<IProduct>(`${baseUrl}/${productId}`);
+    const response = await api.get<IProductWithCategory>(
+      `${baseUrl}/${productId}`,
+    );
 
     return response.data.data;
   };
 
   const updateProduct: UpdateProduct = async ({ productId, body }) => {
-    const response = await api.put<IProduct>(`${baseUrl}/${productId}`, body);
+    const response = await api.put<IProductWithCategory>(
+      `${baseUrl}/${productId}`,
+      body,
+    );
 
     return response.data.data;
   };
 
   const activateProduct: ActivateProduct = async (productId) => {
-    const response = await api.patch<IProduct>(
+    const response = await api.patch<IProductWithCategory>(
       `${baseUrl}/${productId}/activate`,
     );
 
@@ -50,7 +55,7 @@ export const useProductsService: UseProductsService = () => {
   };
 
   const deactivateProduct: DeactivateProduct = async (productId) => {
-    const response = await api.patch<IProduct>(
+    const response = await api.patch<IProductWithCategory>(
       `${baseUrl}/${productId}/deactivate`,
     );
 
@@ -58,7 +63,7 @@ export const useProductsService: UseProductsService = () => {
   };
 
   const incrementStock: IncrementStock = async ({ productId, body }) => {
-    const response = await api.patch<IProduct>(
+    const response = await api.patch<IProductWithCategory>(
       `${baseUrl}/${productId}/increment-stock`,
       body,
     );
@@ -67,7 +72,7 @@ export const useProductsService: UseProductsService = () => {
   };
 
   const decrementStock: DecrementStock = async ({ productId, body }) => {
-    const response = await api.patch<IProduct>(
+    const response = await api.patch<IProductWithCategory>(
       `${baseUrl}/${productId}/decrement-stock`,
       body,
     );
@@ -76,7 +81,7 @@ export const useProductsService: UseProductsService = () => {
   };
 
   const createProduct: CreateProduct = async (body) => {
-    const response = await api.post<IProduct>(`${baseUrl}`, body);
+    const response = await api.post<IProductWithCategory>(`${baseUrl}`, body);
 
     return response.data.data;
   };

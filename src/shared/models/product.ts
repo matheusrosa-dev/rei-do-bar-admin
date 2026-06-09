@@ -1,9 +1,6 @@
-import type { ICategory } from "./categories";
-
 export interface IProduct {
   id: string;
   categoryId: string;
-  category: ICategory;
   name: string;
   description: string | null;
   price: number;
@@ -13,4 +10,15 @@ export interface IProduct {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ICategory {
+  id: string;
+  name: string;
+  pluralName: string;
+  isActive: boolean;
+}
+
+export interface IProductWithCategory extends IProduct {
+  category: ICategory;
 }

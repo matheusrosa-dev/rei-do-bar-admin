@@ -1,8 +1,14 @@
 import type { ICategory } from "@shared/models";
 
+export type GetCategoriesResponse = Array<
+  ICategory & {
+    productsCount: number;
+  }
+>;
+
 export type GetCategories = (query?: {
   isActive?: boolean;
-}) => Promise<ICategory[]>;
+}) => Promise<GetCategoriesResponse>;
 
 export type RemoveCategory = (categoryId: string) => Promise<void>;
 

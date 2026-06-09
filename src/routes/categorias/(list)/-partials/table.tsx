@@ -1,4 +1,3 @@
-import type { ICategory } from "@shared/models";
 import {
   ConfirmModal,
   Table as TableComponent,
@@ -12,22 +11,22 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
 import { EditModal } from "./edit-modal";
+import type { CategoryWithProductsCount } from "../-types";
 
 type Props = {
-  data: ICategory[];
+  data: CategoryWithProductsCount[];
   isLoading?: boolean;
   isError?: boolean;
 };
 
 type ModalOpen =
   | { mode: "remove-category"; categoryId: string }
-  | { mode: "toggle-status"; category: ICategory };
+  | { mode: "toggle-status"; category: CategoryWithProductsCount };
 
 export const Table = ({ data, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
-  const [editingCategory, setEditingCategory] = useState<ICategory | null>(
-    null,
-  );
+  const [editingCategory, setEditingCategory] =
+    useState<CategoryWithProductsCount | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -48,7 +47,7 @@ export const Table = ({ data, isLoading, isError }: Props) => {
   });
 
   const toggleCategoryMutation = useMutation({
-    mutationFn: (category: ICategory) => {
+    mutationFn: (category: CategoryWithProductsCount) => {
       if (category.isActive) {
         return deactivateCategory(category.id);
       }
@@ -64,7 +63,7 @@ export const Table = ({ data, isLoading, isError }: Props) => {
     },
   });
 
-  const categoryColumns: ColumnDef<ICategory>[] = [
+  const categoryColumns: ColumnDef<CategoryWithProductsCount>[] = [
     {
       accessorKey: "name",
       header: "Nome",
@@ -72,6 +71,14 @@ export const Table = ({ data, isLoading, isError }: Props) => {
     {
       accessorKey: "pluralName",
       header: "Nome plural",
+    },
+
+    {
+      accessorKey: "productsCount",
+      header: "Qtd. de produtos",
+      cell: ({ row }) => (
+        <span className="ml-12">{row.original.productsCount}</span>
+      ),
     },
     {
       accessorKey: "isActive",
@@ -91,13 +98,6 @@ export const Table = ({ data, isLoading, isError }: Props) => {
           </span>
         );
       },
-    },
-    {
-      accessorKey: "productsCount",
-      header: "Qtd. de produtos",
-      cell: ({ row }) => (
-        <span className="ml-12">{row.original.productsCount}</span>
-      ),
     },
     {
       id: "actions",

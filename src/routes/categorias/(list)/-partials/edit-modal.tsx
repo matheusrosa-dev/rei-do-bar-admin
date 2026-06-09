@@ -5,10 +5,10 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useCategoriesService } from "@services";
 import { resolver, type Form } from "../../-shared/category-form";
-import type { ICategory } from "@shared/models";
+import type { CategoryWithProductsCount } from "../-types";
 
 type Props = {
-  category: ICategory | null;
+  category: CategoryWithProductsCount | null;
   onClose: () => void;
 };
 

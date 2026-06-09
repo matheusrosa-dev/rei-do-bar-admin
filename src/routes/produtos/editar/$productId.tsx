@@ -35,15 +35,15 @@ function RouteComponent() {
   const isError = productQuery.isError || categoriesQuery.isError;
 
   if (isLoading) {
-    return <PageLoading title="Editar produto" goBackTo="/produtos" />;
+    return <PageLoading title="Editar produto" goBack />;
   }
 
   if (isError || !categories || !product) {
-    return <PageError title="Editar produto" goBackTo="/produtos" />;
+    return <PageError title="Editar produto" goBack />;
   }
 
   return (
-    <PageWrapper title="Editar produto" goBackTo="/produtos">
+    <PageWrapper title="Editar produto" goBack>
       <div className="flex flex-col gap-4 max-w-4xl">
         <BasicData product={product} categories={categories} />
 

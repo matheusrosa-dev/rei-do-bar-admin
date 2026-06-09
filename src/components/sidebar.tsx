@@ -2,10 +2,12 @@ import { Link } from "@tanstack/react-router";
 import { MdShoppingBasket } from "react-icons/md";
 import { BiCategory } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
+import { FiUsers } from "react-icons/fi";
 
 const navItems = [
   { to: "/produtos", label: "Produtos", icon: MdShoppingBasket },
   { to: "/categorias", label: "Categorias", icon: BiCategory },
+  { to: "/clientes", label: "Clientes", icon: FiUsers },
 ] as const;
 
 interface SidebarProps {

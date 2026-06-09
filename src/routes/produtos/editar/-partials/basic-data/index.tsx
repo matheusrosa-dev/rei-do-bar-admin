@@ -9,7 +9,7 @@ import {
   Wrapper,
 } from "@components";
 import { Controller, useForm } from "react-hook-form";
-import type { ICategory, IProduct } from "@shared/models";
+import type { ICategory, IProductWithCategory } from "@shared/models";
 import { useMemo } from "react";
 import { useProductsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import { resolver, type Form } from "../../../-shared/basic-data-form";
 
 type Props = {
-  product: IProduct;
+  product: IProductWithCategory;
   categories: ICategory[];
 };
 
@@ -121,7 +121,7 @@ export const BasicData = ({ product, categories }: Props) => {
           disabled={updateProductMutation.isPending}
         />
 
-        <div className="flex gap-4 flex-wrap">
+        <div className="grid md:grid-cols-2 gap-4">
           <Controller
             control={form.control}
             name="price"
