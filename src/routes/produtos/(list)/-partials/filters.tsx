@@ -1,10 +1,11 @@
-import { Input, RefetchButton, Select, SortSelect } from "@components";
+import { RefetchButton, SearchInput, Select, SortSelect } from "@components";
 import type { SortDirection } from "@shared/interfaces";
 import type { ICategory } from "@shared/models";
 import type { GetProductsSortKey } from "@shared/services/products/types";
 import { useNavigate, useSearch } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
+import type { SearchInputRef } from "../../../../components/search-input";
+import { useRef } from "react";
 
 type Props = {
   categories: ICategory[];
@@ -29,7 +30,7 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
     from: "/produtos/(list)/",
   });
 
-  const [searchInput, setSearchInput] = useState(searchTerm ?? "");
+  const searchRef = useRef<SearchInputRef>(null);
 
   const navigate = useNavigate({
     from: "/produtos/",
@@ -74,20 +75,6 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
     });
   };
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      navigate({
-        search: (prev) => ({
-          ...prev,
-          searchTerm: searchInput || undefined,
-          page: undefined,
-        }),
-      });
-    }, 400);
-
-    return () => clearTimeout(timeout);
-  }, [searchInput, navigate]);
-
   const statusValue =
     isActive === true ? "true" : isActive === false ? "false" : "all";
 
@@ -98,11 +85,18 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
     <div className="flex items-end gap-3">
       <div className="flex gap-3 flex-wrap">
         <div className="w-64">
-          <Input
-            label="Pesquisar"
-            placeholder="Nome do produto..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
+          <SearchInput
+            ref={searchRef}
+            searchTerm={searchTerm}
+            onChangeSearchTerm={(newValue) =>
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  searchTerm: newValue,
+                  page: undefined,
+                }),
+              })
+            }
           />
         </div>
 
@@ -149,7 +143,7 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
         <button
           type="button"
           onClick={() => {
-            setSearchInput("");
+            searchRef.current?.clear();
             navigate({ search: () => ({}) });
           }}
           className="flex items-center gap-1.5 px-3 py-2.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer"

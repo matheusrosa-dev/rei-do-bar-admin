@@ -50,6 +50,7 @@ function RouteComponent() {
       navigate({
         to: "/produtos/editar/$productId",
         params: { productId: createdProduct.id },
+        replace: true,
       });
     },
   });

@@ -3,9 +3,9 @@ import {
   Table as TableComponent,
   Toggle,
   Tooltip,
+  TrashButton,
 } from "@components";
 import type { ColumnDef } from "@tanstack/react-table";
-import { LuTrash2 } from "react-icons/lu";
 import { useCategoriesService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -107,17 +107,12 @@ export const Table = ({ data, isLoading, isError }: Props) => {
         const hasProducts = productsCount > 0;
 
         const button = (
-          <button
-            type="button"
+          <TrashButton
             disabled={hasProducts}
-            onClick={(e) => {
-              e.stopPropagation();
-              setModalOpen({ mode: "remove-category", categoryId: id });
-            }}
-            className="cursor-pointer p-2 rounded-md text-red-500 not-disabled:hover:bg-red-500/10 transition-colors disabled:cursor-not-allowed disabled:opacity-30"
-          >
-            <LuTrash2 size={16} />
-          </button>
+            onClick={() =>
+              setModalOpen({ mode: "remove-category", categoryId: id })
+            }
+          />
         );
 
         if (!hasProducts) return button;
@@ -131,7 +126,7 @@ export const Table = ({ data, isLoading, isError }: Props) => {
               </>
             }
           >
-            {button}
+            <span>{button}</span>
           </Tooltip>
         );
       },

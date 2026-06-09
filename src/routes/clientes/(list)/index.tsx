@@ -13,17 +13,33 @@ export const Route = createFileRoute("/clientes/(list)/")({
 const LIMIT = 10;
 
 function Index() {
-  const { page = 1, isActive } = Route.useSearch();
+  const {
+    page = 1,
+    isActive,
+    searchTerm,
+    sortDirection,
+    sortKey,
+  } = Route.useSearch();
 
   const { getCustomers } = useCustomersService();
 
   const { data: customers, ...customersQuery } = useQuery({
-    queryKey: [getCustomers.key, page, isActive],
+    queryKey: [
+      getCustomers.key,
+      page,
+      isActive,
+      searchTerm,
+      sortDirection,
+      sortKey,
+    ],
     queryFn: () =>
       getCustomers.fn({
         page,
         limit: LIMIT,
         isActive,
+        searchTerm,
+        sortDirection,
+        sortKey,
       }),
     retry: false,
   });

@@ -1,4 +1,10 @@
-import { Toggle, Tooltip, Wrapper } from "@components";
+import {
+  ConfirmModal,
+  Toggle,
+  Tooltip,
+  TrashButton,
+  Wrapper,
+} from "@components";
 import { useState } from "react";
 import type { ModalOpen } from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,6 +18,7 @@ import {
   type StockModalVariant,
 } from "./partials";
 import type { IProductWithCategory } from "@shared/models";
+import { useNavigate } from "@tanstack/react-router";
 
 type Props = {
   product: IProductWithCategory;
@@ -26,8 +33,11 @@ export const Actions = ({ product }: Props) => {
     getProductById,
     incrementStock,
     decrementStock,
+    removeProduct,
+    getProducts,
   } = useProductsService();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const toggleStatusMutation = useMutation({
     mutationFn: () => {
@@ -75,10 +85,23 @@ export const Actions = ({ product }: Props) => {
     },
   });
 
+  const removeProductMutation = useMutation({
+    mutationFn: () => removeProduct(product.id),
+    onSuccess: () => {
+      toast.success("Produto removido com sucesso!");
+      queryClient.invalidateQueries({ queryKey: [getProducts.key] });
+      navigate({ to: "/produtos" });
+    },
+  });
+
   return (
     <>
       <Wrapper className="flex flex-col gap-4 w-fit">
-        <h2 className="text-white text-lg font-bold">Ações</h2>
+        <div className="flex items-center justify-between gap-8">
+          <h2 className="text-white text-lg font-bold">Ações</h2>
+
+          <TrashButton onClick={() => setModalOpen("remove")} />
+        </div>
 
         <hr className="border-white/10" />
 
@@ -145,6 +168,17 @@ export const Actions = ({ product }: Props) => {
         isPending={changeStockMutation.isPending}
         onClose={() => setModalOpen(null)}
         onConfirm={changeStockMutation.mutate}
+      />
+
+      <ConfirmModal
+        isOpen={modalOpen === "remove"}
+        title="Tem certeza que deseja remover este produto?"
+        description="Essa ação não poderá ser desfeita."
+        variant="danger"
+        confirmLabel="Remover produto"
+        canClose={!removeProductMutation.isPending}
+        onClose={() => setModalOpen(null)}
+        onConfirm={removeProductMutation.mutate}
       />
     </>
   );

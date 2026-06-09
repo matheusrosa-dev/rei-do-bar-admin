@@ -18,3 +18,5 @@ export { Modal } from "./modal/modal";
 export { ConfirmModal } from "./modal/confirm-modal";
 export { Tooltip } from "./tooltip";
 export { RefetchButton } from "./refetch-button";
+export { TrashButton } from "./trash-button";
+export { SearchInput } from "./search-input";

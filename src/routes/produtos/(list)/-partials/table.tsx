@@ -5,12 +5,12 @@ import {
   StatusBadge,
   Table as TableComponent,
   Toggle,
+  TrashButton,
 } from "@components";
 import { formatPrice } from "@shared/helpers/number";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useNavigate } from "@tanstack/react-router";
 import type { IPagination } from "@shared/interfaces";
-import { LuTrash2 } from "react-icons/lu";
 import { useProductsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -130,20 +130,14 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "actions",
       header: "",
       cell: ({ row }) => (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
+        <TrashButton
+          onClick={() =>
             setModalOpen({
               mode: "remove-product",
               productId: row.original.id,
-            });
-          }}
-          className="cursor-pointer p-2 rounded-md text-red-500 hover:bg-red-500/10 transition-colors"
-          title="Remover produto"
-        >
-          <LuTrash2 size={16} />
-        </button>
+            })
+          }
+        />
       ),
     },
   ];

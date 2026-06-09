@@ -1,6 +1,10 @@
-import { RefetchButton, Select } from "@components";
+import { RefetchButton, SearchInput, Select, SortSelect } from "@components";
 import { useNavigate, useSearch } from "@tanstack/react-router";
+import { useRef } from "react";
 import { FiX } from "react-icons/fi";
+import type { SearchInputRef } from "../../../../components/search-input";
+import type { GetCustomersSortKey } from "@shared/services/customers/types";
+import type { SortDirection } from "@shared/interfaces";
 
 type Props = {
   onRefetch: () => void;
@@ -14,14 +18,13 @@ const STATUS_OPTIONS = [
 ];
 
 export const Filters = ({ onRefetch, isRefetching }: Props) => {
-  const { isActive } = useSearch({ from: "/clientes/(list)/" });
+  const { isActive, searchTerm, sortKey, sortDirection } = useSearch({
+    from: "/clientes/(list)/",
+  });
 
   const navigate = useNavigate({ from: "/clientes/" });
 
-  const statusValue =
-    isActive === true ? "true" : isActive === false ? "false" : "all";
-
-  const hasActiveFilters = statusValue !== "all";
+  const searchRef = useRef<SearchInputRef>(null);
 
   const onChangeStatusFilter = (value: string) => {
     navigate({
@@ -33,9 +36,44 @@ export const Filters = ({ onRefetch, isRefetching }: Props) => {
     });
   };
 
+  const onChangeSorting = (
+    key: GetCustomersSortKey,
+    direction: SortDirection | undefined,
+  ) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        page: undefined,
+        sortKey: direction ? key : undefined,
+        sortDirection: direction,
+      }),
+    });
+  };
+
+  const statusValue =
+    isActive === true ? "true" : isActive === false ? "false" : "all";
+
+  const hasActiveFilters = statusValue !== "all" || sortKey || !!searchTerm;
+
   return (
     <div className="flex items-end gap-3">
       <div className="flex gap-3 flex-wrap">
+        <div className="w-64">
+          <SearchInput
+            ref={searchRef}
+            searchTerm={searchTerm}
+            onChangeSearchTerm={(newValue) =>
+              navigate({
+                search: (prev) => ({
+                  ...prev,
+                  searchTerm: newValue,
+                  page: undefined,
+                }),
+              })
+            }
+          />
+        </div>
+
         <div className="w-28">
           <Select
             label="Status"
@@ -46,12 +84,33 @@ export const Filters = ({ onRefetch, isRefetching }: Props) => {
             active={statusValue !== "all"}
           />
         </div>
+
+        <div className="w-40">
+          <SortSelect
+            label="Todos pedidos"
+            value={sortKey === "allOrdersCount" ? sortDirection : undefined}
+            onChange={(value) => onChangeSorting("allOrdersCount", value)}
+          />
+        </div>
+
+        <div className="w-40">
+          <SortSelect
+            label="Pedidos entregues"
+            value={
+              sortKey === "deliveredOrdersCount" ? sortDirection : undefined
+            }
+            onChange={(value) => onChangeSorting("deliveredOrdersCount", value)}
+          />
+        </div>
       </div>
 
       {hasActiveFilters && (
         <button
           type="button"
-          onClick={() => navigate({ search: () => ({}) })}
+          onClick={() => {
+            searchRef.current?.clear();
+            navigate({ search: () => ({}) });
+          }}
           className="flex items-center gap-1.5 px-3 py-2.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer"
         >
           <FiX className="size-4" />

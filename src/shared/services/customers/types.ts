@@ -1,9 +1,11 @@
-import type { IPagination } from "@shared/interfaces";
+import type { IPagination, SortDirection } from "@shared/interfaces";
 import type {
   IAddress,
   ICustomer,
   ICustomerWithAddresses,
 } from "@shared/models";
+
+export type GetCustomersSortKey = "allOrdersCount" | "deliveredOrdersCount";
 
 export type GetCustomersResponse = IPagination<
   ICustomer & {
@@ -18,6 +20,9 @@ export type GetCustomers = (query?: {
   isActive?: boolean;
   page?: number;
   limit?: number;
+  searchTerm?: string;
+  sortKey?: GetCustomersSortKey;
+  sortDirection?: SortDirection;
 }) => Promise<GetCustomersResponse>;
 
 export type ActivateCustomer = (
