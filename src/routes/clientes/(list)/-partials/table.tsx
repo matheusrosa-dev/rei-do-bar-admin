@@ -206,8 +206,8 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         }
         description={
           modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
-            ? "O cliente ficará indisponível para seleção de produtos e todos os produtos vinculados serão automaticamente desativados."
-            : "O cliente voltará a ficar disponível para seleção de produtos."
+            ? "O cliente não poderá finalizar novos pedidos."
+            : "O cliente voltará a ficar disponível para realizar pedidos"
         }
         onClose={() => setModalOpen(null)}
         variant={
