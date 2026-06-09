@@ -170,6 +170,12 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         isLoading={isLoading}
         isError={isError}
         limit={limit}
+        onRowClick={(customer) =>
+          navigate({
+            to: "/clientes/visualizar/$customerId",
+            params: { customerId: customer.id },
+          })
+        }
       />
 
       {meta?.totalPages && (

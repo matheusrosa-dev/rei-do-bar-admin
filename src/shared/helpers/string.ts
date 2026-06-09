@@ -1,3 +1,8 @@
+export function formatZipCode(value: string): string {
+  const digits = value.replace(/\D/g, "");
+  return digits.replace(/(\d{5})(\d{3})/, "$1-$2");
+}
+
 export function formatPhone(value: string): string {
   const digits = value.replace(/\D/g, "");
 
@@ -10,4 +15,12 @@ export function formatPhone(value: string): string {
   }
 
   return value;
+}
+
+export function formatDate(date: string) {
+  return new Date(date).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
 }

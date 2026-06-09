@@ -5,8 +5,8 @@ export interface ICustomer {
   name: string | null;
   phone: string;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IAddress {

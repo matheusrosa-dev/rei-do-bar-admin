@@ -27,16 +27,16 @@ export interface IOrderWithItems extends IOrder {
   items: IOrderItem[];
 }
 
-enum OrderStatus {
-  PENDING = "pending",
-  PREPARING = "preparing",
-  SHIPPED = "shipped",
-  DELIVERED = "delivered",
-  CANCELLED = "cancelled",
+export enum OrderStatus {
+  PENDING = "PENDING",
+  PREPARING = "PREPARING",
+  SHIPPED = "SHIPPED",
+  DELIVERED = "DELIVERED",
+  CANCELLED = "CANCELLED",
 }
 
-enum PaymentType {
-  CASH = "cash",
-  CARD = "card",
-  PIX = "pix",
+export enum PaymentType {
+  CASH = "CASH",
+  CARD = "CARD",
+  PIX = "PIX",
 }

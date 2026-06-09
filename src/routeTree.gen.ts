@@ -15,6 +15,7 @@ import { Route as ProdutoslistIndexRouteImport } from './routes/produtos/(list)/
 import { Route as ClienteslistIndexRouteImport } from './routes/clientes/(list)/index'
 import { Route as CategoriaslistIndexRouteImport } from './routes/categorias/(list)/index'
 import { Route as ProdutosEditarProductIdRouteImport } from './routes/produtos/editar/$productId'
+import { Route as ClientesVisualizarCustomerIdRouteImport } from './routes/clientes/visualizar/$customerId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,9 +47,16 @@ const ProdutosEditarProductIdRoute = ProdutosEditarProductIdRouteImport.update({
   path: '/produtos/editar/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClientesVisualizarCustomerIdRoute =
+  ClientesVisualizarCustomerIdRouteImport.update({
+    id: '/clientes/visualizar/$customerId',
+    path: '/clientes/visualizar/$customerId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
   '/categorias/': typeof CategoriaslistIndexRoute
   '/clientes/': typeof ClienteslistIndexRoute
@@ -57,6 +65,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
   '/categorias': typeof CategoriaslistIndexRoute
   '/clientes': typeof ClienteslistIndexRoute
@@ -66,6 +75,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
   '/categorias/(list)/': typeof CategoriaslistIndexRoute
   '/clientes/(list)/': typeof ClienteslistIndexRoute
@@ -76,6 +86,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/clientes/visualizar/$customerId'
     | '/produtos/editar/$productId'
     | '/categorias/'
     | '/clientes/'
@@ -84,6 +95,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/clientes/visualizar/$customerId'
     | '/produtos/editar/$productId'
     | '/categorias'
     | '/clientes'
@@ -92,6 +104,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/clientes/visualizar/$customerId'
     | '/produtos/editar/$productId'
     | '/categorias/(list)/'
     | '/clientes/(list)/'
@@ -101,6 +114,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClientesVisualizarCustomerIdRoute: typeof ClientesVisualizarCustomerIdRoute
   ProdutosEditarProductIdRoute: typeof ProdutosEditarProductIdRoute
   CategoriaslistIndexRoute: typeof CategoriaslistIndexRoute
   ClienteslistIndexRoute: typeof ClienteslistIndexRoute
@@ -152,11 +166,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutosEditarProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/clientes/visualizar/$customerId': {
+      id: '/clientes/visualizar/$customerId'
+      path: '/clientes/visualizar/$customerId'
+      fullPath: '/clientes/visualizar/$customerId'
+      preLoaderRoute: typeof ClientesVisualizarCustomerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClientesVisualizarCustomerIdRoute: ClientesVisualizarCustomerIdRoute,
   ProdutosEditarProductIdRoute: ProdutosEditarProductIdRoute,
   CategoriaslistIndexRoute: CategoriaslistIndexRoute,
   ClienteslistIndexRoute: ClienteslistIndexRoute,
