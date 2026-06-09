@@ -1,4 +1,10 @@
-import { ConfirmModal, Table as TableComponent, Toggle } from "@components";
+import {
+  ConfirmModal,
+  Table as TableComponent,
+  Toggle,
+  Tooltip,
+  TrashButton,
+} from "@components";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useNavigate } from "@tanstack/react-router";
 import type { IPagination } from "@shared/interfaces";
@@ -17,18 +23,26 @@ type Props = {
   isError?: boolean;
 };
 
-type ModalOpen = {
-  mode: "toggle-status";
-  customer: CustomerWithMainAddressAndOrdersCount;
-};
+type ModalOpen =
+  | { mode: "remove-customer"; customerId: string }
+  | { mode: "toggle-status"; customer: CustomerWithMainAddressAndOrdersCount };
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
 
   const queryClient = useQueryClient();
   const navigate = useNavigate({ from: "/clientes/" });
-  const { getCustomers, activateCustomer, deactivateCustomer } =
+  const { getCustomers, activateCustomer, deactivateCustomer, removeCustomer } =
     useCustomersService();
+
+  const removeCustomerMutation = useMutation({
+    mutationFn: removeCustomer,
+    onSuccess: () => {
+      toast.success("Cliente removido com sucesso!");
+      queryClient.invalidateQueries({ queryKey: [getCustomers.key] });
+      setModalOpen(null);
+    },
+  });
 
   const toggleCustomerMutation = useMutation({
     mutationFn: (customer: CustomerWithMainAddressAndOrdersCount) => {
@@ -105,6 +119,35 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         );
       },
     },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        return (
+          <Tooltip
+            disabled={row.original.allOrdersCount === 0}
+            content={
+              <>
+                Não é possível remover esse cliente
+                <br /> pois ele possui pedidos vinculados.
+              </>
+            }
+          >
+            <span>
+              <TrashButton
+                disabled={row.original.allOrdersCount >= 0}
+                onClick={() =>
+                  setModalOpen({
+                    mode: "remove-customer",
+                    customerId: row.original.id,
+                  })
+                }
+              />
+            </span>
+          </Tooltip>
+        );
+      },
+    },
   ];
 
   const setPage = (page: number) => {
@@ -132,6 +175,21 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       {meta?.totalPages && (
         <TableComponent.Pagination meta={meta} onChangePage={setPage} />
       )}
+
+      <ConfirmModal
+        isOpen={modalOpen?.mode === "remove-customer"}
+        title="Tem certeza que deseja remover este cliente?"
+        onClose={() => setModalOpen(null)}
+        variant="danger"
+        canClose={!removeCustomerMutation.isPending}
+        confirmLabel="Remover cliente"
+        description="Essa ação não poderá ser desfeita."
+        onConfirm={() => {
+          if (modalOpen?.mode === "remove-customer") {
+            removeCustomerMutation.mutate(modalOpen.customerId);
+          }
+        }}
+      />
 
       <ConfirmModal
         isOpen={modalOpen?.mode === "toggle-status"}

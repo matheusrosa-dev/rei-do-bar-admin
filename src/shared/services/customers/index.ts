@@ -5,6 +5,7 @@ import type {
   DeactivateCustomer,
   GetCustomers,
   GetCustomersResponse,
+  RemoveCustomer,
   UseCustomersService,
 } from "./types";
 
@@ -35,6 +36,10 @@ export const useCustomersService: UseCustomersService = () => {
     return response.data.data;
   };
 
+  const removeCustomer: RemoveCustomer = async (customerId) => {
+    await api.delete(`${baseUrl}/${customerId}`);
+  };
+
   return {
     getCustomers: {
       fn: getCustomers,
@@ -42,5 +47,6 @@ export const useCustomersService: UseCustomersService = () => {
     },
     activateCustomer,
     deactivateCustomer,
+    removeCustomer,
   };
 };

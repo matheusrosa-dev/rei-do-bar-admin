@@ -106,19 +106,9 @@ export const Table = ({ data, isLoading, isError }: Props) => {
         const { productsCount, id } = row.original;
         const hasProducts = productsCount > 0;
 
-        const button = (
-          <TrashButton
-            disabled={hasProducts}
-            onClick={() =>
-              setModalOpen({ mode: "remove-category", categoryId: id })
-            }
-          />
-        );
-
-        if (!hasProducts) return button;
-
         return (
           <Tooltip
+            disabled={!hasProducts}
             content={
               <>
                 Não é possível remover essa categoria
@@ -126,7 +116,14 @@ export const Table = ({ data, isLoading, isError }: Props) => {
               </>
             }
           >
-            <span>{button}</span>
+            <span>
+              <TrashButton
+                disabled={hasProducts}
+                onClick={() =>
+                  setModalOpen({ mode: "remove-category", categoryId: id })
+                }
+              />
+            </span>
           </Tooltip>
         );
       },

@@ -33,6 +33,8 @@ export type DeactivateCustomer = (
   customerId: string,
 ) => Promise<ICustomerWithAddresses>;
 
+export type RemoveCustomer = (customerId: string) => Promise<void>;
+
 export type UseCustomersService = () => {
   getCustomers: {
     fn: GetCustomers;
@@ -40,4 +42,5 @@ export type UseCustomersService = () => {
   };
   activateCustomer: ActivateCustomer;
   deactivateCustomer: DeactivateCustomer;
+  removeCustomer: RemoveCustomer;
 };
