@@ -16,7 +16,7 @@ export function ImagePreview({ src, alt = "Imagem", className }: Props) {
           src={src}
           alt={alt}
           className={twMerge(
-            "cursor-zoom-in transition-opacity hover:opacity-80 select-none",
+            "cursor-zoom-in transition-opacity object-contain hover:opacity-80 select-none rounded-md bg-white/5",
             className,
           )}
         />

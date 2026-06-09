@@ -8,6 +8,7 @@ import {
   ORDER_STATUS_VARIANT,
   PAYMENT_TYPE_LABEL,
 } from "../-helpers";
+import { PiCaretDownBold } from "react-icons/pi";
 
 type Props = {
   orders: IOrderWithItems[];
@@ -62,35 +63,25 @@ export const Orders = ({ orders }: Props) => {
               >
                 <div className="flex items-center justify-between gap-2 text-left w-full">
                   <div className="flex items-center gap-2">
-                    <span className="text-amber-500 font-bold text-sm">
+                    <span className="text-amber-500 font-bold text-md">
                       #{order.orderNumber}
                     </span>
                     <StatusBadge variant={ORDER_STATUS_VARIANT[order.status]}>
                       {ORDER_STATUS_LABEL[order.status]}
                     </StatusBadge>
                   </div>
+
                   <div className="flex items-center gap-2">
-                    <span className="text-gray-400 text-xs">
+                    <span className="text-gray-400 text-sm font-medium">
                       {formatDate(order.createdAt)}
                     </span>
-                    <svg
-                      aria-hidden="true"
+                    <PiCaretDownBold
                       className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
+                    />
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-400">
                   <span>
                     <span className="text-gray-500">Pagamento: </span>
                     <span className="text-gray-300 font-bold">
@@ -130,7 +121,6 @@ export const Orders = ({ orders }: Props) => {
                 {order.statusReason && (
                   <span className="text-xs text-red-400">
                     Motivo: {order.statusReason}
-                    dassda
                   </span>
                 )}
               </button>
@@ -142,18 +132,18 @@ export const Orders = ({ orders }: Props) => {
                       <ImagePreview
                         src={item.imageUrl}
                         alt={item.name}
-                        className="w-12 h-12 rounded-md object-cover shrink-0 bg-white/10"
+                        className="w-12 h-12"
                       />
                       <div className="flex flex-1 items-center justify-between gap-2 min-w-0">
                         <div className="flex flex-col min-w-0">
                           <span className="text-gray-200 text-sm font-medium truncate">
                             {item.name}
                           </span>
-                          <span className="text-gray-500 text-xs">
+                          <span className="text-gray-500 text-sm font-medium">
                             {item.quantity}x {formatPrice(item.price)}
                           </span>
                         </div>
-                        <span className="text-gray-300 text-sm font-bold shrink-0">
+                        <span className="text-gray-300 text-sm font-bold">
                           {formatPrice(item.price * item.quantity)}
                         </span>
                       </div>

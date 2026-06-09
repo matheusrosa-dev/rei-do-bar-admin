@@ -70,7 +70,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         <ImagePreview
           src={getValue<string>()}
           alt="Produto"
-          className="w-14 h-14 rounded-md object-contain bg-white/5"
+          className="w-14 h-14"
         />
       ),
     },

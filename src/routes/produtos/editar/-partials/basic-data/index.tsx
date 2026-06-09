@@ -76,10 +76,7 @@ export const BasicData = ({ product, categories }: Props) => {
         <hr className="border-white/10" />
 
         <div className="flex items-center gap-4">
-          <ImagePreview
-            src={product.imageUrl}
-            className="size-24 rounded-md object-contain bg-white/5"
-          />
+          <ImagePreview src={product.imageUrl} className="size-24" />
 
           <div className="flex flex-col  gap-2">
             <h2 className="text-amber-500 text-lg font-bold">{product.name}</h2>

@@ -19,8 +19,6 @@ export const Addresses = ({ addresses }: Props) => {
     );
   }
 
-  const sorted = [...addresses].sort((a) => (a.isMain ? -1 : 1));
-
   return (
     <Wrapper className="flex flex-col gap-4">
       <h2 className="text-white text-lg font-bold">
@@ -30,7 +28,7 @@ export const Addresses = ({ addresses }: Props) => {
       <hr className="border-white/10" />
 
       <div className="flex flex-col gap-3">
-        {sorted.map((address) => (
+        {addresses.map((address) => (
           <div
             key={address.id}
             className="flex flex-col gap-1 p-3 rounded-lg bg-white/5 border border-white/10"
@@ -40,11 +38,11 @@ export const Addresses = ({ addresses }: Props) => {
                 <StatusBadge variant="active">Principal</StatusBadge>
               )}
             </div>
-            <span className="text-gray-200 text-sm">
+            <span className="text-gray-200 text-sm font-medium">
               {address.street}, {address.number}
               {address.complement ? ` - ${address.complement}` : ""}
             </span>
-            <span className="text-gray-400 text-xs">
+            <span className="text-gray-400 text-xs font-medium">
               {address.neighborhood} — CEP {formatZipCode(address.zipCode)}
             </span>
           </div>
