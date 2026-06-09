@@ -1,9 +1,13 @@
-import { StatusBadge, Table as TableComponent } from "@components";
+import { ConfirmModal, Table as TableComponent, Toggle } from "@components";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useNavigate } from "@tanstack/react-router";
 import type { IPagination } from "@shared/interfaces";
 import { formatPhone } from "@shared/helpers/string";
 import type { CustomerWithMainAddressAndOrdersCount } from "../-types";
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useCustomersService } from "@services";
 
 type Props = {
   data: Array<CustomerWithMainAddressAndOrdersCount>;
@@ -13,8 +17,35 @@ type Props = {
   isError?: boolean;
 };
 
+type ModalOpen = {
+  mode: "toggle-status";
+  customer: CustomerWithMainAddressAndOrdersCount;
+};
+
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
+  const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
+
+  const queryClient = useQueryClient();
   const navigate = useNavigate({ from: "/clientes/" });
+  const { getCustomers, activateCustomer, deactivateCustomer } =
+    useCustomersService();
+
+  const toggleCustomerMutation = useMutation({
+    mutationFn: (customer: CustomerWithMainAddressAndOrdersCount) => {
+      if (customer.isActive) {
+        return deactivateCustomer(customer.id);
+      }
+
+      return activateCustomer(customer.id);
+    },
+    onSuccess: (updatedCustomer) => {
+      toast.success(
+        `Cliente ${updatedCustomer.isActive ? "ativado" : "desativado"} com sucesso!`,
+      );
+      queryClient.invalidateQueries({ queryKey: [getCustomers.key] });
+      setModalOpen(null);
+    },
+  });
 
   const customerColumns: ColumnDef<CustomerWithMainAddressAndOrdersCount>[] = [
     {
@@ -58,12 +89,19 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     {
       accessorKey: "isActive",
       header: "Status",
-      cell: ({ getValue }) => {
-        const active = getValue<boolean>();
+      cell: ({ row }) => {
+        const customer = row.original;
+
         return (
-          <StatusBadge variant={active ? "active" : "inactive"}>
-            {active ? "Ativo" : "Inativo"}
-          </StatusBadge>
+          <span onClick={(e) => e.stopPropagation()} className="flex w-fit">
+            <Toggle
+              checked={customer.isActive}
+              onCheckedChange={() =>
+                setModalOpen({ mode: "toggle-status", customer })
+              }
+              disabled={toggleCustomerMutation.isPending}
+            />
+          </span>
         );
       },
     },
@@ -94,6 +132,37 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       {meta?.totalPages && (
         <TableComponent.Pagination meta={meta} onChangePage={setPage} />
       )}
+
+      <ConfirmModal
+        isOpen={modalOpen?.mode === "toggle-status"}
+        title={
+          modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
+            ? "Desativar cliente?"
+            : "Ativar cliente?"
+        }
+        description={
+          modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
+            ? "O cliente ficará indisponível para seleção de produtos e todos os produtos vinculados serão automaticamente desativados."
+            : "O cliente voltará a ficar disponível para seleção de produtos."
+        }
+        onClose={() => setModalOpen(null)}
+        variant={
+          modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
+            ? "danger"
+            : "default"
+        }
+        canClose={!toggleCustomerMutation.isPending}
+        confirmLabel={
+          modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
+            ? "Desativar"
+            : "Ativar"
+        }
+        onConfirm={() => {
+          if (modalOpen?.mode === "toggle-status") {
+            toggleCustomerMutation.mutate(modalOpen.customer);
+          }
+        }}
+      />
     </div>
   );
 };

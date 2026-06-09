@@ -1,5 +1,9 @@
 import type { IPagination } from "@shared/interfaces";
-import type { IAddress, ICustomer } from "@shared/models";
+import type {
+  IAddress,
+  ICustomer,
+  ICustomerWithAddresses,
+} from "@shared/models";
 
 export type GetCustomersResponse = IPagination<
   ICustomer & {
@@ -16,9 +20,19 @@ export type GetCustomers = (query?: {
   limit?: number;
 }) => Promise<GetCustomersResponse>;
 
+export type ActivateCustomer = (
+  customerId: string,
+) => Promise<ICustomerWithAddresses>;
+
+export type DeactivateCustomer = (
+  customerId: string,
+) => Promise<ICustomerWithAddresses>;
+
 export type UseCustomersService = () => {
   getCustomers: {
     fn: GetCustomers;
     key: string;
   };
+  activateCustomer: ActivateCustomer;
+  deactivateCustomer: DeactivateCustomer;
 };

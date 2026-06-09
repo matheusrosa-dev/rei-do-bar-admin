@@ -19,3 +19,7 @@ export interface IAddress {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ICustomerWithAddresses extends ICustomer {
+  addresses: IAddress[];
+}

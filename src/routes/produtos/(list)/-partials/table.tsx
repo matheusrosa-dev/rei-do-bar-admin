@@ -4,6 +4,7 @@ import {
   ImagePreview,
   StatusBadge,
   Table as TableComponent,
+  Toggle,
 } from "@components";
 import { formatPrice } from "@shared/helpers/number";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -23,10 +24,9 @@ type Props = {
   isError?: boolean;
 };
 
-type ModalOpen = {
-  mode: "remove-product";
-  productId: string;
-};
+type ModalOpen =
+  | { mode: "remove-product"; productId: string }
+  | { mode: "toggle-status"; product: IProductWithCategory };
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
@@ -34,12 +34,29 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const navigate = useNavigate({ from: "/produtos/" });
   const queryClient = useQueryClient();
 
-  const { removeProduct, getProducts } = useProductsService();
+  const { removeProduct, getProducts, activateProduct, deactivateProduct } =
+    useProductsService();
 
   const removeProductMutation = useMutation({
     mutationFn: removeProduct,
     onSuccess: () => {
       toast.success("Produto removido com sucesso!");
+      queryClient.invalidateQueries({ queryKey: [getProducts.key] });
+      setModalOpen(null);
+    },
+  });
+
+  const toggleProductMutation = useMutation({
+    mutationFn: (product: IProductWithCategory) => {
+      if (product.isActive) {
+        return deactivateProduct(product.id);
+      }
+      return activateProduct(product.id);
+    },
+    onSuccess: (updatedProduct) => {
+      toast.success(
+        `Produto ${updatedProduct.isActive ? "ativado" : "desativado"} com sucesso!`,
+      );
       queryClient.invalidateQueries({ queryKey: [getProducts.key] });
       setModalOpen(null);
     },
@@ -94,12 +111,18 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     {
       accessorKey: "isActive",
       header: "Status",
-      cell: ({ getValue }) => {
-        const active = getValue<boolean>();
+      cell: ({ row }) => {
+        const product = row.original;
         return (
-          <StatusBadge variant={active ? "active" : "inactive"}>
-            {active ? "Ativo" : "Inativo"}
-          </StatusBadge>
+          <span onClick={(e) => e.stopPropagation()} className="flex w-fit">
+            <Toggle
+              checked={product.isActive}
+              onCheckedChange={() =>
+                setModalOpen({ mode: "toggle-status", product })
+              }
+              disabled={toggleProductMutation.isPending}
+            />
+          </span>
         );
       },
     },
@@ -166,8 +189,39 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         confirmLabel="Remover produto"
         description="Essa ação não poderá ser desfeita."
         onConfirm={() => {
-          if (modalOpen) {
+          if (modalOpen?.mode === "remove-product") {
             removeProductMutation.mutate(modalOpen.productId);
+          }
+        }}
+      />
+
+      <ConfirmModal
+        isOpen={modalOpen?.mode === "toggle-status"}
+        title={
+          modalOpen?.mode === "toggle-status" && modalOpen.product.isActive
+            ? "Desativar produto?"
+            : "Ativar produto?"
+        }
+        description={
+          modalOpen?.mode === "toggle-status" && modalOpen.product.isActive
+            ? "O produto ficará indisponível para novos pedidos."
+            : "O produto voltará a ficar disponível para novos pedidos."
+        }
+        onClose={() => setModalOpen(null)}
+        variant={
+          modalOpen?.mode === "toggle-status" && modalOpen.product.isActive
+            ? "danger"
+            : "default"
+        }
+        canClose={!toggleProductMutation.isPending}
+        confirmLabel={
+          modalOpen?.mode === "toggle-status" && modalOpen.product.isActive
+            ? "Desativar"
+            : "Ativar"
+        }
+        onConfirm={() => {
+          if (modalOpen?.mode === "toggle-status") {
+            toggleProductMutation.mutate(modalOpen.product);
           }
         }}
       />
