@@ -1,8 +1,9 @@
-import type { ICustomerWithAddresses } from "@shared/models";
+import type { ICustomer, ICustomerWithRelations } from "@shared/models";
 import { api } from "../api";
 import type {
   ActivateCustomer,
   DeactivateCustomer,
+  GetCustomerById,
   GetCustomers,
   GetCustomersResponse,
   RemoveCustomer,
@@ -20,8 +21,16 @@ export const useCustomersService: UseCustomersService = () => {
     return response.data.data;
   };
 
+  const getCustomerById: GetCustomerById = async (customerId) => {
+    const response = await api.get<ICustomerWithRelations>(
+      `${baseUrl}/${customerId}`,
+    );
+
+    return response.data.data;
+  };
+
   const activateCustomer: ActivateCustomer = async (customerId) => {
-    const response = await api.patch<ICustomerWithAddresses>(
+    const response = await api.patch<ICustomer>(
       `${baseUrl}/${customerId}/activate`,
     );
 
@@ -29,7 +38,7 @@ export const useCustomersService: UseCustomersService = () => {
   };
 
   const deactivateCustomer: DeactivateCustomer = async (customerId) => {
-    const response = await api.patch<ICustomerWithAddresses>(
+    const response = await api.patch<ICustomer>(
       `${baseUrl}/${customerId}/deactivate`,
     );
 
@@ -44,6 +53,10 @@ export const useCustomersService: UseCustomersService = () => {
     getCustomers: {
       fn: getCustomers,
       key: "get-customers",
+    },
+    getCustomerById: {
+      fn: getCustomerById,
+      key: "get-customer-by-id",
     },
     activateCustomer,
     deactivateCustomer,

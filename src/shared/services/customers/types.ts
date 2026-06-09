@@ -2,7 +2,7 @@ import type { IPagination, SortDirection } from "@shared/interfaces";
 import type {
   IAddress,
   ICustomer,
-  ICustomerWithAddresses,
+  ICustomerWithRelations,
 } from "@shared/models";
 
 export type GetCustomersSortKey = "allOrdersCount" | "deliveredOrdersCount";
@@ -25,19 +25,23 @@ export type GetCustomers = (query?: {
   sortDirection?: SortDirection;
 }) => Promise<GetCustomersResponse>;
 
-export type ActivateCustomer = (
+export type GetCustomerById = (
   customerId: string,
-) => Promise<ICustomerWithAddresses>;
+) => Promise<ICustomerWithRelations>;
 
-export type DeactivateCustomer = (
-  customerId: string,
-) => Promise<ICustomerWithAddresses>;
+export type ActivateCustomer = (customerId: string) => Promise<ICustomer>;
+
+export type DeactivateCustomer = (customerId: string) => Promise<ICustomer>;
 
 export type RemoveCustomer = (customerId: string) => Promise<void>;
 
 export type UseCustomersService = () => {
   getCustomers: {
     fn: GetCustomers;
+    key: string;
+  };
+  getCustomerById: {
+    fn: GetCustomerById;
     key: string;
   };
   activateCustomer: ActivateCustomer;

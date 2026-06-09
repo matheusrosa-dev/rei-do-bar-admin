@@ -1,2 +1,3 @@
 export * from "./product";
-export * from "./customers";
+export * from "./customer";
+export * from "./order";

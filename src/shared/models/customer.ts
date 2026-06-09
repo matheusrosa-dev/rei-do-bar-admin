@@ -1,3 +1,5 @@
+import type { IOrderWithItems } from "./order";
+
 export interface ICustomer {
   id: string;
   name: string | null;
@@ -20,6 +22,7 @@ export interface IAddress {
   updatedAt: string;
 }
 
-export interface ICustomerWithAddresses extends ICustomer {
+export interface ICustomerWithRelations extends ICustomer {
   addresses: IAddress[];
+  orders: IOrderWithItems[];
 }
