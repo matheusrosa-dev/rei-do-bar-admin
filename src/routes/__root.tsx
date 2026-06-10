@@ -6,10 +6,16 @@ import { HiMenu } from "react-icons/hi";
 
 const RootLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <div className="flex h-dvh w-full">
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        collapsed={collapsed}
+        onToggleCollapse={() => setCollapsed((current) => !current)}
+      />
 
       <main className="flex-1 flex flex-col overflow-hidden">
         <div className="md:hidden flex items-center h-14 px-4 border-b border-white/10 shrink-0">
