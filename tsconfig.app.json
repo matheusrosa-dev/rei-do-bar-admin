@@ -25,7 +25,8 @@
     "paths": {
       "@services": ["./src/shared/services/index.ts"],
       "@components": ["./src/components/index.ts"],
-      "@shared/*": ["./src/shared/*"]
+      "@shared/*": ["./src/shared/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]

@@ -2,7 +2,7 @@ import { RefetchButton, SearchInput, Select, SortSelect } from "@components";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useRef } from "react";
 import { FiX } from "react-icons/fi";
-import type { SearchInputRef } from "../../../../components/search-input";
+import type { SearchInputRef } from "@/components/search-input";
 import type { GetCustomersSortKey } from "@shared/services/customers/types";
 import type { SortDirection } from "@shared/interfaces";
 

@@ -7,7 +7,7 @@ import {
   ORDER_STATUS_LABEL,
   ORDER_STATUS_VARIANT,
   PAYMENT_TYPE_LABEL,
-} from "../-helpers";
+} from "@shared/helpers/order-status";
 import { PiCaretDownBold } from "react-icons/pi";
 
 type Props = {

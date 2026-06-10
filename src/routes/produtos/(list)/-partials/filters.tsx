@@ -4,7 +4,7 @@ import type { ICategory } from "@shared/models";
 import type { GetProductsSortKey } from "@shared/services/products/types";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { FiX } from "react-icons/fi";
-import type { SearchInputRef } from "../../../../components/search-input";
+import type { SearchInputRef } from "@/components/search-input";
 import { useRef } from "react";
 
 type Props = {

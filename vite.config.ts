@@ -20,6 +20,7 @@ export default defineConfig({
       "@components": "/src/components/index.ts",
       "@shared": "/src/shared/",
       "@services": "/src/shared/services/index.ts",
+      "@": "/src/",
     },
   },
   build: {
