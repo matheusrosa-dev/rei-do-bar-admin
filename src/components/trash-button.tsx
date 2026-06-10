@@ -22,7 +22,7 @@ export const TrashButton = ({ disabled, className, onClick }: Props) => {
       )}
       disabled={disabled}
     >
-      <LuTrash2 size={16} />
+      <LuTrash2 className="w-full h-full" />
     </button>
   );
 };

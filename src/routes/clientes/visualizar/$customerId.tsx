@@ -2,7 +2,7 @@ import { PageError, PageLoading, PageWrapper } from "@components";
 import { useCustomersService } from "@services";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { Addresses, BasicData, Orders } from "./-partials";
+import { Actions, Addresses, BasicData, Orders } from "./-partials";
 
 export const Route = createFileRoute("/clientes/visualizar/$customerId")({
   component: RouteComponent,
@@ -32,6 +32,7 @@ function RouteComponent() {
       <div className="flex flex-col gap-4 max-w-4xl">
         <BasicData customer={customer} />
         <Addresses addresses={customer.addresses} />
+        <Actions customer={customer} />
         <Orders orders={customer.orders} />
       </div>
     </PageWrapper>

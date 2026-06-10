@@ -1,6 +1,5 @@
 export type ModalOpen =
-  | "activate"
-  | "deactivate"
+  | "toggle-status"
   | "increment-stock"
   | "decrement-stock"
   | "remove";

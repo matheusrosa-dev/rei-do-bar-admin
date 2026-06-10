@@ -1,5 +1,4 @@
 import {
-  ConfirmModal,
   Table as TableComponent,
   Toggle,
   Tooltip,
@@ -14,6 +13,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useCustomersService } from "@services";
+import { RemoveModal, StatusModal } from "../../-partials";
 
 type Props = {
   data: Array<CustomerWithMainAddressAndOrdersCount>;
@@ -44,7 +44,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const toggleCustomerMutation = useMutation({
+  const toggleStatusMutation = useMutation({
     mutationFn: (customer: CustomerWithMainAddressAndOrdersCount) => {
       if (customer.isActive) {
         return deactivateCustomer(customer.id);
@@ -113,7 +113,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
               onCheckedChange={() =>
                 setModalOpen({ mode: "toggle-status", customer })
               }
-              disabled={toggleCustomerMutation.isPending}
+              disabled={toggleStatusMutation.isPending}
             />
           </span>
         );
@@ -182,14 +182,10 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         <TableComponent.Pagination meta={meta} onChangePage={setPage} />
       )}
 
-      <ConfirmModal
+      <RemoveModal
         isOpen={modalOpen?.mode === "remove-customer"}
-        title="Tem certeza que deseja remover este cliente?"
         onClose={() => setModalOpen(null)}
-        variant="danger"
         canClose={!removeCustomerMutation.isPending}
-        confirmLabel="Remover cliente"
-        description="Essa ação não poderá ser desfeita."
         onConfirm={() => {
           if (modalOpen?.mode === "remove-customer") {
             removeCustomerMutation.mutate(modalOpen.customerId);
@@ -197,33 +193,18 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         }}
       />
 
-      <ConfirmModal
+      <StatusModal
         isOpen={modalOpen?.mode === "toggle-status"}
-        title={
+        canClose={!toggleStatusMutation.isPending}
+        mode={
           modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
-            ? "Desativar cliente?"
-            : "Ativar cliente?"
-        }
-        description={
-          modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
-            ? "O cliente não poderá finalizar novos pedidos."
-            : "O cliente voltará a ficar disponível para realizar pedidos"
+            ? "deactivate"
+            : "activate"
         }
         onClose={() => setModalOpen(null)}
-        variant={
-          modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
-            ? "danger"
-            : "default"
-        }
-        canClose={!toggleCustomerMutation.isPending}
-        confirmLabel={
-          modalOpen?.mode === "toggle-status" && modalOpen.customer.isActive
-            ? "Desativar"
-            : "Ativar"
-        }
         onConfirm={() => {
           if (modalOpen?.mode === "toggle-status") {
-            toggleCustomerMutation.mutate(modalOpen.customer);
+            toggleStatusMutation.mutate(modalOpen.customer);
           }
         }}
       />

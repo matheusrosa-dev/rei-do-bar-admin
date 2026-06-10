@@ -1,24 +1,14 @@
-import {
-  ConfirmModal,
-  Toggle,
-  Tooltip,
-  TrashButton,
-  Wrapper,
-} from "@components";
+import { Toggle, Tooltip, TrashButton, Wrapper } from "@components";
 import { useState } from "react";
 import type { ModalOpen } from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useProductsService } from "@services";
 import { toast } from "sonner";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import {
-  StatusModal,
-  StockModal,
-  type StatusModalVariant,
-  type StockModalVariant,
-} from "./partials";
+import { StockModal, type StockModalVariant } from "./partials";
 import type { IProductWithCategory } from "@shared/models";
 import { useNavigate } from "@tanstack/react-router";
+import { RemoveModal, StatusModal } from "../../../-partials";
 
 type Props = {
   product: IProductWithCategory;
@@ -99,8 +89,6 @@ export const Actions = ({ product }: Props) => {
       <Wrapper className="flex flex-col gap-4 w-fit">
         <div className="flex items-center justify-between gap-8">
           <h2 className="text-white text-lg font-bold">Ações</h2>
-
-          <TrashButton onClick={() => setModalOpen("remove")} />
         </div>
 
         <hr className="border-white/10" />
@@ -114,9 +102,7 @@ export const Actions = ({ product }: Props) => {
               <Toggle
                 checked={product.isActive}
                 disabled={!product.category.isActive}
-                onCheckedChange={(value) =>
-                  setModalOpen(value ? "activate" : "deactivate")
-                }
+                onCheckedChange={() => setModalOpen("toggle-status")}
                 label="Status"
               />
             </span>
@@ -149,16 +135,13 @@ export const Actions = ({ product }: Props) => {
               </button>
             </div>
           </div>
+
+          <TrashButton
+            onClick={() => setModalOpen("remove")}
+            className="w-10 h-10 -ml-4 mt-auto"
+          />
         </div>
       </Wrapper>
-
-      <StatusModal
-        isOpen={modalOpen === "activate" || modalOpen === "deactivate"}
-        variant={modalOpen as StatusModalVariant}
-        isPending={toggleStatusMutation.isPending}
-        onClose={() => setModalOpen(null)}
-        onConfirm={toggleStatusMutation.mutate}
-      />
 
       <StockModal
         isOpen={
@@ -170,12 +153,16 @@ export const Actions = ({ product }: Props) => {
         onConfirm={changeStockMutation.mutate}
       />
 
-      <ConfirmModal
+      <StatusModal
+        isOpen={modalOpen === "toggle-status"}
+        onClose={() => setModalOpen(null)}
+        mode={product.isActive ? "deactivate" : "activate"}
+        canClose={!toggleStatusMutation.isPending}
+        onConfirm={toggleStatusMutation.mutate}
+      />
+
+      <RemoveModal
         isOpen={modalOpen === "remove"}
-        title="Tem certeza que deseja remover este produto?"
-        description="Essa ação não poderá ser desfeita."
-        variant="danger"
-        confirmLabel="Remover produto"
         canClose={!removeProductMutation.isPending}
         onClose={() => setModalOpen(null)}
         onConfirm={removeProductMutation.mutate}

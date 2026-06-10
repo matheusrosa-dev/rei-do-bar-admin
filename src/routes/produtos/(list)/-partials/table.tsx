@@ -1,6 +1,5 @@
 import type { IProductWithCategory } from "@shared/models";
 import {
-  ConfirmModal,
   ImagePreview,
   StatusBadge,
   Table as TableComponent,
@@ -15,6 +14,7 @@ import { useProductsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
+import { RemoveModal, StatusModal } from "../../-partials";
 
 type Props = {
   data: IProductWithCategory[];
@@ -46,7 +46,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const toggleProductMutation = useMutation({
+  const toggleStatusMutation = useMutation({
     mutationFn: (product: IProductWithCategory) => {
       if (product.isActive) {
         return deactivateProduct(product.id);
@@ -120,7 +120,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
               onCheckedChange={() =>
                 setModalOpen({ mode: "toggle-status", product })
               }
-              disabled={toggleProductMutation.isPending}
+              disabled={toggleStatusMutation.isPending}
             />
           </span>
         );
@@ -174,14 +174,10 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         <TableComponent.Pagination meta={meta} onChangePage={setPage} />
       )}
 
-      <ConfirmModal
+      <RemoveModal
         isOpen={modalOpen?.mode === "remove-product"}
-        title="Tem certeza que deseja remover este produto?"
-        onClose={() => setModalOpen(null)}
-        variant="danger"
         canClose={!removeProductMutation.isPending}
-        confirmLabel="Remover produto"
-        description="Essa ação não poderá ser desfeita."
+        onClose={() => setModalOpen(null)}
         onConfirm={() => {
           if (modalOpen?.mode === "remove-product") {
             removeProductMutation.mutate(modalOpen.productId);
@@ -189,33 +185,18 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         }}
       />
 
-      <ConfirmModal
+      <StatusModal
         isOpen={modalOpen?.mode === "toggle-status"}
-        title={
-          modalOpen?.mode === "toggle-status" && modalOpen.product.isActive
-            ? "Desativar produto?"
-            : "Ativar produto?"
-        }
-        description={
-          modalOpen?.mode === "toggle-status" && modalOpen.product.isActive
-            ? "O produto ficará indisponível para novos pedidos."
-            : "O produto voltará a ficar disponível para novos pedidos."
-        }
         onClose={() => setModalOpen(null)}
-        variant={
+        mode={
           modalOpen?.mode === "toggle-status" && modalOpen.product.isActive
-            ? "danger"
-            : "default"
+            ? "deactivate"
+            : "activate"
         }
-        canClose={!toggleProductMutation.isPending}
-        confirmLabel={
-          modalOpen?.mode === "toggle-status" && modalOpen.product.isActive
-            ? "Desativar"
-            : "Ativar"
-        }
+        canClose={!toggleStatusMutation.isPending}
         onConfirm={() => {
           if (modalOpen?.mode === "toggle-status") {
-            toggleProductMutation.mutate(modalOpen.product);
+            toggleStatusMutation.mutate(modalOpen.product);
           }
         }}
       />
