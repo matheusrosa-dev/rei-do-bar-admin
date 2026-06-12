@@ -1,17 +1,15 @@
-import type { IPagination } from "@shared/interfaces";
-import type { IOrder } from "@shared/models";
+import type { IOrderWithItems, OrderStatus } from "@shared/models";
 
-export type GetOrdersResponse = IPagination<IOrder>;
+export type GetOrdersManagementResponse = Record<
+  OrderStatus,
+  IOrderWithItems[]
+>;
 
-export type GetOrders = (queries?: {
-  page?: number;
-  limit?: number;
-  searchTerm?: string;
-}) => Promise<GetOrdersResponse>;
+export type GetOrdersManagement = () => Promise<GetOrdersManagementResponse>;
 
 export type UseOrdersService = () => {
-  getOrders: {
-    fn: GetOrders;
+  getOrdersManagement: {
+    fn: GetOrdersManagement;
     key: string;
   };
 };

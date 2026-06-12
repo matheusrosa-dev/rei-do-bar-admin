@@ -3,7 +3,7 @@ import type { OrderStatus, PaymentType } from "@shared/models";
 export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
   PENDING: "Pendente",
   PREPARING: "Em preparo",
-  SHIPPED: "Em entrega",
+  SHIPPED: "Saiu para entrega",
   DELIVERED: "Entregue",
   CANCELLED: "Cancelado",
 };

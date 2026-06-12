@@ -1,21 +1,25 @@
 import { api } from "../api";
-import type { GetOrders, GetOrdersResponse, UseOrdersService } from "./types";
+import type {
+  GetOrdersManagement,
+  GetOrdersManagementResponse,
+  UseOrdersService,
+} from "./types";
 
 export const useOrdersService: UseOrdersService = () => {
   const baseUrl = "/orders";
 
-  const getOrders: GetOrders = async (queries) => {
-    const response = await api.get<GetOrdersResponse>(baseUrl, {
-      params: queries,
-    });
+  const getOrdersManagement: GetOrdersManagement = async () => {
+    const response = await api.get<GetOrdersManagementResponse>(
+      `${baseUrl}/management`,
+    );
 
     return response.data.data;
   };
 
   return {
-    getOrders: {
-      fn: getOrders,
-      key: "get-orders",
+    getOrdersManagement: {
+      fn: getOrdersManagement,
+      key: "get-orders-management",
     },
   };
 };

@@ -12,10 +12,10 @@ import {
 import { twMerge } from "tailwind-merge";
 
 const navItems = [
+  { to: "/gerenciar-pedidos", label: "Gerenciar pedidos", icon: FiShoppingBag },
   { to: "/produtos", label: "Produtos", icon: MdShoppingBasket },
   { to: "/categorias", label: "Categorias", icon: BiCategory },
   { to: "/clientes", label: "Clientes", icon: FiUsers },
-  { to: "/pedidos", label: "Pedidos", icon: FiShoppingBag },
 ] as const;
 
 type Props = {
