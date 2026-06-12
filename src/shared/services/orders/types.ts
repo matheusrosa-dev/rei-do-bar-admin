@@ -7,9 +7,19 @@ export type GetOrdersManagementResponse = Record<
 
 export type GetOrdersManagement = () => Promise<GetOrdersManagementResponse>;
 
+export type UpdateOrderStatusResponse = Record<OrderStatus, IOrderWithItems[]>;
+
+export type UpdateOrderStatus = (props: {
+  orderId: string;
+  body: {
+    status: OrderStatus;
+  };
+}) => Promise<UpdateOrderStatusResponse>;
+
 export type UseOrdersService = () => {
   getOrdersManagement: {
     fn: GetOrdersManagement;
     key: string;
   };
+  updateOrderStatus: UpdateOrderStatus;
 };

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { MdInbox } from "react-icons/md";
 import { StatusBadge } from "@components";
 import type { IOrderWithItems, OrderStatus } from "@shared/models";
 import { canMoveOrder } from "./-helpers";
@@ -25,6 +26,7 @@ export const Column = ({
   onOrderDragStart,
   onOrderDragEnd,
 }: Props) => {
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [isOver, setIsOver] = useState(false);
 
   const isValidTarget =
@@ -41,13 +43,13 @@ export const Column = ({
     if (isValidTarget && isOver)
       return "bg-white/5 outline-2 outline-dashed outline-amber-500/40";
 
-    if (isValidTarget) return "outline-2 outline-dashed outline-white/10";
+    if (isValidTarget) return "outline-2 outline-dashed outline-white/20";
 
     return "";
   };
 
   return (
-    <div className="flex flex-col gap-3 w-80 shrink-0">
+    <div className="flex flex-col gap-3 w-80 rounded-xl bg-white/8 p-3">
       <div className="flex items-center gap-2 px-1">
         <StatusBadge variant={ORDER_STATUS_VARIANT[status]}>
           {ORDER_STATUS_LABEL[status]}
@@ -57,28 +59,35 @@ export const Column = ({
         </span>
       </div>
 
-      <div
-        className={`flex flex-col gap-3 flex-1 rounded-lg transition-colors min-h-24 ${getDropAreaClass()}`}
-        onDragOver={(event) => {
-          if (!isValidTarget) return;
-          event.preventDefault();
-          setIsOver(true);
-        }}
-        onDragLeave={() => setIsOver(false)}
-        onDrop={handleDrop}
-      >
-        {orders.length === 0 ? (
-          <span className="text-gray-500 text-xs px-1 py-2">Nenhum pedido</span>
-        ) : (
-          orders.map((order) => (
-            <OrderCard
-              key={order.id}
-              order={order}
-              onDragStart={onOrderDragStart}
-              onDragEnd={onOrderDragEnd}
-            />
-          ))
-        )}
+      <div className="overflow-y-auto h-full">
+        <div
+          className={`flex flex-col gap-3 rounded-lg transition-colors h-[99%] m-px ${getDropAreaClass()}`}
+          onDragOver={(event) => {
+            if (!isValidTarget) return;
+            event.preventDefault();
+            setIsOver(true);
+          }}
+          onDragLeave={() => setIsOver(false)}
+          onDrop={handleDrop}
+        >
+          {orders.length === 0 ? (
+            <div className="flex flex-1 flex-col items-center justify-center gap-3 py-8 text-gray-500">
+              <MdInbox size={32} />
+              <span className="text-sm">Nenhum pedido</span>
+            </div>
+          ) : (
+            orders.map((order) => (
+              <OrderCard
+                key={order.id}
+                order={order}
+                isExpanded={expandedOrderId === order.id}
+                onExpandOrderId={setExpandedOrderId}
+                onDragStart={onOrderDragStart}
+                onDragEnd={onOrderDragEnd}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

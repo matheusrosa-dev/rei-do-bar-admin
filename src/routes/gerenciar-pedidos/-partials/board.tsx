@@ -4,6 +4,9 @@ import type { IOrderWithItems } from "@shared/models";
 import { OrderStatus } from "@shared/models";
 import { Column } from "./column";
 import { ORDER_STATUS_LABEL } from "@shared/helpers/order-status";
+import { useOrdersService } from "@services";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 type Props = {
   orders: Record<OrderStatus, IOrderWithItems[]>;
@@ -28,27 +31,42 @@ export const Board = ({ orders }: Props) => {
     null,
   );
 
-  const handleDropOrder = (orderId: string, toStatus: OrderStatus) => {
+  const { updateOrderStatus, getOrdersManagement } = useOrdersService();
+  const queryClient = useQueryClient();
+
+  const updateStatusMutation = useMutation({
+    mutationFn: () =>
+      updateOrderStatus({
+        orderId: pendingMove!.order.id,
+        body: {
+          status: pendingMove!.toStatus,
+        },
+      }),
+    onSuccess: (updatedOrders) => {
+      toast.success("Pedido atualizado com sucesso!");
+      queryClient.setQueryData([getOrdersManagement.key], updatedOrders);
+
+      setPendingMove(null);
+    },
+  });
+
+  const onDropOrder = (orderId: string, toStatus: OrderStatus) => {
     const flatArrayOrders = Object.values(orders).flat();
     const order = flatArrayOrders.find((order) => order.id === orderId)!;
 
     setPendingMove({ order, toStatus });
   };
 
-  const confirmMove = () => {
-    setPendingMove(null);
-  };
-
   return (
     <>
-      <div className="flex gap-4 overflow-x-auto pb-4 min-h-100">
+      <div className="flex gap-4 overflow-x-auto pb-4 h-300">
         {COLUMN_ORDER.map((status) => (
           <Column
             key={status}
             status={status}
             orders={orders[status]}
             draggingStatus={draggingStatus}
-            onDropOrder={handleDropOrder}
+            onDropOrder={onDropOrder}
             onOrderDragStart={() => setDraggingStatus(status)}
             onOrderDragEnd={() => setDraggingStatus(null)}
           />
@@ -68,7 +86,7 @@ export const Board = ({ orders }: Props) => {
           pendingMove?.toStatus === OrderStatus.CANCELLED ? "danger" : "default"
         }
         onClose={() => setPendingMove(null)}
-        onConfirm={confirmMove}
+        onConfirm={updateStatusMutation.mutate}
       />
     </>
   );

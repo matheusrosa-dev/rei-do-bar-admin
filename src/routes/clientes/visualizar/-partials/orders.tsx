@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ImagePreview, StatusBadge, Wrapper } from "@components";
 import type { IOrderWithItems } from "@shared/models";
 import { formatPrice } from "@shared/helpers/number";
-import { formatDate } from "@shared/helpers/string";
+import { formatDateTime } from "@shared/helpers/string";
 import {
   ORDER_STATUS_LABEL,
   ORDER_STATUS_VARIANT,
@@ -73,7 +73,7 @@ export const Orders = ({ orders }: Props) => {
 
                   <div className="flex items-center gap-2">
                     <span className="text-gray-400 text-sm font-medium">
-                      {formatDate(order.createdAt)}
+                      {formatDateTime(order.createdAt)}
                     </span>
                     <PiCaretDownBold
                       className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
