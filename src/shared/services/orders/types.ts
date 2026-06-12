@@ -13,6 +13,7 @@ export type UpdateOrderStatus = (props: {
   orderId: string;
   body: {
     status: OrderStatus;
+    statusReason?: string;
   };
 }) => Promise<UpdateOrderStatusResponse>;
 

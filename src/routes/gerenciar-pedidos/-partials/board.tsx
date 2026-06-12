@@ -3,6 +3,7 @@ import { ConfirmModal } from "@components";
 import type { IOrderWithItems } from "@shared/models";
 import { OrderStatus } from "@shared/models";
 import { Column } from "./column";
+import { CancelOrderModal } from "./cancel-order-modal";
 import { ORDER_STATUS_LABEL } from "@shared/helpers/order-status";
 import { useOrdersService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -35,11 +36,12 @@ export const Board = ({ orders }: Props) => {
   const queryClient = useQueryClient();
 
   const updateStatusMutation = useMutation({
-    mutationFn: () =>
+    mutationFn: (statusReason: string | undefined) =>
       updateOrderStatus({
         orderId: pendingMove!.order.id,
         body: {
           status: pendingMove!.toStatus,
+          ...(statusReason ? { statusReason } : {}),
         },
       }),
     onSuccess: (updatedOrders) => {
@@ -56,6 +58,8 @@ export const Board = ({ orders }: Props) => {
 
     setPendingMove({ order, toStatus });
   };
+
+  const isCancelling = pendingMove?.toStatus === OrderStatus.CANCELLED;
 
   return (
     <>
@@ -74,7 +78,7 @@ export const Board = ({ orders }: Props) => {
       </div>
 
       <ConfirmModal
-        isOpen={pendingMove !== null}
+        isOpen={pendingMove !== null && !isCancelling}
         title="Mover pedido"
         description={
           pendingMove
@@ -82,11 +86,16 @@ export const Board = ({ orders }: Props) => {
             : undefined
         }
         confirmLabel="Mover"
-        variant={
-          pendingMove?.toStatus === OrderStatus.CANCELLED ? "danger" : "default"
-        }
         onClose={() => setPendingMove(null)}
-        onConfirm={updateStatusMutation.mutate}
+        onConfirm={() => updateStatusMutation.mutate(undefined)}
+      />
+
+      <CancelOrderModal
+        isOpen={pendingMove !== null && isCancelling}
+        orderNumber={pendingMove?.order.orderNumber}
+        isPending={updateStatusMutation.isPending}
+        onClose={() => setPendingMove(null)}
+        onConfirm={(statusReason) => updateStatusMutation.mutate(statusReason)}
       />
     </>
   );
