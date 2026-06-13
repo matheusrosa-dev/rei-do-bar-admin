@@ -31,8 +31,12 @@ function RouteComponent() {
     <PageWrapper title="Cliente" goBack>
       <div className="flex flex-col gap-4 max-w-4xl">
         <BasicData customer={customer} />
-        <Addresses addresses={customer.addresses} />
-        <Actions customer={customer} />
+        {!customer.deletedAt && (
+          <>
+            <Addresses addresses={customer.addresses} />
+            <Actions customer={customer} />
+          </>
+        )}
         <Orders orders={customer.orders} />
       </div>
     </PageWrapper>

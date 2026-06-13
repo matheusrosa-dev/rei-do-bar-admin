@@ -15,17 +15,22 @@ export const BasicData = ({ customer }: Props) => {
 
       <div className="flex items-center gap-3">
         <h2 className="text-amber-500 text-xl font-bold">
-          {customer.name ?? "-"}
+          {customer.deletedAt ? "Cliente removido" : (customer.name ?? "-")}
         </h2>
-        <StatusBadge variant={customer.isActive ? "active" : "inactive"}>
-          {customer.isActive ? "Ativo" : "Inativo"}
-        </StatusBadge>
+
+        {!customer.deletedAt && (
+          <StatusBadge variant={customer.isActive ? "active" : "inactive"}>
+            {customer.isActive ? "Ativo" : "Inativo"}
+          </StatusBadge>
+        )}
       </div>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        <Field label="Telefone" value={formatPhone(customer.phone)} />
-        <Field label="Cliente desde" value={formatDate(customer.createdAt)} />
-      </div>
+      {!customer.deletedAt && (
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Field label="Telefone" value={formatPhone(customer.phone)} />
+          <Field label="Cliente desde" value={formatDate(customer.createdAt)} />
+        </div>
+      )}
     </Wrapper>
   );
 };
