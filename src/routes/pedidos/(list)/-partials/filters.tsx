@@ -1,68 +1,72 @@
-import { RefetchButton, SearchInput, Select, SortSelect } from "@components";
-import type { SortDirection } from "@shared/interfaces";
-import type { ICategory } from "@shared/models";
-import type { GetProductsSortKey } from "@shared/services/products/types";
-import { useNavigate, useSearch } from "@tanstack/react-router";
-import { FiX } from "react-icons/fi";
 import type { SearchInputRef } from "@/components/search-input";
+import { RefetchButton, SearchInput, Select, SortSelect } from "@components";
+import {
+  ORDER_STATUS_LABEL,
+  PAYMENT_TYPE_LABEL,
+} from "@shared/helpers/order-status";
+import type { SortDirection } from "@shared/interfaces";
+import { OrderStatus, PaymentType } from "@shared/models";
+import type { GetOrdersSortKey } from "@shared/services/orders/types";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useRef } from "react";
+import { FiX } from "react-icons/fi";
 
 type Props = {
-  categories: ICategory[];
   onRefetch: () => void;
   isRefetching: boolean;
 };
 
 const STATUS_OPTIONS = [
   { value: "all", label: "Todos" },
-  { value: "true", label: "Ativo" },
-  { value: "false", label: "Inativo" },
+  ...Object.values(OrderStatus).map((status) => ({
+    value: status,
+    label: ORDER_STATUS_LABEL[status],
+  })),
 ];
 
-export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
-  const {
-    categoryId = "all",
-    isActive,
-    sortKey,
-    sortDirection,
-    searchTerm,
-  } = useSearch({
-    from: "/produtos/(list)/",
-  });
+const PAYMENT_TYPE_OPTIONS = [
+  { value: "all", label: "Todos" },
+  ...Object.values(PaymentType).map((paymentType) => ({
+    value: paymentType,
+    label: PAYMENT_TYPE_LABEL[paymentType],
+  })),
+];
+
+export const Filters = ({ onRefetch, isRefetching }: Props) => {
+  const { searchTerm, status, paymentType, sortKey, sortDirection } = useSearch(
+    {
+      from: "/pedidos/(list)/",
+    },
+  );
 
   const searchRef = useRef<SearchInputRef>(null);
 
   const navigate = useNavigate({
-    from: "/produtos/",
+    from: "/pedidos/",
   });
-
-  const categoryOptions = [
-    { value: "all", label: "Todas as categorias" },
-    ...categories.map((c) => ({ value: c.id, label: c.name })),
-  ];
-
-  const onChangeCategoryFilter = (value: string) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        categoryId: value === "all" ? undefined : value,
-        page: undefined,
-      }),
-    });
-  };
 
   const onChangeStatusFilter = (value: string) => {
     navigate({
       search: (prev) => ({
         ...prev,
-        isActive: value === "all" ? undefined : value === "true",
+        status: value === "all" ? undefined : (value as OrderStatus),
+        page: undefined,
+      }),
+    });
+  };
+
+  const onChangePaymentTypeFilter = (value: string) => {
+    navigate({
+      search: (prev) => ({
+        ...prev,
+        paymentType: value === "all" ? undefined : (value as PaymentType),
         page: undefined,
       }),
     });
   };
 
   const onChangeSorting = (
-    key: GetProductsSortKey,
+    key: GetOrdersSortKey,
     direction: SortDirection | undefined,
   ) => {
     navigate({
@@ -75,11 +79,14 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
     });
   };
 
-  const statusValue =
-    isActive === true ? "true" : isActive === false ? "false" : "all";
+  const statusValue = status ?? "all";
+  const paymentTypeValue = paymentType ?? "all";
 
   const hasActiveFilters = Boolean(
-    categoryId !== "all" || statusValue !== "all" || sortKey || !!searchTerm,
+    statusValue !== "all" ||
+      paymentTypeValue !== "all" ||
+      sortKey ||
+      searchTerm,
   );
 
   return (
@@ -101,18 +108,7 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
           />
         </div>
 
-        <div className="w-52">
-          <Select
-            label="Categoria"
-            placeholder="Todas as categorias"
-            options={categoryOptions}
-            value={categoryId}
-            onChange={(newValue) => onChangeCategoryFilter(newValue || "all")}
-            active={categoryId !== "all"}
-          />
-        </div>
-
-        <div className="w-28">
+        <div className="w-48">
           <Select
             label="Status"
             placeholder="Todos"
@@ -124,18 +120,39 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
         </div>
 
         <div className="w-40">
-          <SortSelect
-            label="Estoque"
-            value={sortKey === "stock" ? sortDirection : undefined}
-            onChange={(value) => onChangeSorting("stock", value)}
+          <Select
+            label="Pagamento"
+            placeholder="Todos"
+            options={PAYMENT_TYPE_OPTIONS}
+            value={paymentTypeValue}
+            onChange={(newValue) =>
+              onChangePaymentTypeFilter(newValue || "all")
+            }
+            active={paymentTypeValue !== "all"}
           />
         </div>
 
         <div className="w-40">
           <SortSelect
-            label="Destaque"
-            value={sortKey === "sortOrder" ? sortDirection : undefined}
-            onChange={(value) => onChangeSorting("sortOrder", value)}
+            label="Itens"
+            value={sortKey === "itemsQuantity" ? sortDirection : undefined}
+            onChange={(value) => onChangeSorting("itemsQuantity", value)}
+          />
+        </div>
+
+        <div className="w-40">
+          <SortSelect
+            label="Total"
+            value={sortKey === "total" ? sortDirection : undefined}
+            onChange={(value) => onChangeSorting("total", value)}
+          />
+        </div>
+
+        <div className="w-40">
+          <SortSelect
+            label="Criado em"
+            value={sortKey === "createdAt" ? sortDirection : undefined}
+            onChange={(value) => onChangeSorting("createdAt", value)}
           />
         </div>
       </div>

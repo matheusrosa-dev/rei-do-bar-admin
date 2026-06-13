@@ -1,9 +1,9 @@
-import { PageWrapper, RefetchButton } from "@components";
+import { PageWrapper } from "@components";
 import { useOrdersService } from "@services";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { validateSearch } from "./-helpers";
-import { Table } from "./-partials";
+import { Filters, Table } from "./-partials";
 
 export const Route = createFileRoute("/pedidos/(list)/")({
   validateSearch,
@@ -13,26 +13,49 @@ export const Route = createFileRoute("/pedidos/(list)/")({
 const LIMIT = 10;
 
 function Index() {
-  const { page = 1 } = Route.useSearch();
+  const {
+    page = 1,
+    status,
+    paymentType,
+    sortKey,
+    sortDirection,
+    searchTerm,
+  } = Route.useSearch();
 
   const { getOrders } = useOrdersService();
 
   const { data: orders, ...ordersQuery } = useQuery({
-    queryKey: [getOrders.key, page],
-    queryFn: () => getOrders.fn({ page, limit: LIMIT }),
+    queryKey: [
+      getOrders.key,
+      page,
+      status,
+      paymentType,
+      sortKey,
+      sortDirection,
+      searchTerm,
+    ],
+    queryFn: () =>
+      getOrders.fn({
+        page,
+        limit: LIMIT,
+        status,
+        paymentType,
+        sortKey,
+        sortDirection,
+        searchTerm,
+      }),
     retry: false,
   });
 
   return (
-    <PageWrapper
-      title="Pedidos"
-      headerContent={() => (
-        <RefetchButton
+    <PageWrapper title="Pedidos">
+      <div className="mb-4">
+        <Filters
           onRefetch={ordersQuery.refetch}
           isRefetching={ordersQuery.isRefetching}
         />
-      )}
-    >
+      </div>
+
       <Table
         data={orders?.items ?? []}
         meta={orders?.meta}

@@ -1,8 +1,9 @@
-import type { IPagination } from "@shared/interfaces";
+import type { IPagination, SortDirection } from "@shared/interfaces";
 import type {
   IOrderWithItems,
   IOrderWithItemsAndCustomer,
   OrderStatus,
+  PaymentType,
 } from "@shared/models";
 
 export type GetOrdersManagementResponse = Record<
@@ -14,9 +15,16 @@ export type GetOrdersManagement = () => Promise<GetOrdersManagementResponse>;
 
 export type GetOrdersResponse = IPagination<IOrderWithItemsAndCustomer>;
 
+export type GetOrdersSortKey = "total" | "itemsQuantity" | "createdAt";
+
 export type GetOrders = (query?: {
   page?: number;
   limit?: number;
+  searchTerm?: string;
+  status?: OrderStatus;
+  paymentType?: PaymentType;
+  sortKey?: GetOrdersSortKey;
+  sortDirection?: SortDirection;
 }) => Promise<GetOrdersResponse>;
 
 export type UpdateOrderStatusResponse = Record<OrderStatus, IOrderWithItems[]>;
