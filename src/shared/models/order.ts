@@ -25,6 +25,8 @@ export interface IOrderItem {
 
 export interface IOrderWithItems extends IOrder {
   items: IOrderItem[];
+  subtotal: number;
+  total: number;
 }
 
 export enum OrderStatus {

@@ -92,14 +92,7 @@ export const Orders = ({ orders }: Props) => {
                   <span>
                     <span className="text-gray-500">Itens: </span>
                     <span className="text-gray-300 font-bold">
-                      {order.items.length}
-                    </span>
-                  </span>
-
-                  <span>
-                    <span className="text-gray-500">Subtotal: </span>
-                    <span className="text-gray-300 font-bold">
-                      {formatPrice(itemsTotal)}
+                      {order.items.reduce((acc, cur) => acc + cur.quantity, 0)}
                     </span>
                   </span>
 

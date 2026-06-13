@@ -36,12 +36,9 @@ export const OrderCard = ({
     onDragEnd();
   };
 
-  const itemsTotal = order.items.reduce(
-    (sum, current) => sum + current.price * current.quantity,
-    0,
-  );
-  const total = itemsTotal + order.deliveryFee;
   const isMovable = isOrderMovable(order.status);
+
+  const itemsCount = order.items.reduce((acc, cur) => acc + cur.quantity, 0);
 
   return (
     <div
@@ -68,7 +65,9 @@ export const OrderCard = ({
           </span>
           <span className="text-gray-500">·</span>
           <span>
-            {order.items.length} {order.items.length === 1 ? "item" : "itens"}
+            {itemsCount}
+
+            {itemsCount === 1 ? " item" : " itens"}
           </span>
         </div>
 
@@ -87,7 +86,7 @@ export const OrderCard = ({
         <div className="flex items-center justify-between w-full">
           <span className="text-gray-500 text-sm">Total</span>
           <span className="text-amber-500 font-bold text-sm">
-            {formatPrice(total)}
+            {formatPrice(order.total)}
           </span>
         </div>
 

@@ -1,4 +1,4 @@
-import { Toggle, TrashButton, Wrapper } from "@components";
+import { Toggle, Tooltip, TrashButton, Wrapper } from "@components";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCustomersService } from "@services";
@@ -70,11 +70,23 @@ export const Actions = ({ customer }: Props) => {
             label="Status"
           />
 
-          <TrashButton
-            disabled={customer.orders.length > 0}
-            onClick={() => setModalOpen("remove")}
-            className="w-10 h-10 -ml-4 mt-auto"
-          />
+          <Tooltip
+            disabled={customer.orders.length === 0}
+            content={
+              <>
+                Não é possível remover esse cliente
+                <br /> pois ele possui pedidos vinculados.
+              </>
+            }
+          >
+            <span className="-ml-4 mt-auto">
+              <TrashButton
+                disabled={customer.orders.length > 0}
+                onClick={() => setModalOpen("remove")}
+                className="w-10 h-10"
+              />
+            </span>
+          </Tooltip>
         </div>
       </Wrapper>
 
