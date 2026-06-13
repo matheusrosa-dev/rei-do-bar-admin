@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ImagePreview } from "@components";
-import type { IOrderWithItems } from "@shared/models";
+import { OrderStatus, type IOrderWithItems } from "@shared/models";
 import { formatPrice } from "@shared/helpers/number";
 import { formatTime } from "@shared/helpers/string";
 import { PiCaretDownBold } from "react-icons/pi";
@@ -73,9 +73,13 @@ export const OrderCard = ({
         </div>
 
         <div className="flex items-center gap-1.5 text-sm text-gray-400">
-          <span>Criado {formatTime(order.createdAt)}</span>
-          <span className="text-gray-500">·</span>
-          <span>Alterado {formatTime(order.updatedAt)}</span>
+          <span>Criado em: {formatTime(order.createdAt)}</span>
+          {order.status !== OrderStatus.PENDING && (
+            <>
+              <span className="text-gray-500">·</span>
+              <span>Alterado em: {formatTime(order.updatedAt)}</span>
+            </>
+          )}
         </div>
 
         <span className="text-gray-400 text-sm w-full">{order.address}</span>

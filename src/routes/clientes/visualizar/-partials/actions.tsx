@@ -71,6 +71,7 @@ export const Actions = ({ customer }: Props) => {
           />
 
           <TrashButton
+            disabled={customer.orders.length > 0}
             onClick={() => setModalOpen("remove")}
             className="w-10 h-10 -ml-4 mt-auto"
           />
