@@ -84,6 +84,13 @@ export const OrderCard = ({
         <span className="text-gray-400 text-sm w-full">{order.address}</span>
 
         <div className="flex items-center justify-between w-full">
+          <span className="text-gray-500 text-sm">Frete</span>
+          <span className="text-gray-300 font-bold text-sm">
+            {formatPrice(order.deliveryFee)}
+          </span>
+        </div>
+
+        <div className="flex items-center justify-between w-full">
           <span className="text-gray-500 text-sm">Total</span>
           <span className="text-amber-500 font-bold text-sm">
             {formatPrice(order.total)}
@@ -121,13 +128,6 @@ export const OrderCard = ({
               </div>
             </div>
           ))}
-
-          <div className="flex items-center justify-between border-t border-white/10 pt-2">
-            <span className="text-gray-500 text-sm">Frete</span>
-            <span className="text-gray-300 text-sm font-bold">
-              {formatPrice(order.deliveryFee)}
-            </span>
-          </div>
         </div>
       )}
     </div>
