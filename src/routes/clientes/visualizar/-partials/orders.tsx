@@ -58,7 +58,7 @@ export const Orders = ({ orders }: Props) => {
             >
               <button
                 type="button"
-                className=" p-3 cursor-pointer flex flex-col gap-3"
+                className="p-3 cursor-pointer flex flex-col gap-3 items-start"
                 onClick={() => toggle(order.id)}
               >
                 <div className="flex items-center justify-between gap-2 text-left w-full">

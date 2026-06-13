@@ -1,5 +1,9 @@
 import type { IPagination } from "@shared/interfaces";
-import type { IOrderWithItems, OrderStatus } from "@shared/models";
+import type {
+  IOrderWithItems,
+  IOrderWithItemsAndCustomer,
+  OrderStatus,
+} from "@shared/models";
 
 export type GetOrdersManagementResponse = Record<
   OrderStatus,
@@ -8,7 +12,7 @@ export type GetOrdersManagementResponse = Record<
 
 export type GetOrdersManagement = () => Promise<GetOrdersManagementResponse>;
 
-export type GetOrdersResponse = IPagination<IOrderWithItems>;
+export type GetOrdersResponse = IPagination<IOrderWithItemsAndCustomer>;
 
 export type GetOrders = (query?: {
   page?: number;

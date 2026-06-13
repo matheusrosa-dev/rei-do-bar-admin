@@ -7,6 +7,7 @@ export interface ICustomer {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string;
 }
 
 export interface IAddress {

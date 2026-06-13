@@ -63,7 +63,9 @@ export const OrderCard = ({
           <span className="text-gray-300 font-bold">
             {PAYMENT_TYPE_LABEL[order.paymentType]}
           </span>
+
           <span className="text-gray-500">·</span>
+
           <span>
             {itemsCount}
 
@@ -83,6 +85,12 @@ export const OrderCard = ({
 
         <span className="text-gray-400 text-sm w-full">{order.address}</span>
 
+        {order.statusReason && (
+          <span className="text-xs text-red-400">
+            Motivo: {order.statusReason}
+          </span>
+        )}
+
         <div className="flex items-center justify-between w-full">
           <span className="text-gray-500 text-sm">Frete</span>
           <span className="text-gray-300 font-bold text-sm">
@@ -96,12 +104,6 @@ export const OrderCard = ({
             {formatPrice(order.total)}
           </span>
         </div>
-
-        {order.statusReason && (
-          <span className="text-xs text-red-400">
-            Motivo: {order.statusReason}
-          </span>
-        )}
       </button>
 
       {isExpanded && (

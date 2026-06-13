@@ -1,3 +1,5 @@
+import type { ICustomer } from "./customer";
+
 export interface IOrder {
   id: string;
   createdAt: string;
@@ -27,6 +29,10 @@ export interface IOrderWithItems extends IOrder {
   items: IOrderItem[];
   subtotal: number;
   total: number;
+}
+
+export interface IOrderWithItemsAndCustomer extends IOrderWithItems {
+  customer: ICustomer;
 }
 
 export enum OrderStatus {

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { MdShoppingBasket } from "react-icons/md";
+import { MdReceiptLong, MdShoppingBasket } from "react-icons/md";
 import { BiCategory } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import {
@@ -13,6 +13,7 @@ import { twMerge } from "tailwind-merge";
 
 const navItems = [
   { to: "/gerenciar-pedidos", label: "Gerenciar pedidos", icon: FiShoppingBag },
+  { to: "/pedidos", label: "Pedidos", icon: MdReceiptLong },
   { to: "/produtos", label: "Produtos", icon: MdShoppingBasket },
   { to: "/categorias", label: "Categorias", icon: BiCategory },
   { to: "/clientes", label: "Clientes", icon: FiUsers },
