@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Board } from "./-partials";
-import { PageError, PageLoading, PageWrapper } from "@components";
+import {
+  PageError,
+  PageLoading,
+  PageWrapper,
+  RefetchButton,
+} from "@components";
 import { useOrdersService } from "@services";
 import { useQuery } from "@tanstack/react-query";
 
@@ -15,6 +20,8 @@ function Index() {
     data: orders,
     isLoading,
     isError,
+    isRefetching,
+    refetch,
   } = useQuery({
     queryKey: [getOrdersManagement.key],
     queryFn: getOrdersManagement.fn,
@@ -30,7 +37,12 @@ function Index() {
   }
 
   return (
-    <PageWrapper title="Gerenciar pedidos">
+    <PageWrapper
+      title="Gerenciar pedidos"
+      headerContent={() => (
+        <RefetchButton onRefetch={refetch} isRefetching={isRefetching} />
+      )}
+    >
       <Board orders={orders} />
     </PageWrapper>
   );
