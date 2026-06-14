@@ -51,7 +51,7 @@ function ReorderProducts() {
   const isDirty = useMemo(() => {
     if (!data || !products) return false;
 
-    return JSON.stringify(data) === JSON.stringify(products);
+    return JSON.stringify(data) !== JSON.stringify(products);
   }, [data, products]);
 
   const sensors = useSensors(
@@ -71,25 +71,34 @@ function ReorderProducts() {
 
   useEffect(() => {
     if (!isLoading && !isError && data) {
-      console.log("aqui");
       setProducts(data);
     }
   }, [data, isLoading, isError]);
 
   if (isLoading) return <PageLoading title="Reordenar produtos" />;
 
-  if (isError) return <PageError title="Reordenar produtos" />;
+  if (isError || !data) return <PageError title="Reordenar produtos" />;
 
   return (
     <PageWrapper title="Reordenar produtos">
       <div className="pb-48">
-        <Button
-          className="ml-auto mb-4"
-          disabled={isDirty || updateProductsOrderMutation.isPending}
-          onClick={() => updateProductsOrderMutation.mutate()}
-        >
-          Salvar
-        </Button>
+        <div className="flex justify-end items-center gap-4 mb-4">
+          {isDirty && (
+            <Button
+              disabled={updateProductsOrderMutation.isPending}
+              onClick={() => setProducts(data)}
+              variant="secondary"
+            >
+              Voltar alterações
+            </Button>
+          )}
+          <Button
+            disabled={!isDirty || updateProductsOrderMutation.isPending}
+            onClick={() => updateProductsOrderMutation.mutate()}
+          >
+            Salvar
+          </Button>
+        </div>
 
         <DndContext
           sensors={sensors}
