@@ -81,7 +81,7 @@ function ReorderProducts() {
 
   return (
     <PageWrapper title="Reordenar produtos">
-      <div className="pb-48">
+      <div className="pb-48 w-1/2 mx-auto">
         <div className="flex justify-end items-center gap-4 mb-4">
           {isDirty && (
             <Button

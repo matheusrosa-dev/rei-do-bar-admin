@@ -32,20 +32,14 @@ export function SortableItem({ product, index }: Props) {
     <div
       ref={setNodeRef}
       style={style}
+      {...attributes}
+      {...listeners}
       className={twMerge(
-        "flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 select-none",
+        "flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 select-none cursor-grab active:cursor-grabbing",
         isDragging && "opacity-50 border-amber-500/10 bg-amber-500/5 z-50",
       )}
     >
-      <button
-        type="button"
-        {...attributes}
-        {...listeners}
-        className="text-zinc-500 hover:text-zinc-300 transition-colors cursor-grab active:cursor-grabbing shrink-0"
-        aria-label="Arrastar para reordenar"
-      >
-        <MdDragIndicator size={20} />
-      </button>
+      <MdDragIndicator size={20} className="text-zinc-500" />
 
       <span className="w-6 text-center text-xs font-semibold text-zinc-500 shrink-0">
         {index + 1}
@@ -58,11 +52,11 @@ export function SortableItem({ product, index }: Props) {
           {product.name}
         </span>
 
-        <span className="text-sm text-gray-200 truncate w-50">
+        <span className="text-sm text-gray-200 truncate w-20">
           {formatPrice(product.price)}
         </span>
 
-        <span className="w-50 flex gap-4">
+        <span className="w-34 flex gap-4">
           <StatusBadge variant={product.isActive ? "active" : "inactive"}>
             {product.isActive ? "Ativo" : "Inativo"}
           </StatusBadge>
