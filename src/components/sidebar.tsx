@@ -115,10 +115,10 @@ export function Sidebar({
                 key={to}
                 to={to}
                 onClick={onClose}
-                className="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm text-gray-400 transition-colors hover:text-white hover:bg-white/5"
+                className="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 h-10 text-sm text-gray-400 transition-colors hover:text-white hover:bg-white/5"
                 activeProps={{
                   className:
-                    "flex items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2.5 text-sm text-white bg-white/10",
+                    "flex items-center gap-3 whitespace-nowrap rounded-lg px-3 h-10 text-sm text-white bg-white/10",
                 }}
               >
                 <Icon size={16} className="shrink-0" />
