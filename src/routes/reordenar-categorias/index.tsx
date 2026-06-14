@@ -1,4 +1,4 @@
-import { useProductsService } from "@services";
+import { useCategoriesService } from "@services";
 import {
   DndContext,
   PointerSensor,
@@ -15,40 +15,44 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import type { IProduct } from "@shared/models";
+import type { ICategory } from "@shared/models";
 import { PageWrapper, PageError, PageLoading, Button } from "@components";
 import { SortableItem } from "./-partials";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/reordenar-produtos/")({
-  component: ReorderProducts,
+export const Route = createFileRoute("/reordenar-categorias/")({
+  component: ReorderCategories,
 });
 
-function ReorderProducts() {
-  const [products, setProducts] = useState<IProduct[]>([]);
+function ReorderCategories() {
+  const [categories, setCategories] = useState<ICategory[]>([]);
 
-  const { getProductsToSortOrder, updateProductsOrder } = useProductsService();
+  const { getCategoriesToSortOrder, updateCategoriesOrder } =
+    useCategoriesService();
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: [getProductsToSortOrder.key],
-    queryFn: getProductsToSortOrder.fn,
+    queryKey: [getCategoriesToSortOrder.key],
+    queryFn: getCategoriesToSortOrder.fn,
     retry: false,
     refetchOnWindowFocus: false,
   });
 
-  const updateProductsOrderMutation = useMutation({
+  const updateCategoriesOrderMutation = useMutation({
     mutationFn: () =>
-      updateProductsOrder({
-        orderedIds: products.map((item) => item.id),
+      updateCategoriesOrder({
+        orderedIds: categories.map((item) => item.id),
       }),
-    onSuccess: (updatedProducts) => {
-      queryClient.setQueryData([getProductsToSortOrder.key], updatedProducts);
-      toast.success("Produtos reordenados com sucesso!");
+    onSuccess: (updatedCategories) => {
+      queryClient.setQueryData(
+        [getCategoriesToSortOrder.key],
+        updatedCategories,
+      );
+      toast.success("Categorias reordenadas com sucesso!");
     },
   });
 
-  const isDirty = !!data && JSON.stringify(data) !== JSON.stringify(products);
+  const isDirty = !!data && JSON.stringify(data) !== JSON.stringify(categories);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -58,39 +62,39 @@ function ReorderProducts() {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    setProducts((current) => {
-      const oldIndex = current.findIndex((p) => p.id === active.id);
-      const newIndex = current.findIndex((p) => p.id === over.id);
+    setCategories((current) => {
+      const oldIndex = current.findIndex((c) => c.id === active.id);
+      const newIndex = current.findIndex((c) => c.id === over.id);
       return arrayMove(current, oldIndex, newIndex);
     });
   }
 
   useEffect(() => {
     if (!isLoading && !isError && data) {
-      setProducts(data);
+      setCategories(data);
     }
   }, [data, isLoading, isError]);
 
-  if (isLoading) return <PageLoading title="Reordenar produtos" />;
+  if (isLoading) return <PageLoading title="Reordenar categorias" />;
 
-  if (isError || !data) return <PageError title="Reordenar produtos" />;
+  if (isError || !data) return <PageError title="Reordenar categorias" />;
 
   return (
-    <PageWrapper title="Reordenar produtos">
+    <PageWrapper title="Reordenar categorias">
       <div className="pb-48 w-1/2 mx-auto">
         <div className="flex justify-end items-center gap-4 mb-4">
           {isDirty && (
             <Button
-              disabled={updateProductsOrderMutation.isPending}
-              onClick={() => setProducts(data)}
+              disabled={updateCategoriesOrderMutation.isPending}
+              onClick={() => setCategories(data)}
               variant="secondary"
             >
               Voltar alterações
             </Button>
           )}
           <Button
-            disabled={!isDirty || updateProductsOrderMutation.isPending}
-            onClick={() => updateProductsOrderMutation.mutate()}
+            disabled={!isDirty || updateCategoriesOrderMutation.isPending}
+            onClick={() => updateCategoriesOrderMutation.mutate()}
           >
             Salvar
           </Button>
@@ -102,15 +106,15 @@ function ReorderProducts() {
           onDragEnd={handleDragEnd}
         >
           <SortableContext
-            disabled={updateProductsOrderMutation.isPending}
-            items={products.map((p) => p.id)}
+            disabled={updateCategoriesOrderMutation.isPending}
+            items={categories.map((c) => c.id)}
             strategy={verticalListSortingStrategy}
           >
             <div className="flex flex-col gap-2">
-              {products.map((product, index) => (
+              {categories.map((category, index) => (
                 <SortableItem
-                  key={product.id}
-                  product={product}
+                  key={category.id}
+                  category={category}
                   index={index}
                 />
               ))}

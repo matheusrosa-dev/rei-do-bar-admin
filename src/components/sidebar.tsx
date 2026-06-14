@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { MdReceiptLong, MdShoppingBasket, MdSwapVert } from "react-icons/md";
-import { BiCategory } from "react-icons/bi";
+import { BiCategory, BiSortAlt2 } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import {
   FiChevronsLeft,
@@ -21,6 +21,11 @@ const navItems = [
     icon: MdSwapVert,
   },
   { to: "/categorias", label: "Categorias", icon: BiCategory },
+  {
+    to: "/reordenar-categorias",
+    label: "Reordenar categorias",
+    icon: BiSortAlt2,
+  },
   { to: "/clientes", label: "Clientes", icon: FiUsers },
 ] as const;
 

@@ -6,7 +6,11 @@ import type {
   DeactivateCategory,
   GetCategories,
   GetCategoriesResponse,
+  GetCategoriesResponseToSortOrderResponse,
+  GetCategoriesToSortOrder,
   RemoveCategory,
+  UpdateCategoriesOrder,
+  UpdateCategoriesOrderResponse,
   UpdateCategory,
   UseCategoriesService,
 } from "./types";
@@ -18,6 +22,23 @@ export const useCategoriesService: UseCategoriesService = () => {
     const response = await api.get<GetCategoriesResponse>(baseUrl, {
       params: query,
     });
+
+    return response.data.data;
+  };
+
+  const getCategoriesToSortOrder: GetCategoriesToSortOrder = async () => {
+    const response = await api.get<GetCategoriesResponseToSortOrderResponse>(
+      `${baseUrl}/sort-order`,
+    );
+
+    return response.data.data;
+  };
+
+  const updateCategoriesOrder: UpdateCategoriesOrder = async (body) => {
+    const response = await api.put<UpdateCategoriesOrderResponse>(
+      `${baseUrl}/sort-order`,
+      body,
+    );
 
     return response.data.data;
   };
@@ -57,6 +78,11 @@ export const useCategoriesService: UseCategoriesService = () => {
       fn: getCategories,
       key: "get-categories",
     },
+    getCategoriesToSortOrder: {
+      fn: getCategoriesToSortOrder,
+      key: "get-categories-to-sort-order",
+    },
+    updateCategoriesOrder,
     removeCategory,
     createCategory,
     updateCategory,
