@@ -101,14 +101,6 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       },
     },
     {
-      accessorKey: "sortOrder",
-      header: "Destaque",
-      cell: ({ getValue }) => {
-        const sortOrder = getValue<number>();
-        return sortOrder || "-";
-      },
-    },
-    {
       accessorKey: "isActive",
       header: "Status",
       cell: ({ row }) => {

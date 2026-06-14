@@ -130,14 +130,6 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
             onChange={(value) => onChangeSorting("stock", value)}
           />
         </div>
-
-        <div className="w-40">
-          <SortSelect
-            label="Destaque"
-            value={sortKey === "sortOrder" ? sortDirection : undefined}
-            onChange={(value) => onChangeSorting("sortOrder", value)}
-          />
-        </div>
       </div>
 
       {hasActiveFilters && (

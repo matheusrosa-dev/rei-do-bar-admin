@@ -3,7 +3,7 @@ import type { IProduct, IProductWithCategory } from "@shared/models";
 
 export type GetProdutsResponse = IPagination<IProductWithCategory>;
 
-export type GetProductsSortKey = "sortOrder" | "stock";
+export type GetProductsSortKey = "stock";
 
 export type GetProducts = (queries?: {
   page?: number;
@@ -14,6 +14,17 @@ export type GetProducts = (queries?: {
   sortKey?: GetProductsSortKey;
   sortDirection?: SortDirection;
 }) => Promise<GetProdutsResponse>;
+
+export type GetProductsToSortOrderResponse = Array<IProduct>;
+
+export type GetProductsToSortOrder =
+  () => Promise<GetProductsToSortOrderResponse>;
+
+export type UpdateProductsOrderResponse = Array<IProduct>;
+
+export type UpdateProductsOrder = (body: {
+  orderedIds: string[];
+}) => Promise<UpdateProductsOrderResponse>;
 
 export type GetProductById = (
   productId: string,
@@ -63,7 +74,12 @@ export type UseProductsService = () => {
     fn: GetProductById;
     key: string;
   };
+  getProductsToSortOrder: {
+    fn: GetProductsToSortOrder;
+    key: string;
+  };
   updateProduct: UpdateProduct;
+  updateProductsOrder: UpdateProductsOrder;
   activateProduct: ActivateProduct;
   deactivateProduct: DeactivateProduct;
   incrementStock: IncrementStock;

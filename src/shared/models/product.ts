@@ -6,7 +6,7 @@ export interface IProduct {
   price: number;
   stock: number;
   imageUrl: string;
-  sortOrder: number | null;
+  sortOrder: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
