@@ -134,7 +134,7 @@ export const Filters = ({ onRefetch, isRefetching }: Props) => {
 
         <div className="w-40">
           <SortSelect
-            label="Itens"
+            label="Qtde. itens"
             value={sortKey === "itemsQuantity" ? sortDirection : undefined}
             onChange={(value) => onChangeSorting("itemsQuantity", value)}
           />

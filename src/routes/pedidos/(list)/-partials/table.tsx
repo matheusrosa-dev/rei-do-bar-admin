@@ -62,7 +62,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
     {
       id: "items",
-      header: "Itens",
+      header: "Qtde. itens",
       cell: ({ row }) => row.original.items.length,
     },
     {
