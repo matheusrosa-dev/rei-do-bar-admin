@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import {
   FiChevronsLeft,
   FiChevronsRight,
+  FiSettings,
   FiShoppingBag,
   FiUsers,
 } from "react-icons/fi";
@@ -27,6 +28,7 @@ const navItems = [
     icon: BiSortAlt2,
   },
   { to: "/clientes", label: "Clientes", icon: FiUsers },
+  { to: "/configuracoes", label: "Configurações", icon: FiSettings },
 ] as const;
 
 type Props = {
