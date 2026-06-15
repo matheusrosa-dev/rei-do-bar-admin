@@ -1,6 +1,13 @@
-import { Table as TableComponent } from "@components";
+import { ConfirmModal, Table as TableComponent, Toggle } from "@components";
 import type { ColumnDef } from "@tanstack/react-table";
-import { type ISetting, SettingKey } from "@shared/models";
+import { useSettingsService } from "@services";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { SettingType, type ISetting } from "@shared/models";
+import { useState } from "react";
+import { EditModal } from "./edit-modal";
+import { formatPrice } from "@shared/helpers/number";
+import { SETTING_KEY_LABEL } from "../-helpers/setting-labels";
 
 type Props = {
   data: ISetting[];
@@ -8,16 +15,34 @@ type Props = {
   isError?: boolean;
 };
 
-const SETTING_KEY_LABEL: Record<SettingKey, string> = {
-  [SettingKey.DELIVERY_FEE]: "Taxa de entrega",
-  [SettingKey.ALERT_MESSAGE]: "Mensagem de alerta",
-  [SettingKey.DANGER_MESSAGE]: "Mensagem de perigo",
-  [SettingKey.MIN_ORDER_VALUE]: "Valor mínimo do pedido",
-  [SettingKey.CONTACT_PHONE]: "Telefone de contato",
-  [SettingKey.CONTACT_EMAIL]: "E-mail de contato",
-};
+type ModalOpen = { mode: "toggle-status"; setting: ISetting };
 
 export const Table = ({ data, isLoading, isError }: Props) => {
+  const [editingSetting, setEditingSetting] = useState<ISetting | null>(null);
+  const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
+
+  const queryClient = useQueryClient();
+
+  const { getSettings, activateSetting, deactivateSetting } =
+    useSettingsService();
+
+  const toggleSettingMutation = useMutation({
+    mutationFn: (setting: ISetting) => {
+      if (setting.isActive) {
+        return deactivateSetting({ settingKey: setting.key });
+      }
+
+      return activateSetting({ settingKey: setting.key });
+    },
+    onSuccess: (_, setting) => {
+      toast.success(
+        `Configuração ${setting.isActive ? "desativada" : "ativada"} com sucesso!`,
+      );
+      queryClient.invalidateQueries({ queryKey: [getSettings.key] });
+      setModalOpen(null);
+    },
+  });
+
   const settingColumns: ColumnDef<ISetting>[] = [
     {
       accessorKey: "key",
@@ -26,8 +51,36 @@ export const Table = ({ data, isLoading, isError }: Props) => {
         SETTING_KEY_LABEL[row.original.key] ?? row.original.key,
     },
     {
+      accessorKey: "isActive",
+      header: "Status",
+      cell: ({ row }) => {
+        const setting = row.original;
+
+        return (
+          <span onClick={(e) => e.stopPropagation()} className="flex w-fit">
+            <Toggle
+              checked={setting.isActive}
+              onCheckedChange={() =>
+                setModalOpen({ mode: "toggle-status", setting })
+              }
+              disabled={toggleSettingMutation.isPending}
+            />
+          </span>
+        );
+      },
+    },
+    {
       accessorKey: "value",
       header: "Valor",
+      cell: ({ row }) => {
+        const setting = row.original;
+
+        if (setting.type === SettingType.CURRENCY) {
+          return formatPrice(Number(setting.value));
+        }
+
+        return row.original.value;
+      },
     },
   ];
 
@@ -45,6 +98,43 @@ export const Table = ({ data, isLoading, isError }: Props) => {
         isLoading={isLoading}
         isError={isError}
         limit={data.length || 5}
+        onRowClick={(row) => setEditingSetting(row)}
+      />
+
+      <EditModal
+        setting={editingSetting}
+        onClose={() => setEditingSetting(null)}
+      />
+
+      <ConfirmModal
+        isOpen={modalOpen?.mode === "toggle-status"}
+        title={
+          modalOpen?.mode === "toggle-status" && modalOpen.setting.isActive
+            ? "Desativar configuração?"
+            : "Ativar configuração?"
+        }
+        description={
+          modalOpen?.mode === "toggle-status" && modalOpen.setting.isActive
+            ? "A configuração deixará de ser aplicada."
+            : "A configuração voltará a ser aplicada."
+        }
+        onClose={() => setModalOpen(null)}
+        variant={
+          modalOpen?.mode === "toggle-status" && modalOpen.setting.isActive
+            ? "danger"
+            : "default"
+        }
+        canClose={!toggleSettingMutation.isPending}
+        confirmLabel={
+          modalOpen?.mode === "toggle-status" && modalOpen.setting.isActive
+            ? "Desativar"
+            : "Ativar"
+        }
+        onConfirm={() => {
+          if (modalOpen?.mode === "toggle-status") {
+            toggleSettingMutation.mutate(modalOpen.setting);
+          }
+        }}
       />
     </div>
   );

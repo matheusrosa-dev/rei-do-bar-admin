@@ -9,10 +9,20 @@ export type UpdateSetting = (props: {
   };
 }) => Promise<ISetting>;
 
+export type ActivateSetting = (params: {
+  settingKey: SettingKey;
+}) => Promise<void>;
+
+export type DeactivateSetting = (params: {
+  settingKey: SettingKey;
+}) => Promise<void>;
+
 export type UseSettingsService = () => {
   getSettings: {
     fn: GetSettings;
     key: string;
   };
   updateSetting: UpdateSetting;
+  activateSetting: ActivateSetting;
+  deactivateSetting: DeactivateSetting;
 };

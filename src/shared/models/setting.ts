@@ -1,16 +1,22 @@
 export enum SettingKey {
   DELIVERY_FEE = "DELIVERY_FEE",
-  DANGER_MESSAGE = "DANGER_MESSAGE",
   ALERT_MESSAGE = "ALERT_MESSAGE",
   MIN_ORDER_VALUE = "MIN_ORDER_VALUE",
-  CONTACT_PHONE = "CONTACT_PHONE",
-  CONTACT_EMAIL = "CONTACT_EMAIL",
+  OUTSIDE_BUSINESS_HOURS = "OUTSIDE_BUSINESS_HOURS",
+  ON_BREAK = "ON_BREAK",
+}
+
+export enum SettingType {
+  CURRENCY = "CURRENCY",
+  TEXT = "TEXT",
 }
 
 export interface ISetting {
   id: string;
   key: SettingKey;
+  type: SettingType;
   value: string;
-  createdAt: Date;
-  updatedAt: Date;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
