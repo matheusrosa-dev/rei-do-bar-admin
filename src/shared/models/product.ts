@@ -4,6 +4,7 @@ export interface IProduct {
   name: string;
   description: string | null;
   price: number;
+  compareAtPrice: number | null;
   stock: number;
   imageUrl: string;
   sortOrder: number;

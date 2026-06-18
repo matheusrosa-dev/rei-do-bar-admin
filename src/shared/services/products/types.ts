@@ -34,14 +34,24 @@ export type UpdateProduct = (props: {
   productId: string;
   body: Pick<
     IProduct,
-    "name" | "description" | "imageUrl" | "price" | "categoryId"
+    | "name"
+    | "description"
+    | "imageUrl"
+    | "price"
+    | "categoryId"
+    | "compareAtPrice"
   >;
 }) => Promise<IProductWithCategory>;
 
 export type CreateProduct = (
   body: Pick<
     IProduct,
-    "name" | "description" | "imageUrl" | "price" | "categoryId"
+    | "name"
+    | "description"
+    | "imageUrl"
+    | "price"
+    | "categoryId"
+    | "compareAtPrice"
   >,
 ) => Promise<IProductWithCategory>;
 

@@ -32,6 +32,7 @@ export const BasicData = ({ product, categories }: Props) => {
       imageUrl: product.imageUrl,
       price: product.price,
       categoryId: product.categoryId,
+      compareAtPrice: product.compareAtPrice ?? 0,
     },
     resolver,
   });
@@ -56,6 +57,7 @@ export const BasicData = ({ product, categories }: Props) => {
         imageUrl: formData.imageUrl,
         price: formData.price,
         categoryId: formData.categoryId,
+        compareAtPrice: formData.compareAtPrice || null,
       },
     });
   };
@@ -100,14 +102,37 @@ export const BasicData = ({ product, categories }: Props) => {
           />
         </div>
 
-        <div className="flex gap-4">
-          <Input
-            label="Nome"
-            placeholder="Insira o nome do produto"
-            {...form.register("name")}
-            error={form.formState.errors.name?.message}
-            disabled={updateProductMutation.isPending}
-          />
+        <div className="grid grid-cols-10 gap-4">
+          <div className="col-span-7">
+            <Input
+              label="Nome"
+              placeholder="Insira o nome do produto"
+              {...form.register("name")}
+              error={form.formState.errors.name?.message}
+              disabled={updateProductMutation.isPending}
+            />
+          </div>
+
+          <div className="col-span-3">
+            <Controller
+              control={form.control}
+              name="categoryId"
+              render={({ field, fieldState }) => (
+                <Select
+                  label="Categoria"
+                  options={categoriesWithDeactivated.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  }))}
+                  value={field.value}
+                  clearable
+                  error={fieldState.error?.message}
+                  onChange={field.onChange}
+                  disabled={updateProductMutation.isPending}
+                />
+              )}
+            />
+          </div>
         </div>
 
         <Textarea
@@ -121,10 +146,10 @@ export const BasicData = ({ product, categories }: Props) => {
         <div className="grid md:grid-cols-2 gap-4">
           <Controller
             control={form.control}
-            name="price"
+            name="compareAtPrice"
             render={({ field, fieldState }) => (
               <CurrencyInput
-                label="Preço"
+                label="Preço de comparação"
                 value={field.value}
                 onChange={field.onChange}
                 error={fieldState.error?.message}
@@ -135,18 +160,13 @@ export const BasicData = ({ product, categories }: Props) => {
 
           <Controller
             control={form.control}
-            name="categoryId"
+            name="price"
             render={({ field, fieldState }) => (
-              <Select
-                label="Categoria"
-                options={categoriesWithDeactivated.map((item) => ({
-                  label: item.name,
-                  value: item.id,
-                }))}
+              <CurrencyInput
+                label="Preço"
                 value={field.value}
-                clearable
-                error={fieldState.error?.message}
                 onChange={field.onChange}
+                error={fieldState.error?.message}
                 disabled={updateProductMutation.isPending}
               />
             )}

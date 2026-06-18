@@ -67,6 +67,7 @@ function RouteComponent() {
       imageUrl: formData.imageUrl,
       price: formData.price,
       categoryId: formData.categoryId,
+      compareAtPrice: formData.compareAtPrice || null,
     });
   };
 

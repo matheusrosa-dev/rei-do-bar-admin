@@ -79,6 +79,15 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       header: "Nome",
     },
     {
+      accessorKey: "compareAtPrice",
+      header: "Preço de comparação",
+      cell: ({ row }) => {
+        const value = row.original.compareAtPrice;
+
+        return value ? formatPrice(value) : "-";
+      },
+    },
+    {
       accessorKey: "price",
       header: "Preço",
       cell: ({ getValue }) => formatPrice(getValue<number>()),
