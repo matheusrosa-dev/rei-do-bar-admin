@@ -81,7 +81,7 @@ function ReorderCategories() {
 
   return (
     <PageWrapper title="Reordenar categorias">
-      <div className="pb-48 w-1/2 mx-auto">
+      <div className="pb-48 w-[80%] max-w-200 mx-auto">
         <div className="flex justify-end items-center gap-4 mb-4">
           {isDirty && (
             <Button

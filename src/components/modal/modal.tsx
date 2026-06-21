@@ -31,7 +31,7 @@ export function Modal({ isOpen, canClose = true, children, onClose }: Props) {
 
               <RadixDialog.Content asChild forceMount>
                 <motion.div
-                  className="max-h-full overflow-y-auto z-10 w-full max-w-lg bg-zinc-900 border border-white/10 rounded-xl p-6 shadow-xl"
+                  className="max-h-full overflow-y-auto z-10 w-full max-w-xl bg-zinc-900 border border-white/10 rounded-xl p-6 shadow-xl"
                   initial={{ opacity: 0, scale: 0.95, y: 8 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 8 }}

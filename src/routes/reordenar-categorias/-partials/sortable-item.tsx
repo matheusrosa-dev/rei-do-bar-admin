@@ -3,7 +3,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { MdDragIndicator } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
-import { StatusBadge } from "@components";
+import { ImagePreview, StatusBadge } from "@components";
 
 type Props = {
   category: ICategory;
@@ -45,6 +45,8 @@ export function SortableItem({ category, index }: Props) {
       </span>
 
       <div className="flex items-center gap-4 flex-1">
+        <ImagePreview src={category.imageUrl} className="h-12 w-12" />
+
         <span className="text-sm text-gray-200 truncate w-50">
           {category.name}
         </span>
