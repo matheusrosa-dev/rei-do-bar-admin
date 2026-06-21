@@ -67,11 +67,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       accessorKey: "imageUrl",
       header: "Imagem",
       cell: ({ getValue }) => (
-        <ImagePreview
-          src={getValue<string>()}
-          alt="Produto"
-          className="w-14 h-14"
-        />
+        <ImagePreview src={getValue<string>()} className="w-14 h-14" />
       ),
     },
     {

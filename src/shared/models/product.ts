@@ -17,6 +17,7 @@ export interface ICategory {
   id: string;
   name: string;
   pluralName: string;
+  imageUrl: string;
   sortOrder: number;
   isActive: boolean;
 }

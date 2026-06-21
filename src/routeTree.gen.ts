@@ -18,9 +18,11 @@ import { Route as ProdutoslistIndexRouteImport } from './routes/produtos/(list)/
 import { Route as PedidoslistIndexRouteImport } from './routes/pedidos/(list)/index'
 import { Route as ConfiguracoeslistIndexRouteImport } from './routes/configuracoes/(list)/index'
 import { Route as ClienteslistIndexRouteImport } from './routes/clientes/(list)/index'
+import { Route as CategoriasCriarIndexRouteImport } from './routes/categorias/criar/index'
 import { Route as CategoriaslistIndexRouteImport } from './routes/categorias/(list)/index'
 import { Route as ProdutosEditarProductIdRouteImport } from './routes/produtos/editar/$productId'
 import { Route as ClientesVisualizarCustomerIdRouteImport } from './routes/clientes/visualizar/$customerId'
+import { Route as CategoriasEditarCategoryIdRouteImport } from './routes/categorias/editar/$categoryId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -68,6 +70,11 @@ const ClienteslistIndexRoute = ClienteslistIndexRouteImport.update({
   path: '/clientes/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategoriasCriarIndexRoute = CategoriasCriarIndexRouteImport.update({
+  id: '/categorias/criar/',
+  path: '/categorias/criar/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriaslistIndexRoute = CategoriaslistIndexRouteImport.update({
   id: '/categorias/(list)/',
   path: '/categorias/',
@@ -84,15 +91,23 @@ const ClientesVisualizarCustomerIdRoute =
     path: '/clientes/visualizar/$customerId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const CategoriasEditarCategoryIdRoute =
+  CategoriasEditarCategoryIdRouteImport.update({
+    id: '/categorias/editar/$categoryId',
+    path: '/categorias/editar/$categoryId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gerenciar-pedidos/': typeof GerenciarPedidosIndexRoute
   '/reordenar-categorias/': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos/': typeof ReordenarProdutosIndexRoute
+  '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
   '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
   '/categorias/': typeof CategoriaslistIndexRoute
+  '/categorias/criar/': typeof CategoriasCriarIndexRoute
   '/clientes/': typeof ClienteslistIndexRoute
   '/configuracoes/': typeof ConfiguracoeslistIndexRoute
   '/pedidos/': typeof PedidoslistIndexRoute
@@ -104,9 +119,11 @@ export interface FileRoutesByTo {
   '/gerenciar-pedidos': typeof GerenciarPedidosIndexRoute
   '/reordenar-categorias': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos': typeof ReordenarProdutosIndexRoute
+  '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
   '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
   '/categorias': typeof CategoriaslistIndexRoute
+  '/categorias/criar': typeof CategoriasCriarIndexRoute
   '/clientes': typeof ClienteslistIndexRoute
   '/configuracoes': typeof ConfiguracoeslistIndexRoute
   '/pedidos': typeof PedidoslistIndexRoute
@@ -119,9 +136,11 @@ export interface FileRoutesById {
   '/gerenciar-pedidos/': typeof GerenciarPedidosIndexRoute
   '/reordenar-categorias/': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos/': typeof ReordenarProdutosIndexRoute
+  '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
   '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
   '/produtos/editar/$productId': typeof ProdutosEditarProductIdRoute
   '/categorias/(list)/': typeof CategoriaslistIndexRoute
+  '/categorias/criar/': typeof CategoriasCriarIndexRoute
   '/clientes/(list)/': typeof ClienteslistIndexRoute
   '/configuracoes/(list)/': typeof ConfiguracoeslistIndexRoute
   '/pedidos/(list)/': typeof PedidoslistIndexRoute
@@ -135,9 +154,11 @@ export interface FileRouteTypes {
     | '/gerenciar-pedidos/'
     | '/reordenar-categorias/'
     | '/reordenar-produtos/'
+    | '/categorias/editar/$categoryId'
     | '/clientes/visualizar/$customerId'
     | '/produtos/editar/$productId'
     | '/categorias/'
+    | '/categorias/criar/'
     | '/clientes/'
     | '/configuracoes/'
     | '/pedidos/'
@@ -149,9 +170,11 @@ export interface FileRouteTypes {
     | '/gerenciar-pedidos'
     | '/reordenar-categorias'
     | '/reordenar-produtos'
+    | '/categorias/editar/$categoryId'
     | '/clientes/visualizar/$customerId'
     | '/produtos/editar/$productId'
     | '/categorias'
+    | '/categorias/criar'
     | '/clientes'
     | '/configuracoes'
     | '/pedidos'
@@ -163,9 +186,11 @@ export interface FileRouteTypes {
     | '/gerenciar-pedidos/'
     | '/reordenar-categorias/'
     | '/reordenar-produtos/'
+    | '/categorias/editar/$categoryId'
     | '/clientes/visualizar/$customerId'
     | '/produtos/editar/$productId'
     | '/categorias/(list)/'
+    | '/categorias/criar/'
     | '/clientes/(list)/'
     | '/configuracoes/(list)/'
     | '/pedidos/(list)/'
@@ -178,9 +203,11 @@ export interface RootRouteChildren {
   GerenciarPedidosIndexRoute: typeof GerenciarPedidosIndexRoute
   ReordenarCategoriasIndexRoute: typeof ReordenarCategoriasIndexRoute
   ReordenarProdutosIndexRoute: typeof ReordenarProdutosIndexRoute
+  CategoriasEditarCategoryIdRoute: typeof CategoriasEditarCategoryIdRoute
   ClientesVisualizarCustomerIdRoute: typeof ClientesVisualizarCustomerIdRoute
   ProdutosEditarProductIdRoute: typeof ProdutosEditarProductIdRoute
   CategoriaslistIndexRoute: typeof CategoriaslistIndexRoute
+  CategoriasCriarIndexRoute: typeof CategoriasCriarIndexRoute
   ClienteslistIndexRoute: typeof ClienteslistIndexRoute
   ConfiguracoeslistIndexRoute: typeof ConfiguracoeslistIndexRoute
   PedidoslistIndexRoute: typeof PedidoslistIndexRoute
@@ -253,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClienteslistIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categorias/criar/': {
+      id: '/categorias/criar/'
+      path: '/categorias/criar'
+      fullPath: '/categorias/criar/'
+      preLoaderRoute: typeof CategoriasCriarIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/categorias/(list)/': {
       id: '/categorias/(list)/'
       path: '/categorias'
@@ -274,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClientesVisualizarCustomerIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categorias/editar/$categoryId': {
+      id: '/categorias/editar/$categoryId'
+      path: '/categorias/editar/$categoryId'
+      fullPath: '/categorias/editar/$categoryId'
+      preLoaderRoute: typeof CategoriasEditarCategoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -282,9 +323,11 @@ const rootRouteChildren: RootRouteChildren = {
   GerenciarPedidosIndexRoute: GerenciarPedidosIndexRoute,
   ReordenarCategoriasIndexRoute: ReordenarCategoriasIndexRoute,
   ReordenarProdutosIndexRoute: ReordenarProdutosIndexRoute,
+  CategoriasEditarCategoryIdRoute: CategoriasEditarCategoryIdRoute,
   ClientesVisualizarCustomerIdRoute: ClientesVisualizarCustomerIdRoute,
   ProdutosEditarProductIdRoute: ProdutosEditarProductIdRoute,
   CategoriaslistIndexRoute: CategoriaslistIndexRoute,
+  CategoriasCriarIndexRoute: CategoriasCriarIndexRoute,
   ClienteslistIndexRoute: ClienteslistIndexRoute,
   ConfiguracoeslistIndexRoute: ConfiguracoeslistIndexRoute,
   PedidoslistIndexRoute: PedidoslistIndexRoute,

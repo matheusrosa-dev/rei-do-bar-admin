@@ -26,6 +26,7 @@ export type RemoveCategory = (categoryId: string) => Promise<void>;
 export type CreateCategoryBody = {
   name: string;
   pluralName: string;
+  imageUrl: string;
 };
 
 export type CreateCategory = (body: CreateCategoryBody) => Promise<ICategory>;
@@ -37,6 +38,7 @@ export type DeactivateCategory = (categoryId: string) => Promise<ICategory>;
 export type UpdateCategoryBody = {
   name: string;
   pluralName: string;
+  imageUrl: string;
 };
 
 export type UpdateCategory = (params: {

@@ -1,17 +1,14 @@
 import { useCategoriesService } from "@services";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { CreateModal, Table } from "./-partials";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Table } from "./-partials";
 import { Button, PageWrapper, RefetchButton } from "@components";
-import { useState } from "react";
 
 export const Route = createFileRoute("/categorias/(list)/")({
   component: Index,
 });
 
 function Index() {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
   const { getCategories } = useCategoriesService();
 
   const { data: categories, ...categoriesQuery } = useQuery({
@@ -24,9 +21,9 @@ function Index() {
     <PageWrapper
       title="Categorias"
       headerContent={() => (
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          Criar categoria
-        </Button>
+        <Link to="/categorias/criar">
+          <Button>Criar categoria</Button>
+        </Link>
       )}
     >
       <div className="flex mb-4 justify-end">
@@ -40,11 +37,6 @@ function Index() {
         data={categories ?? []}
         isLoading={categoriesQuery.isLoading}
         isError={categoriesQuery.isError}
-      />
-
-      <CreateModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
       />
     </PageWrapper>
   );

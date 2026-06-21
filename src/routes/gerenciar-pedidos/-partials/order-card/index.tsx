@@ -110,11 +110,7 @@ export const OrderCard = ({
         <div className="flex flex-col gap-2 p-3 border-t border-white/10">
           {order.items.map((current) => (
             <div key={current.id} className="flex items-center gap-3">
-              <ImagePreview
-                src={current.imageUrl}
-                alt={current.name}
-                className="w-12 h-12"
-              />
+              <ImagePreview src={current.imageUrl} className="w-12 h-12" />
               <div className="flex flex-1 items-center justify-between gap-2 min-w-0">
                 <div className="flex flex-col min-w-0">
                   <span className="text-gray-200 text-sm font-medium truncate">

@@ -1,16 +1,17 @@
 import {
   ConfirmModal,
+  ImagePreview,
   Table as TableComponent,
   Toggle,
   Tooltip,
   TrashButton,
 } from "@components";
 import type { ColumnDef } from "@tanstack/react-table";
+import { useNavigate } from "@tanstack/react-router";
 import { useCategoriesService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useState } from "react";
-import { EditModal } from "./edit-modal";
 import type { CategoryWithProductsCount } from "../-types";
 
 type Props = {
@@ -25,9 +26,8 @@ type ModalOpen =
 
 export const Table = ({ data, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
-  const [editingCategory, setEditingCategory] =
-    useState<CategoryWithProductsCount | null>(null);
 
+  const navigate = useNavigate({ from: "/categorias/" });
   const queryClient = useQueryClient();
 
   const {
@@ -64,6 +64,13 @@ export const Table = ({ data, isLoading, isError }: Props) => {
   });
 
   const categoryColumns: ColumnDef<CategoryWithProductsCount>[] = [
+    {
+      accessorKey: "imageUrl",
+      header: "Imagem",
+      cell: ({ getValue }) => (
+        <ImagePreview src={getValue<string>()} className="w-14 h-14" />
+      ),
+    },
     {
       accessorKey: "name",
       header: "Nome",
@@ -144,12 +151,12 @@ export const Table = ({ data, isLoading, isError }: Props) => {
         isLoading={isLoading}
         isError={isError}
         limit={data.length || 5}
-        onRowClick={(row) => setEditingCategory(row)}
-      />
-
-      <EditModal
-        category={editingCategory}
-        onClose={() => setEditingCategory(null)}
+        onRowClick={(row) =>
+          navigate({
+            to: "/categorias/editar/$categoryId",
+            params: { categoryId: row.id },
+          })
+        }
       />
 
       <ConfirmModal

@@ -4,17 +4,15 @@ import { twMerge } from "tailwind-merge";
 
 type Props = {
   src: string;
-  alt?: string;
   className?: string;
 };
 
-export function ImagePreview({ src, alt = "Imagem", className }: Props) {
+export function ImagePreview({ src, className }: Props) {
   return (
     <Dialog.Root>
       <Dialog.Trigger onClick={(e) => e.stopPropagation()} className="block">
         <img
           src={src}
-          alt={alt}
           className={twMerge(
             "cursor-zoom-in transition-opacity object-contain hover:opacity-80 select-none rounded-md bg-white/5",
             className,
@@ -28,7 +26,6 @@ export function ImagePreview({ src, alt = "Imagem", className }: Props) {
         <Dialog.Content className="fixed z-50 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[90vw] max-h-[90vh] focus:outline-none">
           <img
             src={src}
-            alt={alt}
             className="max-w-full max-h-[90vh] rounded-xl object-contain shadow-2xl"
           />
 

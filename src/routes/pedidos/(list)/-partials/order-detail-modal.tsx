@@ -114,11 +114,7 @@ export const OrderDetailModal = ({ order, onClose }: Props) => {
           <div className="flex flex-col gap-2 ">
             {order.items.map((item) => (
               <div key={item.id} className="flex items-center gap-3">
-                <ImagePreview
-                  src={item.imageUrl}
-                  alt={item.name}
-                  className="w-12 h-12"
-                />
+                <ImagePreview src={item.imageUrl} className="w-12 h-12" />
 
                 <div className="flex flex-1 items-center justify-between gap-2 min-w-0">
                   <div className="flex flex-col min-w-0">

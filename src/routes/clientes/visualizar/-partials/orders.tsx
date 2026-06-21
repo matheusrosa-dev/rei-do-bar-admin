@@ -122,11 +122,7 @@ export const Orders = ({ orders }: Props) => {
                 <div className="flex flex-col gap-2 p-3 border-t border-white/10 ">
                   {order.items.map((item) => (
                     <div key={item.id} className="flex items-center gap-3">
-                      <ImagePreview
-                        src={item.imageUrl}
-                        alt={item.name}
-                        className="w-12 h-12"
-                      />
+                      <ImagePreview src={item.imageUrl} className="w-12 h-12" />
                       <div className="flex flex-1 items-center justify-between gap-2 min-w-0">
                         <div className="flex flex-col min-w-0">
                           <span className="text-gray-200 text-sm font-medium truncate">
