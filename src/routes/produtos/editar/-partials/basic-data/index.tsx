@@ -86,7 +86,7 @@ export const BasicData = ({ product, categories }: Props) => {
               {product.isActive ? "Ativo" : "Inativo"}
             </StatusBadge>
 
-            {!product.stock && (
+            {!product.stockQuantity && (
               <StatusBadge variant="alert">Esgotado</StatusBadge>
             )}
           </div>

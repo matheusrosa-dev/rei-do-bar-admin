@@ -94,14 +94,14 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       cell: ({ getValue }) => getValue<IProductWithCategory>()?.name,
     },
     {
-      accessorKey: "stock",
+      accessorKey: "stockQuantity",
       header: "Estoque",
       cell: ({ getValue }) => {
-        const stock = getValue<number>();
-        return stock === 0 ? (
+        const stockQuantity = getValue<number>();
+        return stockQuantity === 0 ? (
           <StatusBadge variant="alert">Esgotado</StatusBadge>
         ) : (
-          stock
+          stockQuantity
         );
       },
     },

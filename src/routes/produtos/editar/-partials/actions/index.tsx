@@ -123,7 +123,7 @@ export const Actions = ({ product }: Props) => {
               </button>
 
               <span className="text-white text-2xl font-bold text-center">
-                {product.stock}
+                {product.stockQuantity}
               </span>
 
               <button

@@ -126,8 +126,8 @@ export const Filters = ({ categories, onRefetch, isRefetching }: Props) => {
         <div className="w-40">
           <SortSelect
             label="Estoque"
-            value={sortKey === "stock" ? sortDirection : undefined}
-            onChange={(value) => onChangeSorting("stock", value)}
+            value={sortKey === "stockQuantity" ? sortDirection : undefined}
+            onChange={(value) => onChangeSorting("stockQuantity", value)}
           />
         </div>
       </div>

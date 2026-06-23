@@ -61,7 +61,7 @@ export function SortableItem({ product, index }: Props) {
             {product.isActive ? "Ativo" : "Inativo"}
           </StatusBadge>
 
-          {!product.stock && (
+          {!product.stockQuantity && (
             <StatusBadge variant="alert">Esgotado</StatusBadge>
           )}
         </span>

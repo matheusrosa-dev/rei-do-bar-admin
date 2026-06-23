@@ -3,7 +3,7 @@ import type { IProduct, IProductWithCategory } from "@shared/models";
 
 export type GetProdutsResponse = IPagination<IProductWithCategory>;
 
-export type GetProductsSortKey = "stock";
+export type GetProductsSortKey = "stockQuantity";
 
 export type GetProducts = (queries?: {
   page?: number;
