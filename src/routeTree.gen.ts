@@ -16,6 +16,7 @@ import { Route as GerenciarPedidosIndexRouteImport } from './routes/gerenciar-pe
 import { Route as ProdutosCriarIndexRouteImport } from './routes/produtos/criar/index'
 import { Route as ProdutoslistIndexRouteImport } from './routes/produtos/(list)/index'
 import { Route as PedidoslistIndexRouteImport } from './routes/pedidos/(list)/index'
+import { Route as MovimentacoesEstoquelistIndexRouteImport } from './routes/movimentacoes-estoque/(list)/index'
 import { Route as ConfiguracoeslistIndexRouteImport } from './routes/configuracoes/(list)/index'
 import { Route as ClienteslistIndexRouteImport } from './routes/clientes/(list)/index'
 import { Route as CategoriasCriarIndexRouteImport } from './routes/categorias/criar/index'
@@ -60,6 +61,12 @@ const PedidoslistIndexRoute = PedidoslistIndexRouteImport.update({
   path: '/pedidos/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MovimentacoesEstoquelistIndexRoute =
+  MovimentacoesEstoquelistIndexRouteImport.update({
+    id: '/movimentacoes-estoque/(list)/',
+    path: '/movimentacoes-estoque/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ConfiguracoeslistIndexRoute = ConfiguracoeslistIndexRouteImport.update({
   id: '/configuracoes/(list)/',
   path: '/configuracoes/',
@@ -110,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/categorias/criar/': typeof CategoriasCriarIndexRoute
   '/clientes/': typeof ClienteslistIndexRoute
   '/configuracoes/': typeof ConfiguracoeslistIndexRoute
+  '/movimentacoes-estoque/': typeof MovimentacoesEstoquelistIndexRoute
   '/pedidos/': typeof PedidoslistIndexRoute
   '/produtos/': typeof ProdutoslistIndexRoute
   '/produtos/criar/': typeof ProdutosCriarIndexRoute
@@ -126,6 +134,7 @@ export interface FileRoutesByTo {
   '/categorias/criar': typeof CategoriasCriarIndexRoute
   '/clientes': typeof ClienteslistIndexRoute
   '/configuracoes': typeof ConfiguracoeslistIndexRoute
+  '/movimentacoes-estoque': typeof MovimentacoesEstoquelistIndexRoute
   '/pedidos': typeof PedidoslistIndexRoute
   '/produtos': typeof ProdutoslistIndexRoute
   '/produtos/criar': typeof ProdutosCriarIndexRoute
@@ -143,6 +152,7 @@ export interface FileRoutesById {
   '/categorias/criar/': typeof CategoriasCriarIndexRoute
   '/clientes/(list)/': typeof ClienteslistIndexRoute
   '/configuracoes/(list)/': typeof ConfiguracoeslistIndexRoute
+  '/movimentacoes-estoque/(list)/': typeof MovimentacoesEstoquelistIndexRoute
   '/pedidos/(list)/': typeof PedidoslistIndexRoute
   '/produtos/(list)/': typeof ProdutoslistIndexRoute
   '/produtos/criar/': typeof ProdutosCriarIndexRoute
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/categorias/criar/'
     | '/clientes/'
     | '/configuracoes/'
+    | '/movimentacoes-estoque/'
     | '/pedidos/'
     | '/produtos/'
     | '/produtos/criar/'
@@ -177,6 +188,7 @@ export interface FileRouteTypes {
     | '/categorias/criar'
     | '/clientes'
     | '/configuracoes'
+    | '/movimentacoes-estoque'
     | '/pedidos'
     | '/produtos'
     | '/produtos/criar'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
     | '/categorias/criar/'
     | '/clientes/(list)/'
     | '/configuracoes/(list)/'
+    | '/movimentacoes-estoque/(list)/'
     | '/pedidos/(list)/'
     | '/produtos/(list)/'
     | '/produtos/criar/'
@@ -210,6 +223,7 @@ export interface RootRouteChildren {
   CategoriasCriarIndexRoute: typeof CategoriasCriarIndexRoute
   ClienteslistIndexRoute: typeof ClienteslistIndexRoute
   ConfiguracoeslistIndexRoute: typeof ConfiguracoeslistIndexRoute
+  MovimentacoesEstoquelistIndexRoute: typeof MovimentacoesEstoquelistIndexRoute
   PedidoslistIndexRoute: typeof PedidoslistIndexRoute
   ProdutoslistIndexRoute: typeof ProdutoslistIndexRoute
   ProdutosCriarIndexRoute: typeof ProdutosCriarIndexRoute
@@ -264,6 +278,13 @@ declare module '@tanstack/react-router' {
       path: '/pedidos'
       fullPath: '/pedidos/'
       preLoaderRoute: typeof PedidoslistIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/movimentacoes-estoque/(list)/': {
+      id: '/movimentacoes-estoque/(list)/'
+      path: '/movimentacoes-estoque'
+      fullPath: '/movimentacoes-estoque/'
+      preLoaderRoute: typeof MovimentacoesEstoquelistIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuracoes/(list)/': {
@@ -330,6 +351,7 @@ const rootRouteChildren: RootRouteChildren = {
   CategoriasCriarIndexRoute: CategoriasCriarIndexRoute,
   ClienteslistIndexRoute: ClienteslistIndexRoute,
   ConfiguracoeslistIndexRoute: ConfiguracoeslistIndexRoute,
+  MovimentacoesEstoquelistIndexRoute: MovimentacoesEstoquelistIndexRoute,
   PedidoslistIndexRoute: PedidoslistIndexRoute,
   ProdutoslistIndexRoute: ProdutoslistIndexRoute,
   ProdutosCriarIndexRoute: ProdutosCriarIndexRoute,

@@ -1,6 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { MdReceiptLong, MdShoppingBasket, MdSwapVert } from "react-icons/md";
+import {
+  MdInventory2,
+  MdReceiptLong,
+  MdShoppingBasket,
+  MdSwapVert,
+} from "react-icons/md";
 import { BiCategory, BiSortAlt2 } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import {
@@ -28,6 +33,11 @@ const navItems = [
     icon: BiSortAlt2,
   },
   { to: "/clientes", label: "Clientes", icon: FiUsers },
+  {
+    to: "/movimentacoes-estoque",
+    label: "Movimentações de estoque",
+    icon: MdInventory2,
+  },
   { to: "/configuracoes", label: "Configurações", icon: FiSettings },
 ] as const;
 
@@ -64,16 +74,16 @@ export function Sidebar({
       <div
         className={twMerge(
           "relative w-0 shrink-0 transition-[width] duration-200",
-          collapsed ? "md:w-16" : "md:w-60",
+          collapsed ? "md:w-16" : "md:w-64",
         )}
       >
         <aside
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
           className={twMerge(
-            "fixed inset-y-0 left-0 z-30 flex w-60 flex-col overflow-hidden border-r border-white/10 bg-neutral-950 transition-[width,transform] duration-200 md:absolute md:translate-x-0",
+            "fixed inset-y-0 left-0 z-30 flex w-64 flex-col overflow-hidden border-r border-white/10 bg-neutral-950 transition-[width,transform] duration-200 md:absolute md:translate-x-0",
             isOpen ? "translate-x-0" : "-translate-x-full",
-            desktopExpanded ? "md:w-60" : "md:w-16",
+            desktopExpanded ? "md:w-64" : "md:w-16",
             floating && "md:z-40 md:shadow-xl",
           )}
         >
