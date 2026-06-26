@@ -4,14 +4,12 @@ import type {
   ActivateProduct,
   CreateProduct,
   DeactivateProduct,
-  DecrementStock,
   GetProductById,
   GetProducts,
   GetProductsSimple,
   GetProductsToSortOrder,
   GetProductsToSortOrderResponse,
   GetProdutsResponse,
-  IncrementStock,
   RemoveProduct,
   UpdateProduct,
   UpdateProductsOrder,
@@ -90,24 +88,6 @@ export const useProductsService: UseProductsService = () => {
     return response.data.data;
   };
 
-  const incrementStock: IncrementStock = async ({ productId, body }) => {
-    const response = await api.patch<IProductWithCategory>(
-      `${baseUrl}/${productId}/increment-stock`,
-      body,
-    );
-
-    return response.data.data;
-  };
-
-  const decrementStock: DecrementStock = async ({ productId, body }) => {
-    const response = await api.patch<IProductWithCategory>(
-      `${baseUrl}/${productId}/decrement-stock`,
-      body,
-    );
-
-    return response.data.data;
-  };
-
   const createProduct: CreateProduct = async (body) => {
     const response = await api.post<IProductWithCategory>(`${baseUrl}`, body);
 
@@ -135,8 +115,6 @@ export const useProductsService: UseProductsService = () => {
     updateProduct,
     activateProduct,
     deactivateProduct,
-    incrementStock,
-    decrementStock,
     removeProduct,
     createProduct,
   };

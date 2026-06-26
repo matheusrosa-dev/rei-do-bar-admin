@@ -4,8 +4,6 @@ import type { ModalOpen } from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useProductsService } from "@services";
 import { toast } from "sonner";
-import { FaMinus, FaPlus } from "react-icons/fa";
-import { StockModal, type StockModalVariant } from "./partials";
 import type { IProductWithCategory } from "@shared/models";
 import { useNavigate } from "@tanstack/react-router";
 import { RemoveModal, StatusModal } from "../../../-partials";
@@ -21,8 +19,6 @@ export const Actions = ({ product }: Props) => {
     activateProduct,
     deactivateProduct,
     getProductById,
-    incrementStock,
-    decrementStock,
     removeProduct,
     getProducts,
   } = useProductsService();
@@ -44,32 +40,6 @@ export const Actions = ({ product }: Props) => {
       toast.success(
         `Produto ${updatedProduct.isActive ? "ativado" : "desativado"} com sucesso!`,
       );
-
-      setModalOpen(null);
-    },
-  });
-
-  const changeStockMutation = useMutation({
-    mutationFn: (body: { amount: number }) => {
-      if (modalOpen === "increment-stock") {
-        return incrementStock({
-          productId: product.id,
-          body,
-        });
-      }
-
-      return decrementStock({
-        productId: product.id,
-        body,
-      });
-    },
-    onSuccess: (updatedProduct) => {
-      queryClient.setQueryData(
-        [getProductById.key, product.id],
-        updatedProduct,
-      );
-
-      toast.success("Estoque atualizado com sucesso!");
 
       setModalOpen(null);
     },
@@ -108,32 +78,14 @@ export const Actions = ({ product }: Props) => {
             </span>
           </Tooltip>
 
-          <div>
+          <div className="flex flex-col gap-2">
             <h2 className="text-zinc-300 text-sm font-medium select-none text-center">
               Estoque
             </h2>
 
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setModalOpen("decrement-stock")}
-                className="bg-amber-500 text-black rounded-full w-5 max-w-5 h-5 max-h-5 flex items-center justify-center cursor-pointer hover:bg-amber-400 transition"
-              >
-                <FaMinus size={12} />
-              </button>
-
-              <span className="text-white text-2xl font-bold text-center">
-                {product.stockQuantity}
-              </span>
-
-              <button
-                type="button"
-                onClick={() => setModalOpen("increment-stock")}
-                className="bg-amber-500 text-black rounded-full w-5 max-w-5 h-5 max-h-5 flex items-center justify-center cursor-pointer hover:bg-amber-400 transition"
-              >
-                <FaPlus size={12} />
-              </button>
-            </div>
+            <span className="text-zinc-300 text-sm font-medium select-none text-center">
+              {product.stockQuantity}
+            </span>
           </div>
 
           <TrashButton
@@ -142,16 +94,6 @@ export const Actions = ({ product }: Props) => {
           />
         </div>
       </Wrapper>
-
-      <StockModal
-        isOpen={
-          modalOpen === "increment-stock" || modalOpen === "decrement-stock"
-        }
-        variant={modalOpen as StockModalVariant}
-        isPending={changeStockMutation.isPending}
-        onClose={() => setModalOpen(null)}
-        onConfirm={changeStockMutation.mutate}
-      />
 
       <StatusModal
         isOpen={modalOpen === "toggle-status"}

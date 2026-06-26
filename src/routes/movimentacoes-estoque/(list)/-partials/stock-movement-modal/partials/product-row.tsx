@@ -11,15 +11,11 @@ import {
   StatusBadge,
   Toggle,
 } from "@components";
-import { formatPrice } from "@shared/helpers/number";
 import type { IProduct } from "@shared/models";
 
 type Props = {
   index: number;
-  product: Pick<
-    IProduct,
-    "name" | "imageUrl" | "stockQuantity" | "price" | "isActive"
-  >;
+  product: Pick<IProduct, "name" | "imageUrl" | "stockQuantity" | "isActive">;
   isSelected: boolean;
   isPending: boolean;
   showPrice: boolean;
@@ -71,8 +67,7 @@ export const ProductRow = ({
             </StatusBadge>
           </div>
           <span className="text-gray-500 text-sm">
-            Estoque atual: {product.stockQuantity} ·{" "}
-            {formatPrice(product.price)}
+            Estoque atual: {product.stockQuantity}
           </span>
         </div>
       </div>

@@ -65,16 +65,6 @@ export type DeactivateProduct = (
   productId: string,
 ) => Promise<IProductWithCategory>;
 
-export type IncrementStock = (props: {
-  productId: string;
-  body: { amount: number };
-}) => Promise<IProductWithCategory>;
-
-export type DecrementStock = (props: {
-  productId: string;
-  body: { amount: number };
-}) => Promise<IProductWithCategory>;
-
 export type RemoveProduct = (productId: string) => Promise<void>;
 
 export type UseProductsService = () => {
@@ -98,8 +88,6 @@ export type UseProductsService = () => {
   updateProductsOrder: UpdateProductsOrder;
   activateProduct: ActivateProduct;
   deactivateProduct: DeactivateProduct;
-  incrementStock: IncrementStock;
-  decrementStock: DecrementStock;
   removeProduct: RemoveProduct;
   createProduct: CreateProduct;
 };

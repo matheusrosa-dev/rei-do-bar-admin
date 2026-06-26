@@ -8,7 +8,6 @@ const productSchema = yup.object({
   name: yup.string().required(),
   imageUrl: yup.string().defined(),
   stockQuantity: yup.number().required(),
-  price: yup.number().required(),
   isActive: yup.boolean().required(),
   selected: yup.boolean().required(),
   quantity: yup

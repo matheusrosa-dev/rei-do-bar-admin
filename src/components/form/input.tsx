@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
-  label: string;
+  label?: string;
   error?: string;
   leftIcon?: ReactNode;
 };
@@ -18,7 +18,9 @@ export function Input({
 }: Props) {
   return (
     <label className="flex flex-col gap-1.5 w-full">
-      <span className="text-zinc-300 text-sm font-medium">{label}</span>
+      {label && (
+        <span className="text-zinc-300 text-sm font-medium">{label}</span>
+      )}
 
       <div className="relative">
         {leftIcon && (

@@ -1,14 +1,15 @@
-import { Button, Modal, Select } from "@components";
+import { Button, Input, Modal, Select } from "@components";
 import { useInventoryService, useProductsService } from "@services";
 import { InventoryMovementOrigin } from "@shared/models";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { MOVEMENT_PROPS_BY_ORIGIN } from "../../-helpers";
 import { defaultValues, resolver, type Form } from "./form";
 import { ProductRow } from "./partials";
+import { FiSearch } from "react-icons/fi";
 
 type Props = {
   isOpen: boolean;
@@ -21,6 +22,8 @@ const ORIGIN_OPTIONS = [
 ];
 
 export const StockMovementModal = ({ isOpen, onClose }: Props) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
   const queryClient = useQueryClient();
   const { incrementInventory, decrementInventory, getInventoryMovements } =
     useInventoryService();
@@ -50,6 +53,12 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
 
   const { fields, replace } = useFieldArray({ control, name: "products" });
 
+  const filteredFields = fields
+    .map((field, index) => ({ field, index }))
+    .filter(({ field }) =>
+      field.name.toLowerCase().includes((searchTerm ?? "").toLowerCase()),
+    );
+
   const origin = watch("origin");
   const showPrice = origin === InventoryMovementOrigin.ADMIN_RESTOCK;
   validationContext.current.origin = origin;
@@ -60,26 +69,9 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
 
   const onCloseHandler = () => {
     reset();
+    setSearchTerm("");
     onClose();
   };
-
-  useEffect(() => {
-    if (!isOpen || !products?.length) return;
-
-    replace(
-      products.map((product) => ({
-        productId: product.id,
-        name: product.name,
-        imageUrl: product.imageUrl,
-        stockQuantity: product.stockQuantity,
-        price: product.price,
-        isActive: product.isActive,
-        selected: false,
-        quantity: undefined,
-        cost: 0,
-      })),
-    );
-  }, [isOpen, products, replace]);
 
   const incrementMutation = useMutation({
     mutationFn: incrementInventory,
@@ -119,13 +111,31 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
 
   const selectionError = errors.products?.root?.message;
 
+  useEffect(() => {
+    if (!isOpen || !products?.length) return;
+
+    replace(
+      products.map((product) => ({
+        productId: product.id,
+        name: product.name,
+        imageUrl: product.imageUrl,
+        stockQuantity: product.stockQuantity,
+        price: product.price,
+        isActive: product.isActive,
+        selected: false,
+        quantity: undefined,
+        cost: 0,
+      })),
+    );
+  }, [isOpen, products, replace]);
+
   return (
     <Modal
       isOpen={isOpen}
       canClose={!incrementMutation.isPending}
       onClose={onCloseHandler}
     >
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 pr-1">
         <div className="flex flex-col gap-1">
           <RadixDialog.Title className="text-white font-bold text-lg">
             Movimentar estoque
@@ -161,38 +171,55 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
               <span className="text-zinc-300 text-sm font-medium">
                 Produtos
               </span>
-              <span className="text-zinc-400 text-sm">
-                {selectedCount} selecionado{selectedCount !== 1 ? "s" : ""}
-              </span>
             </div>
 
-            {isLoading ? (
-              <span className="text-zinc-500 text-sm py-4 text-center">
-                Carregando produtos...
-              </span>
-            ) : (
-              <div className="flex flex-col gap-2 max-h-80 overflow-y-auto pr-1">
-                {fields.map((field, index) => (
-                  <ProductRow
-                    key={field.id}
-                    index={index}
-                    product={{
-                      imageUrl: field.imageUrl,
-                      name: field.name,
-                      stockQuantity: field.stockQuantity,
-                      price: field.price,
-                      isActive: field.isActive,
-                    }}
-                    isSelected={!!watch(`products.${index}.selected`)}
-                    isPending={incrementMutation.isPending}
-                    showPrice={showPrice}
-                    control={control}
-                    register={register}
-                    error={errors.products?.[index]?.quantity?.message}
-                  />
-                ))}
-              </div>
-            )}
+            <Input
+              placeholder="Pesquisar"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              leftIcon={<FiSearch className="size-4" />}
+            />
+
+            <span className="text-sm block text-end my-1 text-amber-500 font-medium">
+              {selectedCount} selecionado{selectedCount !== 1 ? "s" : ""}
+            </span>
+
+            <div className="h-80 max-h-80 overflow-y-auto pr-1">
+              {isLoading && (
+                <span className="text-zinc-500 text-sm text-center block">
+                  Carregando produtos...
+                </span>
+              )}
+
+              {Boolean(!isLoading && !filteredFields.length) && (
+                <span className="text-zinc-500 text-sm text-center block">
+                  Nenhum produto encontrado.
+                </span>
+              )}
+
+              {Boolean(!isLoading && !!filteredFields.length) && (
+                <div className="flex flex-col gap-2">
+                  {filteredFields.map(({ field, index }) => (
+                    <ProductRow
+                      key={field.id}
+                      index={index}
+                      product={{
+                        imageUrl: field.imageUrl,
+                        name: field.name,
+                        stockQuantity: field.stockQuantity,
+                        isActive: field.isActive,
+                      }}
+                      isSelected={!!watch(`products.${index}.selected`)}
+                      isPending={incrementMutation.isPending}
+                      showPrice={showPrice}
+                      control={control}
+                      register={register}
+                      error={errors.products?.[index]?.quantity?.message}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
 
             {selectionError && (
               <span className="text-red-500 text-xs">{selectionError}</span>
