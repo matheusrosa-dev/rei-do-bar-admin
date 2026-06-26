@@ -9,19 +9,21 @@ export enum InventoryMovementOrigin {
   ADMIN_REMOVAL = "ADMIN_REMOVAL",
 }
 
+export interface IInventoryMovementProduct {
+  id: string;
+  inventoryMovementId: string;
+  productId: string;
+  quantity: number;
+  price: number;
+  createdAt: string;
+  product: IProduct;
+}
+
 export interface IInventoryMovement {
   id: string;
   origin: InventoryMovementOrigin;
-  orderId: string;
+  orderId?: string;
   createdAt: string;
-  order: IOrder;
-  products: Array<{
-    id: string;
-    inventoryMovementId: string;
-    productId: string;
-    quantity: number;
-    price: number;
-    createdAt: string;
-    product: IProduct;
-  }>;
+  order?: IOrder;
+  products: Array<IInventoryMovementProduct>;
 }

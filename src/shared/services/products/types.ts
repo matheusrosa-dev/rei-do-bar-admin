@@ -15,6 +15,8 @@ export type GetProducts = (queries?: {
   sortDirection?: SortDirection;
 }) => Promise<GetProdutsResponse>;
 
+export type GetProductsSimple = () => Promise<IProduct[]>;
+
 export type GetProductsToSortOrderResponse = Array<IProduct>;
 
 export type GetProductsToSortOrder =
@@ -78,6 +80,10 @@ export type RemoveProduct = (productId: string) => Promise<void>;
 export type UseProductsService = () => {
   getProducts: {
     fn: GetProducts;
+    key: string;
+  };
+  getProductsSimple: {
+    fn: GetProductsSimple;
     key: string;
   };
   getProductById: {

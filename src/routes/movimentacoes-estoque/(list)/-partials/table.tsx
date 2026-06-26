@@ -1,4 +1,5 @@
 import { StatusBadge, Table as TableComponent } from "@components";
+import { formatPrice } from "@shared/helpers/number";
 import { formatDateTime } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
 import type { IInventoryMovement } from "@shared/models";
@@ -34,22 +35,26 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       ),
     },
     {
-      accessorKey: "order",
-      header: "Pedido",
-      cell: ({ row }) => (
-        <Link
-          className="text-gray-400 text-sm underline flex w-fit flex-nowrap items-center gap-1 duration-150 hover:text-white"
-          to="/pedidos"
-          search={{ searchTerm: String(row.original.order.orderNumber) }}
-          target="_blank"
-          rel="noreferrer"
-          onClick={(e) => e.stopPropagation()}
-        >
-          #{row.original.order.orderNumber}
-          <RiExternalLinkLine />
-        </Link>
-      ),
+      id: "total",
+      header: "Total",
+      cell: ({ row }) => {
+        const variant = MOVEMENT_ORIGIN_VARIANT[row.original.origin];
+        const sign = MOVEMENT_QUANTITY_SIGN[variant];
+
+        const total = row.original.products.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
+
+        return (
+          <span className={MOVEMENT_QUANTITY_CLASS[variant]}>
+            {sign}
+            {formatPrice(total)}
+          </span>
+        );
+      },
     },
+
     {
       id: "items",
       header: "Itens",
@@ -61,16 +66,43 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         const { products } = row.original;
 
         return (
-          <div
-            className={`flex max-w-48 flex-col ${MOVEMENT_QUANTITY_CLASS[invertedVariant]}`}
-          >
+          <div className={`flex max-w-48 flex-col gap-2`}>
             {products.map((item) => (
-              <span key={item.id} className="truncate">
-                {sign}
-                {item.quantity} {item.product.name}
+              <span key={item.id} className="whitespace-nowrap">
+                <span className={MOVEMENT_QUANTITY_CLASS[invertedVariant]}>
+                  {sign}
+                  {item.quantity} {item.product.name}{" "}
+                </span>
+                <span className="text-gray-400 text-xs">
+                  ({formatPrice(item.price)} unidade)
+                </span>
               </span>
             ))}
           </div>
+        );
+      },
+    },
+    {
+      accessorKey: "order",
+      header: "Pedido",
+      cell: ({ row }) => {
+        const order = row.original?.order;
+        if (!order) {
+          return "-";
+        }
+
+        return (
+          <Link
+            className="text-gray-400 text-sm underline flex w-fit flex-nowrap items-center gap-1 duration-150 hover:text-white"
+            to="/pedidos"
+            search={{ searchTerm: String(order.orderNumber) }}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            #{order.orderNumber}
+            <RiExternalLinkLine />
+          </Link>
         );
       },
     },

@@ -1,4 +1,4 @@
-import type { IProductWithCategory } from "@shared/models";
+import type { IProduct, IProductWithCategory } from "@shared/models";
 import { api } from "../api";
 import type {
   ActivateProduct,
@@ -7,6 +7,7 @@ import type {
   DecrementStock,
   GetProductById,
   GetProducts,
+  GetProductsSimple,
   GetProductsToSortOrder,
   GetProductsToSortOrderResponse,
   GetProdutsResponse,
@@ -25,6 +26,12 @@ export const useProductsService: UseProductsService = () => {
     const response = await api.get<GetProdutsResponse>(baseUrl, {
       params: queries,
     });
+
+    return response.data.data;
+  };
+
+  const getProductsSimple: GetProductsSimple = async () => {
+    const response = await api.get<IProduct[]>(`${baseUrl}?simple=true`);
 
     return response.data.data;
   };
@@ -111,6 +118,10 @@ export const useProductsService: UseProductsService = () => {
     getProducts: {
       fn: getProducts,
       key: "get-products",
+    },
+    getProductsSimple: {
+      fn: getProductsSimple,
+      key: "get-products-simple",
     },
     getProductById: {
       fn: getProductById,
