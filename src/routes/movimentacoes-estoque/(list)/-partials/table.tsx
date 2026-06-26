@@ -2,16 +2,14 @@ import { StatusBadge, Table as TableComponent } from "@components";
 import { formatPrice } from "@shared/helpers/number";
 import { formatDateTime } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
-import type { IInventoryMovement } from "@shared/models";
+import {
+  InventoryMovementOrigin,
+  type IInventoryMovement,
+} from "@shared/models";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { RiExternalLinkLine } from "react-icons/ri";
-import {
-  MOVEMENT_ORIGIN_LABEL,
-  MOVEMENT_ORIGIN_VARIANT,
-  MOVEMENT_QUANTITY_CLASS,
-  MOVEMENT_QUANTITY_SIGN,
-} from "../-helpers";
+import { MOVEMENT_PROPS_BY_ORIGIN, MOVEMENT_QUANTITY_CLASS } from "../-helpers";
 
 type Props = {
   data: IInventoryMovement[];
@@ -28,18 +26,38 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     {
       accessorKey: "origin",
       header: "Origem",
-      cell: ({ row }) => (
-        <StatusBadge variant={MOVEMENT_ORIGIN_VARIANT[row.original.origin]}>
-          {MOVEMENT_ORIGIN_LABEL[row.original.origin]}
-        </StatusBadge>
-      ),
+      cell: ({ row }) => {
+        const { originVariant, originTranslation } =
+          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin];
+
+        return (
+          <StatusBadge variant={originVariant}>{originTranslation}</StatusBadge>
+        );
+      },
+    },
+    {
+      id: "is-admin",
+      cell: ({ row }) => {
+        const adminOrigins = [
+          InventoryMovementOrigin.ADMIN_REMOVAL,
+          InventoryMovementOrigin.ADMIN_ORDER_CANCELLATION,
+          InventoryMovementOrigin.ADMIN_RESTOCK,
+        ];
+
+        const isAdmin = adminOrigins.includes(row.original.origin);
+
+        if (!isAdmin) return null;
+
+        return <StatusBadge variant="alert">Admin</StatusBadge>;
+      },
     },
     {
       id: "total",
       header: "Total",
       cell: ({ row }) => {
-        const variant = MOVEMENT_ORIGIN_VARIANT[row.original.origin];
-        const sign = MOVEMENT_QUANTITY_SIGN[variant];
+        const variant =
+          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin].totalVariant;
+        const sign = variant === "active" ? "+" : "-";
 
         const total = row.original.products.reduce(
           (sum, item) => sum + item.price * item.quantity,
@@ -47,7 +65,9 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         );
 
         return (
-          <span className={MOVEMENT_QUANTITY_CLASS[variant]}>
+          <span
+            className={`whitespace-nowrap ${MOVEMENT_QUANTITY_CLASS[variant]}`}
+          >
             {sign}
             {formatPrice(total)}
           </span>
@@ -59,17 +79,17 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "items",
       header: "Itens",
       cell: ({ row }) => {
-        const variant = MOVEMENT_ORIGIN_VARIANT[row.original.origin];
-        const invertedVariant = variant === "active" ? "inactive" : "active";
+        const variant =
+          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin].quantityVariant;
 
-        const sign = MOVEMENT_QUANTITY_SIGN[invertedVariant];
+        const sign = variant === "active" ? "+" : "-";
         const { products } = row.original;
 
         return (
           <div className={`flex max-w-48 flex-col gap-2`}>
             {products.map((item) => (
               <span key={item.id} className="whitespace-nowrap">
-                <span className={MOVEMENT_QUANTITY_CLASS[invertedVariant]}>
+                <span className={MOVEMENT_QUANTITY_CLASS[variant]}>
                   {sign}
                   {item.quantity} {item.product.name}{" "}
                 </span>

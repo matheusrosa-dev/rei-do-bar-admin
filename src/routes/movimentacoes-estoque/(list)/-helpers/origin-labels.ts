@@ -2,32 +2,48 @@ import { InventoryMovementOrigin } from "@shared/models";
 
 type MovementDirection = "active" | "inactive";
 
-export const MOVEMENT_ORIGIN_LABEL: Record<InventoryMovementOrigin, string> = {
-  [InventoryMovementOrigin.ORDER_CREATION]: "Criação de pedido",
-  [InventoryMovementOrigin.ORDER_CANCELLATION]: "Cancelamento de pedido",
-  [InventoryMovementOrigin.ADMIN_ORDER_CANCELLATION]:
-    "Cancelamento de pedido (admin)",
-  [InventoryMovementOrigin.ADMIN_RESTOCK]: "Reposição de estoque",
-  [InventoryMovementOrigin.ADMIN_REMOVAL]: "Remoção de estoque",
-};
-
-export const MOVEMENT_ORIGIN_VARIANT: Record<
-  InventoryMovementOrigin,
-  MovementDirection
-> = {
-  [InventoryMovementOrigin.ORDER_CREATION]: "active",
-  [InventoryMovementOrigin.ORDER_CANCELLATION]: "inactive",
-  [InventoryMovementOrigin.ADMIN_ORDER_CANCELLATION]: "inactive",
-  [InventoryMovementOrigin.ADMIN_RESTOCK]: "inactive",
-  [InventoryMovementOrigin.ADMIN_REMOVAL]: "active",
-};
-
-export const MOVEMENT_QUANTITY_SIGN: Record<MovementDirection, string> = {
-  active: "+",
-  inactive: "-",
-};
-
 export const MOVEMENT_QUANTITY_CLASS: Record<MovementDirection, string> = {
   active: "text-green-400 font-medium",
   inactive: "text-red-400 font-medium",
+};
+
+export const MOVEMENT_PROPS_BY_ORIGIN: Record<
+  InventoryMovementOrigin,
+  {
+    originVariant: MovementDirection;
+    originTranslation: string;
+    totalVariant: MovementDirection;
+    quantityVariant: MovementDirection;
+  }
+> = {
+  [InventoryMovementOrigin.ORDER_CREATION]: {
+    originVariant: "active",
+    originTranslation: "Criação de pedido",
+    totalVariant: "active",
+    quantityVariant: "inactive",
+  },
+  [InventoryMovementOrigin.ORDER_CANCELLATION]: {
+    originVariant: "inactive",
+    originTranslation: "Cancelamento de pedido",
+    totalVariant: "inactive",
+    quantityVariant: "active",
+  },
+  [InventoryMovementOrigin.ADMIN_ORDER_CANCELLATION]: {
+    originVariant: "inactive",
+    originTranslation: "Cancelamento de pedido (admin)",
+    totalVariant: "inactive",
+    quantityVariant: "active",
+  },
+  [InventoryMovementOrigin.ADMIN_RESTOCK]: {
+    originTranslation: "Reposição de estoque",
+    originVariant: "active",
+    totalVariant: "inactive",
+    quantityVariant: "active",
+  },
+  [InventoryMovementOrigin.ADMIN_REMOVAL]: {
+    originVariant: "inactive",
+    originTranslation: "Remoção de estoque",
+    totalVariant: "inactive",
+    quantityVariant: "inactive",
+  },
 };
