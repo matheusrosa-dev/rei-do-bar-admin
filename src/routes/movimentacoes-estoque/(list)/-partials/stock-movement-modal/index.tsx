@@ -99,14 +99,16 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
       .map((product) => ({
         productId: product.productId,
         quantity: Number(product.quantity),
-        price: Number(product.cost),
+        totalCost: Number(product.totalCost),
       }));
 
     if (data.origin === InventoryMovementOrigin.ADMIN_REMOVAL) {
       decrementMutation.mutate({ movementProducts });
       return;
     }
-    incrementMutation.mutate({ movementProducts });
+    incrementMutation.mutate({
+      movementProducts,
+    });
   };
 
   const selectionError = errors.products?.root?.message;
@@ -124,7 +126,7 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
         isActive: product.isActive,
         selected: false,
         quantity: undefined,
-        cost: 0,
+        totalCost: 0,
       })),
     );
   }, [isOpen, products, replace]);

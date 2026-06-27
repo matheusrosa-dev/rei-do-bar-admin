@@ -21,7 +21,7 @@ const productSchema = yup.object({
             .required("Informe a quantidade")
         : field.notRequired(),
     ),
-  cost: yup
+  totalCost: yup
     .number()
     .when(["selected", "$origin"], ([selected, origin], field) =>
       selected && origin === InventoryMovementOrigin.ADMIN_RESTOCK

@@ -87,10 +87,10 @@ export const ProductRow = ({
           {showPrice && (
             <Controller
               control={control}
-              name={`products.${index}.cost`}
+              name={`products.${index}.totalCost`}
               render={({ field, fieldState }) => (
                 <CurrencyInput
-                  label="Custo unitário"
+                  label="Custo total"
                   value={field.value ?? 0}
                   onChange={field.onChange}
                   error={fieldState.error?.message}

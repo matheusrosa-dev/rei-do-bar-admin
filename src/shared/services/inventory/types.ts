@@ -12,10 +12,11 @@ export type GetInventoryMovements = (queries?: {
 }) => Promise<GetInventoryMovementsResponse>;
 
 export type IncrementInventory = (body: {
-  movementProducts: Pick<
-    IInventoryMovementProduct,
-    "productId" | "price" | "quantity"
-  >[];
+  movementProducts: Array<
+    Pick<IInventoryMovementProduct, "productId" | "quantity"> & {
+      totalCost: number;
+    }
+  >;
 }) => Promise<void>;
 
 export type DecrementInventory = (body: {
