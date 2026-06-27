@@ -8,6 +8,7 @@ const api = axios.create({
     username: import.meta.env.VITE_API_USERNAME,
     password: import.meta.env.VITE_API_PASSWORD,
   },
+  paramsSerializer: { indexes: null },
 }) as TypedAxiosInstance;
 
 api.interceptors.response.use(

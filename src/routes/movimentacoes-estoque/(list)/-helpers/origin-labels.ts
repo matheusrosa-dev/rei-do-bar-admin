@@ -30,7 +30,7 @@ export const MOVEMENT_PROPS_BY_ORIGIN: Record<
   },
   [InventoryMovementOrigin.ADMIN_ORDER_CANCELLATION]: {
     originVariant: "inactive",
-    originTranslation: "Cancelamento de pedido (admin)",
+    originTranslation: "Cancelamento de pedido",
     totalVariant: "inactive",
     quantityVariant: "active",
   },
@@ -47,3 +47,20 @@ export const MOVEMENT_PROPS_BY_ORIGIN: Record<
     quantityVariant: "inactive",
   },
 };
+
+export const ADMIN_ORIGINS = [
+  InventoryMovementOrigin.ADMIN_ORDER_CANCELLATION,
+  InventoryMovementOrigin.ADMIN_RESTOCK,
+  InventoryMovementOrigin.ADMIN_REMOVAL,
+];
+
+export const ORIGIN_FILTER_OPTIONS = Object.values(InventoryMovementOrigin).map(
+  (origin) => {
+    const { originTranslation } = MOVEMENT_PROPS_BY_ORIGIN[origin];
+    const label = ADMIN_ORIGINS.includes(origin)
+      ? `${originTranslation} (Admin)`
+      : originTranslation;
+
+    return { value: origin, label };
+  },
+);

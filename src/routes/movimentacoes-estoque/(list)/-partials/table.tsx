@@ -2,14 +2,15 @@ import { StatusBadge, Table as TableComponent } from "@components";
 import { formatPrice } from "@shared/helpers/number";
 import { formatDateTime } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
-import {
-  InventoryMovementOrigin,
-  type IInventoryMovement,
-} from "@shared/models";
+import type { IInventoryMovement } from "@shared/models";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { RiExternalLinkLine } from "react-icons/ri";
-import { MOVEMENT_PROPS_BY_ORIGIN, MOVEMENT_QUANTITY_CLASS } from "../-helpers";
+import {
+  ADMIN_ORIGINS,
+  MOVEMENT_PROPS_BY_ORIGIN,
+  MOVEMENT_QUANTITY_CLASS,
+} from "../-helpers";
 
 type Props = {
   data: IInventoryMovement[];
@@ -38,13 +39,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     {
       id: "is-admin",
       cell: ({ row }) => {
-        const adminOrigins = [
-          InventoryMovementOrigin.ADMIN_REMOVAL,
-          InventoryMovementOrigin.ADMIN_ORDER_CANCELLATION,
-          InventoryMovementOrigin.ADMIN_RESTOCK,
-        ];
-
-        const isAdmin = adminOrigins.includes(row.original.origin);
+        const isAdmin = ADMIN_ORIGINS.includes(row.original.origin);
 
         if (!isAdmin) return null;
 

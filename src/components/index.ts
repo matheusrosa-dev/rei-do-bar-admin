@@ -11,6 +11,7 @@ export { Toggle } from "./form/toggle";
 export { Textarea } from "./form/textarea";
 export { Button } from "./form/button";
 export { Select } from "./form/select";
+export { MultiSelect } from "./form/multi-select";
 export { SortSelect } from "./form/sort-select";
 export { Wrapper } from "./wrapper";
 export { StatusBadge } from "./status-badge";

@@ -1,8 +1,8 @@
-import { useInventoryService } from "@services";
+import { useInventoryService, useProductsService } from "@services";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { StockMovementModal, Table } from "./-partials";
-import { Button, PageWrapper, RefetchButton } from "@components";
+import { Filters, StockMovementModal, Table } from "./-partials";
+import { Button, PageWrapper } from "@components";
 import { validateSearch } from "./-helpers";
 import { useState } from "react";
 
@@ -16,14 +16,23 @@ const LIMIT = 10;
 function Index() {
   const [isMovementModalOpen, setIsMovementModalOpen] = useState(false);
 
-  const { page = 1 } = Route.useSearch();
+  const { page = 1, origin, productIds } = Route.useSearch();
 
   const { getInventoryMovements } = useInventoryService();
+  const { getProductsSimple } = useProductsService();
 
   const { data: movements, ...movementsQuery } = useQuery({
-    queryKey: [getInventoryMovements.key, page],
-    queryFn: () => getInventoryMovements.fn({ page, limit: LIMIT }),
+    queryKey: [getInventoryMovements.key, page, origin, productIds],
+    queryFn: () =>
+      getInventoryMovements.fn({ page, limit: LIMIT, origin, productIds }),
     retry: false,
+  });
+
+  const { data: products } = useQuery({
+    queryKey: [getProductsSimple.key],
+    queryFn: getProductsSimple.fn,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   return (
@@ -35,8 +44,9 @@ function Index() {
         </Button>
       )}
     >
-      <div className="flex mb-4 justify-end">
-        <RefetchButton
+      <div className="mb-4">
+        <Filters
+          products={products ?? []}
           onRefetch={movementsQuery.refetch}
           isRefetching={movementsQuery.isRefetching}
         />

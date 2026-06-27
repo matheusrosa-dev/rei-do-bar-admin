@@ -2,6 +2,7 @@ import type { IPagination } from "@shared/interfaces";
 import type {
   IInventoryMovement,
   IInventoryMovementProduct,
+  InventoryMovementOrigin,
 } from "@shared/models";
 
 export type GetInventoryMovementsResponse = IPagination<IInventoryMovement>;
@@ -9,6 +10,8 @@ export type GetInventoryMovementsResponse = IPagination<IInventoryMovement>;
 export type GetInventoryMovements = (queries?: {
   page?: number;
   limit?: number;
+  origin?: InventoryMovementOrigin[];
+  productIds?: string[];
 }) => Promise<GetInventoryMovementsResponse>;
 
 export type IncrementInventory = (body: {
