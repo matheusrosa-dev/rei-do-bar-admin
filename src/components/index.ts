@@ -7,6 +7,7 @@ export { ImagePreview } from "./image-preview";
 export { Input } from "./form/input";
 export { CurrencyInput } from "./form/currency-input";
 export { NumberInput } from "./form/number-input";
+export { PhoneInput } from "./form/phone-input";
 export { Toggle } from "./form/toggle";
 export { Textarea } from "./form/textarea";
 export { Button } from "./form/button";

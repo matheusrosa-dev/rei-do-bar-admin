@@ -7,6 +7,7 @@ import { SettingType, type ISetting } from "@shared/models";
 import { useState } from "react";
 import { EditModal } from "./edit-modal";
 import { formatPrice } from "@shared/helpers/number";
+import { formatPhone } from "@shared/helpers/string";
 import { SETTING_KEY_LABEL } from "../-helpers/setting-labels";
 
 type Props = {
@@ -77,6 +78,10 @@ export const Table = ({ data, isLoading, isError }: Props) => {
 
         if (setting.type === SettingType.CURRENCY) {
           return formatPrice(Number(setting.value));
+        }
+
+        if (setting.type === SettingType.PHONE) {
+          return formatPhone(setting.value);
         }
 
         return row.original.value;

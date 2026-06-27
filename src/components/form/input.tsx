@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode } from "react";
+import type { InputHTMLAttributes, ReactNode, Ref } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
@@ -6,6 +6,7 @@ type Props = InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
   error?: string;
   leftIcon?: ReactNode;
+  ref?: Ref<HTMLInputElement>;
 };
 
 export function Input({

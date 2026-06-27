@@ -1,4 +1,4 @@
-import { Button, CurrencyInput, Input, Modal } from "@components";
+import { Button, CurrencyInput, Input, Modal, PhoneInput } from "@components";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
@@ -90,6 +90,23 @@ export function EditModal({ setting, onClose }: Props) {
               error={errors.value?.message}
               disabled={isPending}
               {...register("value")}
+            />
+          )}
+
+          {setting?.type === SettingType.PHONE && (
+            <Controller
+              control={control}
+              name="value"
+              render={({ field, fieldState }) => (
+                <PhoneInput
+                  label={SETTING_KEY_LABEL[setting.key]}
+                  placeholder="Insira o telefone"
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  error={fieldState.error?.message}
+                  disabled={isPending}
+                />
+              )}
             />
           )}
 
