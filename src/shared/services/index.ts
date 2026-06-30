@@ -5,3 +5,4 @@ export { useOrdersService } from "./orders";
 export { useSettingsService } from "./settings";
 export { useNotificationsService } from "./notifications";
 export { useInventoryService } from "./inventory";
+export { useCouponsService } from "./coupons";
