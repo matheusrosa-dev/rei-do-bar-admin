@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   MdInventory2,
+  MdLocalOffer,
   MdReceiptLong,
   MdShoppingBasket,
   MdSwapVert,
@@ -38,6 +39,7 @@ const navItems = [
     label: "Movimentações de estoque",
     icon: MdInventory2,
   },
+  { to: "/cupons", label: "Cupons", icon: MdLocalOffer },
   { to: "/configuracoes", label: "Configurações", icon: FiSettings },
 ] as const;
 
