@@ -4,14 +4,15 @@ import type { CouponDiscountType, ICoupon } from "@shared/models";
 export type GetCouponsSortKey =
   | "discountValue"
   | "minOrderValue"
-  | "startsAt"
-  | "endsAt";
+  | "usageCount";
 
 export type GetCoupons = (query?: {
   page?: number;
   limit?: number;
   searchTerm?: string;
   isActive?: boolean;
+  hasStarted?: boolean;
+  isFinished?: boolean;
   sortKey?: GetCouponsSortKey;
   sortDirection?: SortDirection;
 }) => Promise<IPagination<ICoupon>>;
