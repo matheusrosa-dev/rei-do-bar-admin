@@ -96,35 +96,33 @@ export function DatePicker({
           </button>
         </RadixPopover.Trigger>
 
-        <RadixPopover.Portal>
-          <RadixPopover.Content
-            align="start"
-            sideOffset={6}
-            className="z-50 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl p-3 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
-          >
-            <DayPicker
-              mode="single"
-              locale={ptBR}
-              selected={selected}
-              defaultMonth={selected}
-              disabled={before ? { before } : undefined}
-              onSelect={(date) => {
-                onChange(date ? toValue(date) : undefined);
-                setIsOpen(false);
-              }}
-              showOutsideDays
-              classNames={calendarClassNames}
-              components={{
-                Chevron: ({ orientation }) =>
-                  orientation === "left" ? (
-                    <FiChevronLeft className="size-4" />
-                  ) : (
-                    <FiChevronRight className="size-4" />
-                  ),
-              }}
-            />
-          </RadixPopover.Content>
-        </RadixPopover.Portal>
+        <RadixPopover.Content
+          align="start"
+          sideOffset={6}
+          className="z-50 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl p-3 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95"
+        >
+          <DayPicker
+            mode="single"
+            locale={ptBR}
+            selected={selected}
+            defaultMonth={selected}
+            disabled={before ? { before } : undefined}
+            onSelect={(date) => {
+              onChange(date ? toValue(date) : undefined);
+              setIsOpen(false);
+            }}
+            showOutsideDays
+            classNames={calendarClassNames}
+            components={{
+              Chevron: ({ orientation }) =>
+                orientation === "left" ? (
+                  <FiChevronLeft className="size-4" />
+                ) : (
+                  <FiChevronRight className="size-4" />
+                ),
+            }}
+          />
+        </RadixPopover.Content>
       </RadixPopover.Root>
 
       <AnimatePresence>
