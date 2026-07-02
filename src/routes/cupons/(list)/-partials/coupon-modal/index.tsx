@@ -8,22 +8,32 @@ import {
   Select,
 } from "@components";
 import { useCouponsService } from "@services";
-import { CouponDiscountType } from "@shared/models";
+import { CouponDiscountType, type ICoupon } from "@shared/models";
+import type { UpdateCouponBody } from "@shared/services/coupons/types";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { DISCOUNT_TYPE_OPTIONS } from "../../-helpers";
-import { defaultValues, resolver, type Form } from "./form";
+import { couponToForm, defaultValues, resolver, type Form } from "./form";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  coupon?: ICoupon;
 };
 
-export const CouponModal = ({ isOpen, onClose }: Props) => {
+const getSubmitLabel = (isEditing: boolean, isPending: boolean) => {
+  if (isPending) return "Salvando...";
+  return isEditing ? "Salvar alterações" : "Criar cupom";
+};
+
+export const CouponModal = ({ isOpen, onClose, coupon }: Props) => {
   const queryClient = useQueryClient();
-  const { createCoupon, getCoupons } = useCouponsService();
+  const { createCoupon, updateCoupon, getCoupons } = useCouponsService();
+
+  const isEditing = !!coupon;
+  const isStartLocked = coupon?.hasStarted ?? false;
 
   const {
     control,
@@ -32,8 +42,12 @@ export const CouponModal = ({ isOpen, onClose }: Props) => {
     watch,
     reset,
     setValue,
-    formState: { errors },
-  } = useForm<Form>({ defaultValues, resolver });
+    formState: { errors, isDirty },
+  } = useForm<Form>({
+    defaultValues,
+    resolver,
+    values: coupon ? couponToForm(coupon) : undefined,
+  });
 
   const isPercentage = watch("discountType") === CouponDiscountType.PERCENTAGE;
 
@@ -53,9 +67,34 @@ export const CouponModal = ({ isOpen, onClose }: Props) => {
     },
   });
 
-  const isPending = createMutation.isPending;
+  const updateMutation = useMutation({
+    mutationFn: (variables: { couponId: string; body: UpdateCouponBody }) =>
+      updateCoupon(variables.couponId, variables.body),
+    onSuccess: () => {
+      toast.success("Cupom atualizado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: [getCoupons.key] });
+      onCloseHandler();
+    },
+  });
+
+  const isPending = createMutation.isPending || updateMutation.isPending;
 
   const onSubmit = (data: Form) => {
+    if (coupon) {
+      updateMutation.mutate({
+        couponId: coupon.id,
+        body: {
+          discountType: data.discountType,
+          discountValue: data.discountValue,
+          minOrderValue: data.minOrderValue,
+          startsAt: new Date(data.startsAt),
+          endsAt: data.endsAt ? new Date(data.endsAt) : undefined,
+          usageLimit: data.usageLimit ?? undefined,
+        },
+      });
+      return;
+    }
+
     createMutation.mutate({
       code: data.code.trim().toUpperCase(),
       discountType: data.discountType,
@@ -72,11 +111,13 @@ export const CouponModal = ({ isOpen, onClose }: Props) => {
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <RadixDialog.Title className="text-white font-bold text-lg">
-            Criar cupom
+            {isEditing ? "Editar cupom" : "Criar cupom"}
           </RadixDialog.Title>
 
           <RadixDialog.Description className="text-zinc-400 text-sm">
-            Preencha os dados do cupom de desconto.
+            {isEditing
+              ? "Atualize os dados do cupom de desconto."
+              : "Preencha os dados do cupom de desconto."}
           </RadixDialog.Description>
         </div>
 
@@ -85,7 +126,7 @@ export const CouponModal = ({ isOpen, onClose }: Props) => {
             label="Código"
             placeholder="Ex: BEMVINDO10"
             error={errors.code?.message}
-            disabled={isPending}
+            disabled={isPending || isEditing}
             {...codeField}
             onChange={(event) => {
               event.target.value = event.target.value.toUpperCase();
@@ -161,7 +202,8 @@ export const CouponModal = ({ isOpen, onClose }: Props) => {
                   value={field.value}
                   onChange={field.onChange}
                   error={fieldState.error?.message}
-                  disabled={isPending}
+                  disabled={isPending || isStartLocked}
+                  disabledBefore={new Date()}
                 />
               )}
             />
@@ -199,8 +241,11 @@ export const CouponModal = ({ isOpen, onClose }: Props) => {
             >
               Cancelar
             </Button>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Salvando..." : "Criar cupom"}
+            <Button
+              type="submit"
+              disabled={isPending || (!isDirty && isEditing)}
+            >
+              {getSubmitLabel(isEditing, isPending)}
             </Button>
           </div>
         </form>

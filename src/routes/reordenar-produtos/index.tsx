@@ -92,7 +92,7 @@ function ReorderProducts() {
             disabled={!isDirty || updateProductsOrderMutation.isPending}
             onClick={() => updateProductsOrderMutation.mutate()}
           >
-            Salvar
+            Salvar alterações
           </Button>
         </div>
 

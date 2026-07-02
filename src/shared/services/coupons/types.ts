@@ -31,6 +31,13 @@ export type CreateCouponBody = {
 
 export type CreateCoupon = (body: CreateCouponBody) => Promise<ICoupon>;
 
+export type UpdateCouponBody = Omit<CreateCouponBody, "code">;
+
+export type UpdateCoupon = (
+  couponId: string,
+  body: UpdateCouponBody,
+) => Promise<ICoupon>;
+
 export type ActivateCoupon = (couponId: string) => Promise<ICoupon>;
 
 export type DeactivateCoupon = (couponId: string) => Promise<ICoupon>;
@@ -42,6 +49,7 @@ export type UseCouponsService = () => {
   };
   removeCoupon: RemoveCoupon;
   createCoupon: CreateCoupon;
+  updateCoupon: UpdateCoupon;
   activateCoupon: ActivateCoupon;
   deactivateCoupon: DeactivateCoupon;
 };

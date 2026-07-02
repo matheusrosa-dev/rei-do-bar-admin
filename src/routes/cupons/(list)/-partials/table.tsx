@@ -6,7 +6,7 @@ import {
 } from "@components";
 import { useCouponsService } from "@services";
 import { formatPrice } from "@shared/helpers/number";
-import { formatDate } from "@shared/helpers/string";
+import { formatCalendarDate } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
 import type { ICoupon } from "@shared/models";
 import { useNavigate } from "@tanstack/react-router";
@@ -15,7 +15,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 import { formatDiscountValue, getCouponSituation } from "../-helpers";
-import { RemoveModal, StatusModal } from "../../-partials";
+import { CouponModal } from "./coupon-modal";
+import { RemoveModal } from "./remove-modal";
+import { StatusModal } from "./status-modal";
 
 type Props = {
   data: ICoupon[];
@@ -27,6 +29,7 @@ type Props = {
 
 type ModalOpen =
   | { mode: "remove"; couponId: string }
+  | { mode: "edit"; coupon: ICoupon }
   | { mode: "toggle-status"; coupon: ICoupon };
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
@@ -88,14 +91,14 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     {
       accessorKey: "startsAt",
       header: "Início",
-      cell: ({ getValue }) => formatDate(getValue<string>()),
+      cell: ({ getValue }) => formatCalendarDate(getValue<string>()),
     },
     {
       accessorKey: "endsAt",
       header: "Término",
       cell: ({ getValue }) => {
         const endsAt = getValue<string | null>();
-        return endsAt ? formatDate(endsAt) : "Sem término";
+        return endsAt ? formatCalendarDate(endsAt) : "Sem término";
       },
     },
     {
@@ -167,11 +170,18 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         isLoading={isLoading}
         isError={isError}
         limit={limit}
+        onRowClick={(coupon) => setModalOpen({ mode: "edit", coupon })}
       />
 
       {meta?.totalPages && (
         <TableComponent.Pagination meta={meta} onChangePage={setPage} />
       )}
+
+      <CouponModal
+        isOpen={modalOpen?.mode === "edit"}
+        coupon={modalOpen?.mode === "edit" ? modalOpen.coupon : undefined}
+        onClose={() => setModalOpen(null)}
+      />
 
       <RemoveModal
         isOpen={modalOpen?.mode === "remove"}

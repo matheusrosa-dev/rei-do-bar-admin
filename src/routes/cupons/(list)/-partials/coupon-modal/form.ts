@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { CouponDiscountType } from "@shared/models";
+import { CouponDiscountType, type ICoupon } from "@shared/models";
 import type { Resolver } from "react-hook-form";
 import * as yup from "yup";
 
@@ -24,16 +24,19 @@ const schema = yup.object({
     .transform((value) => (Number.isNaN(value) ? 0 : value))
     .min(0)
     .required(),
-  startsAt: yup.string().required("Informe a data de início"),
+  startsAt: yup.date().required("Informe a data de início"),
   endsAt: yup
-    .string()
+    .date()
     .test(
       "after-start",
       "A data final deve ser posterior ao início",
       (value, context) => {
         if (!value) return true;
         const { startsAt } = context.parent;
-        return !startsAt || new Date(value) >= new Date(startsAt);
+
+        if (!value || !startsAt) return true;
+
+        return value >= new Date(startsAt);
       },
     ),
   usageLimit: yup
@@ -50,9 +53,17 @@ export const defaultValues: Form = {
   discountType: CouponDiscountType.FIXED,
   discountValue: 0,
   minOrderValue: 0,
-  startsAt: "",
-  endsAt: undefined,
-  usageLimit: undefined,
+  startsAt: new Date(),
 };
 
 export const resolver = yupResolver(schema) as Resolver<Form>;
+
+export const couponToForm = (coupon: ICoupon): Form => ({
+  code: coupon.code,
+  discountType: coupon.discountType,
+  discountValue: coupon.discountValue,
+  minOrderValue: coupon.minOrderValue,
+  startsAt: new Date(coupon.startsAt),
+  endsAt: coupon.endsAt ? new Date(coupon.endsAt) : undefined,
+  usageLimit: coupon.usageLimit ?? undefined,
+});

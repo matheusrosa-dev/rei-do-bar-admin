@@ -8,14 +8,14 @@ export interface ICoupon {
   discountType: CouponDiscountType;
   discountValue: number;
   minOrderValue: number;
-  startsAt: Date;
+  startsAt: string;
   hasStarted: boolean;
   isFinished: boolean;
   usageCount: number;
-  endsAt: Date | null;
+  endsAt: string | null;
   usageLimit: number | null;
   id: string;
   isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }

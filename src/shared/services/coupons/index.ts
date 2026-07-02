@@ -6,6 +6,7 @@ import type {
   DeactivateCoupon,
   GetCoupons,
   RemoveCoupon,
+  UpdateCoupon,
   UseCouponsService,
 } from "./types";
 import type { IPagination } from "@shared/interfaces";
@@ -27,6 +28,11 @@ export const useCouponsService: UseCouponsService = () => {
 
   const createCoupon: CreateCoupon = async (body) => {
     const response = await api.post<ICoupon>(baseUrl, body);
+    return response.data.data;
+  };
+
+  const updateCoupon: UpdateCoupon = async (couponId, body) => {
+    const response = await api.put<ICoupon>(`${baseUrl}/${couponId}`, body);
     return response.data.data;
   };
 
@@ -52,6 +58,7 @@ export const useCouponsService: UseCouponsService = () => {
       key: "get-coupons",
     },
     createCoupon,
+    updateCoupon,
     removeCoupon,
     deactivateCoupon,
     activateCoupon,

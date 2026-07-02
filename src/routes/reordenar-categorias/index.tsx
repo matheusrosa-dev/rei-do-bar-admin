@@ -96,7 +96,7 @@ function ReorderCategories() {
             disabled={!isDirty || updateCategoriesOrderMutation.isPending}
             onClick={() => updateCategoriesOrderMutation.mutate()}
           >
-            Salvar
+            Salvar alterações
           </Button>
         </div>
 

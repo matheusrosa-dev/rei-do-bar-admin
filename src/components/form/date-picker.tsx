@@ -7,29 +7,12 @@ import { FiCalendar, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 type Props = {
   label?: string;
-  value?: string;
-  onChange: (value: string | undefined) => void;
+  value?: Date;
+  onChange: (value: Date | undefined) => void;
   placeholder?: string;
   error?: string;
   disabled?: boolean;
-  disabledBefore?: string;
-};
-
-const parseValue = (value?: string) => {
-  if (!value) return undefined;
-
-  const [year, month, day] = value.split("-").map(Number);
-  if (!year || !month || !day) return undefined;
-
-  return new Date(year, month - 1, day);
-};
-
-const toValue = (date: Date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
+  disabledBefore?: Date;
 };
 
 const calendarClassNames = {
@@ -69,9 +52,6 @@ export function DatePicker({
 }: Props) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const selected = parseValue(value);
-  const before = parseValue(disabledBefore);
-
   const triggerStateClass = error
     ? "border-red-500 bg-red-500/5 focus:border-red-500 focus:ring-red-500"
     : "border-zinc-700 bg-zinc-800 focus:border-amber-500 focus:ring-amber-500";
@@ -89,8 +69,8 @@ export function DatePicker({
             disabled={disabled}
             className={`flex items-center justify-between gap-2 border text-sm rounded-lg px-4 py-2.5 text-left text-white outline-none not-disabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 focus:ring-1 transition ${triggerStateClass}`}
           >
-            <span className={selected ? "text-white" : "text-zinc-500"}>
-              {selected ? selected.toLocaleDateString("pt-BR") : placeholder}
+            <span className={value ? "text-white" : "text-zinc-500"}>
+              {value ? value.toLocaleDateString("pt-BR") : placeholder}
             </span>
             <FiCalendar className="size-4 text-zinc-400 shrink-0" />
           </button>
@@ -104,11 +84,11 @@ export function DatePicker({
           <DayPicker
             mode="single"
             locale={ptBR}
-            selected={selected}
-            defaultMonth={selected}
-            disabled={before ? { before } : undefined}
+            selected={value}
+            defaultMonth={value}
+            disabled={disabledBefore ? { before: disabledBefore } : undefined}
             onSelect={(date) => {
-              onChange(date ? toValue(date) : undefined);
+              onChange(date);
               setIsOpen(false);
             }}
             showOutsideDays

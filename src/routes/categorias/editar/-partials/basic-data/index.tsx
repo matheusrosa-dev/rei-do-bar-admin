@@ -98,7 +98,7 @@ export const BasicData = ({ category }: Props) => {
               updateCategoryMutation.isPending || !form.formState.isDirty
             }
           >
-            Salvar
+            Salvar alterações
           </Button>
         </div>
       </form>

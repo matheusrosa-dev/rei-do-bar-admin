@@ -180,7 +180,7 @@ export const BasicData = ({ product, categories }: Props) => {
               updateProductMutation.isPending || !form.formState.isDirty
             }
           >
-            Salvar
+            Salvar alterações
           </Button>
         </div>
       </form>
