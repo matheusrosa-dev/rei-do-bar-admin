@@ -140,6 +140,7 @@ export const CouponModal = ({ isOpen, onClose, coupon }: Props) => {
               name="discountType"
               render={({ field, fieldState }) => (
                 <Select
+                  key={field.value}
                   label="Tipo de desconto"
                   options={DISCOUNT_TYPE_OPTIONS}
                   value={field.value}
