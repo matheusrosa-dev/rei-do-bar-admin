@@ -4,9 +4,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useSettingsService } from "@services";
-import { SettingType, type ISetting } from "@shared/models";
-import { resolver, type Form } from "./form";
-import { SETTING_KEY_LABEL } from "../../-helpers/setting-labels";
+import {
+  SettingType,
+  type ISetting,
+  type ISettingCoupon,
+} from "@shared/models";
+import { resolver, settingToForm, defaultValues, type Form } from "./form";
+import { SETTING_KEY_LABEL } from "../../-helpers";
 
 type Props = {
   setting: ISetting | null;
@@ -33,8 +37,9 @@ export function EditModal({ setting, onClose }: Props) {
     reset,
     formState: { errors, isDirty },
   } = useForm<Form>({
+    defaultValues,
     resolver,
-    values: setting ? { value: setting.value } : undefined,
+    values: setting ? settingToForm(setting) : undefined,
   });
 
   const handleClose = () => {
@@ -44,11 +49,21 @@ export function EditModal({ setting, onClose }: Props) {
 
   const onSubmit = (formData: Form) => {
     if (!setting) return;
+
+    let value = "";
+
+    if (setting.type === SettingType.COUPON) {
+      value = JSON.stringify({
+        discountValue: formData.discountValue ?? 0,
+        minOrderValue: formData.minOrderValue ?? 0,
+      } satisfies ISettingCoupon);
+    } else {
+      value = formData.value || "";
+    }
+
     updateSettingMutation.mutate({
       settingKey: setting.key,
-      body: {
-        value: formData?.value || "",
-      },
+      body: { value },
     });
   };
 
@@ -108,6 +123,38 @@ export function EditModal({ setting, onClose }: Props) {
                 />
               )}
             />
+          )}
+
+          {setting?.type === SettingType.COUPON && (
+            <>
+              <Controller
+                control={control}
+                name="discountValue"
+                render={({ field, fieldState }) => (
+                  <CurrencyInput
+                    label="Valor do desconto"
+                    value={field.value ?? 0}
+                    onChange={field.onChange}
+                    error={fieldState.error?.message}
+                    disabled={isPending}
+                  />
+                )}
+              />
+
+              <Controller
+                control={control}
+                name="minOrderValue"
+                render={({ field, fieldState }) => (
+                  <CurrencyInput
+                    label="Pedido mínimo"
+                    value={field.value ?? 0}
+                    onChange={field.onChange}
+                    error={fieldState.error?.message}
+                    disabled={isPending}
+                  />
+                )}
+              />
+            </>
           )}
 
           <div className="flex justify-end gap-3 pt-2">

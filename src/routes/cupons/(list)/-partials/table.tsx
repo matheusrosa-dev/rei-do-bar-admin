@@ -85,7 +85,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
     {
       accessorKey: "minOrderValue",
-      header: "Pedido mínimo",
+      header: "Pedido mínimo (inclui frete)",
       cell: ({ getValue }) => formatPrice(getValue<number>()),
     },
     {

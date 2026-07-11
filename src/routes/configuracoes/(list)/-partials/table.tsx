@@ -8,7 +8,7 @@ import { useState } from "react";
 import { EditModal } from "./edit-modal";
 import { formatPrice } from "@shared/helpers/number";
 import { formatPhone } from "@shared/helpers/string";
-import { SETTING_KEY_LABEL } from "../-helpers/setting-labels";
+import { parseSettingCoupon, SETTING_KEY_LABEL } from "../-helpers";
 
 type Props = {
   data: ISetting[];
@@ -82,6 +82,28 @@ export const Table = ({ data, isLoading, isError }: Props) => {
 
         if (setting.type === SettingType.PHONE) {
           return formatPhone(setting.value);
+        }
+
+        if (setting.type === SettingType.COUPON) {
+          const coupon = parseSettingCoupon(setting.value);
+
+          return (
+            <div className="flex flex-col gap-1">
+              <div>
+                Desconto:{" "}
+                <span className="font-bold">
+                  {formatPrice(coupon.discountValue)}
+                </span>
+              </div>
+
+              <div>
+                Pedido mínimo:{" "}
+                <span className="font-bold">
+                  {formatPrice(coupon.minOrderValue)}
+                </span>
+              </div>
+            </div>
+          );
         }
 
         return row.original.value;

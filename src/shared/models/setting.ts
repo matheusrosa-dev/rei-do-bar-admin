@@ -5,12 +5,14 @@ export enum SettingKey {
   OUTSIDE_BUSINESS_HOURS = "OUTSIDE_BUSINESS_HOURS",
   ON_BREAK = "ON_BREAK",
   WHATSAPP_CONTACT = "WHATSAPP_CONTACT",
+  WELCOME_COUPON = "WELCOME_COUPON",
 }
 
 export enum SettingType {
   CURRENCY = "CURRENCY",
   TEXT = "TEXT",
   PHONE = "PHONE",
+  COUPON = "COUPON",
 }
 
 export interface ISetting {
@@ -21,4 +23,9 @@ export interface ISetting {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ISettingCoupon {
+  discountValue: number;
+  minOrderValue: number;
 }
