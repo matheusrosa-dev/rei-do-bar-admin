@@ -8,7 +8,7 @@ const schema = yup.object({
   description: yup.string().trim().required("Campo obrigatório"),
   target: yup
     .string()
-    .oneOf([NotificationTarget.ALL])
+    .oneOf(Object.values(NotificationTarget))
     .required("Campo obrigatório"),
   action: yup
     .string()
