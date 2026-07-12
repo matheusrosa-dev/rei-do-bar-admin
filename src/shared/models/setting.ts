@@ -12,7 +12,6 @@ export enum SettingType {
   CURRENCY = "CURRENCY",
   TEXT = "TEXT",
   PHONE = "PHONE",
-  COUPON = "COUPON",
 }
 
 export interface ISetting {
@@ -23,9 +22,4 @@ export interface ISetting {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface ISettingCoupon {
-  discountValue: number;
-  minOrderValue: number;
 }
