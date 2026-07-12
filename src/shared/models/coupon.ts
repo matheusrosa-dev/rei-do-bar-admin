@@ -8,6 +8,8 @@ export interface ICoupon {
   discountType: CouponDiscountType;
   discountValue: number;
   minOrderValue: number;
+  couponCode: string;
+  discount: string;
   startsAt: string;
   hasStarted: boolean;
   isFinished: boolean;

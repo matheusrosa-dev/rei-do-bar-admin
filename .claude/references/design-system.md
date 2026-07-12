@@ -45,6 +45,8 @@ The app is **dark-theme only**, rendered over a black body background.
 | Status: active | `green-500/15` + `green-400` | `#22c55e` / `#4ade80` | "Active" badge. |
 | Status: inactive | `red-500/15` + `red-400` | `#ef4444` / `#f87171` | "Inactive" badge. |
 | Status: alert | `orange-500/15` + `orange-400` | `#f97316` / `#fb923c` | "Alert" badge (e.g. out of stock). |
+| Status: neutral | `white/10` + `gray-300` | — | Neutral badge for a non-status token (e.g. the coupon code on an order). |
+| Discount | `green-400` | `#4ade80` | A deducted amount, always rendered with a `-` prefix (order summaries, orders table). |
 
 ## Typography
 

@@ -1,4 +1,4 @@
-type Variant = "active" | "inactive" | "alert";
+type Variant = "active" | "inactive" | "alert" | "neutral";
 
 type Props = {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ export const StatusBadge = ({ children, variant }: Props) => {
     active: "bg-green-500/15 text-green-400",
     inactive: "bg-red-500/15 text-red-400",
     alert: "bg-orange-500/15 text-orange-400",
+    neutral: "bg-white/10 text-gray-300",
   };
 
   return (

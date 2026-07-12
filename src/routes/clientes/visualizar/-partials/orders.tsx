@@ -89,12 +89,22 @@ export const Orders = ({ orders }: Props) => {
                     </span>
                   </span>
 
-                  <span>
-                    <span className="text-gray-500">Itens: </span>
-                    <span className="text-gray-300 font-bold">
-                      {order.items.reduce((acc, cur) => acc + cur.quantity, 0)}
+                  {order.discount > 0 && (
+                    <span className="flex items-center gap-2">
+                      <span>
+                        <span className="text-gray-500">Desconto: </span>
+                        <span className="text-green-400 font-bold">
+                          -{formatPrice(order.discount)}
+                        </span>
+                      </span>
+
+                      {order.couponCode && (
+                        <StatusBadge variant="neutral">
+                          {order.couponCode}
+                        </StatusBadge>
+                      )}
                     </span>
-                  </span>
+                  )}
 
                   <span>
                     <span className="text-gray-500">Frete: </span>

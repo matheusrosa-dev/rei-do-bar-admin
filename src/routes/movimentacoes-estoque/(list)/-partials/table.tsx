@@ -47,30 +47,6 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       },
     },
     {
-      id: "total",
-      header: "Total",
-      cell: ({ row }) => {
-        const variant =
-          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin].totalVariant;
-        const sign = variant === "active" ? "+" : "-";
-
-        const total = row.original.products.reduce(
-          (sum, item) => sum + item.price * item.quantity,
-          0,
-        );
-
-        return (
-          <span
-            className={`whitespace-nowrap ${MOVEMENT_QUANTITY_CLASS[variant]}`}
-          >
-            {sign}
-            {formatPrice(total)}
-          </span>
-        );
-      },
-    },
-
-    {
       id: "items",
       header: "Itens",
       cell: ({ row }) => {
@@ -94,6 +70,43 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
               </span>
             ))}
           </div>
+        );
+      },
+    },
+    {
+      id: "discount",
+      header: "Desconto",
+      cell: ({ row }) => {
+        if (!row.original?.order?.discount) {
+          return "-";
+        }
+
+        return formatPrice(-row.original.order.discount);
+      },
+    },
+    {
+      id: "total",
+      header: "Total",
+      cell: ({ row }) => {
+        const variant =
+          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin].totalVariant;
+        const sign = variant === "active" ? "+" : "-";
+
+        const discount = row.original?.order?.discount ?? 0;
+
+        const total =
+          row.original.products.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0,
+          ) - discount;
+
+        return (
+          <span
+            className={`whitespace-nowrap ${MOVEMENT_QUANTITY_CLASS[variant]}`}
+          >
+            {sign}
+            {formatPrice(total)}
+          </span>
         );
       },
     },

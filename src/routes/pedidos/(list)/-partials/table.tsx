@@ -66,11 +66,6 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       cell: ({ row }) => row.original.items.length,
     },
     {
-      accessorKey: "deliveryFee",
-      header: "Frete",
-      cell: ({ getValue }) => formatPrice(getValue<number>()),
-    },
-    {
       accessorKey: "total",
       header: "Total",
       cell: ({ getValue }) => formatPrice(getValue<number>()),

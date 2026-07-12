@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ImagePreview } from "@components";
+import { ImagePreview, StatusBadge } from "@components";
 import { OrderStatus, type IOrderWithItems } from "@shared/models";
 import { formatPrice } from "@shared/helpers/number";
 import { formatTime } from "@shared/helpers/string";
@@ -89,6 +89,22 @@ export const OrderCard = ({
           <span className="text-xs text-red-400">
             Motivo: {order.statusReason}
           </span>
+        )}
+
+        {order.discount > 0 && (
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              <span className="text-gray-500 text-sm">Desconto</span>
+
+              {order.couponCode && (
+                <StatusBadge variant="neutral">{order.couponCode}</StatusBadge>
+              )}
+            </div>
+
+            <span className="text-green-400 font-bold text-sm">
+              -{formatPrice(order.discount)}
+            </span>
+          </div>
         )}
 
         <div className="flex items-center justify-between w-full">

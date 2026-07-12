@@ -11,6 +11,8 @@ export interface IOrder {
   statusReason: string | null;
   deliveryFee: number;
   paymentType: PaymentType;
+  couponCode: string | null;
+  discount: number;
 }
 
 export interface IOrderItem {
