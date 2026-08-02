@@ -8,7 +8,7 @@ import type {
 
 export type GetOrdersManagementResponse = Record<
   OrderStatus,
-  IOrderWithItems[]
+  IOrderWithItemsAndCustomer[]
 >;
 
 export type GetOrdersManagement = () => Promise<GetOrdersManagementResponse>;

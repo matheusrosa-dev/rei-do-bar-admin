@@ -48,7 +48,7 @@ export const Orders = ({ orders }: Props) => {
             (sum, item) => sum + item.price * item.quantity,
             0,
           );
-          const total = itemsTotal + order.deliveryFee;
+          const total = itemsTotal + order.deliveryFee - order.couponDiscount;
           const isExpanded = expandedIds.has(order.id);
 
           return (
@@ -81,7 +81,7 @@ export const Orders = ({ orders }: Props) => {
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-400">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-left text-gray-400">
                   <span>
                     <span className="text-gray-500">Pagamento: </span>
                     <span className="text-gray-300 font-bold">
@@ -89,15 +89,23 @@ export const Orders = ({ orders }: Props) => {
                     </span>
                   </span>
 
-                  {order.discount > 0 && (
-                    <span className="flex items-center gap-2">
+                  <span>
+                    <span className="text-gray-500">Produtos: </span>
+                    <span className="text-gray-300 font-bold">
+                      {formatPrice(
+                        order.productsTotal - order.productsDiscount,
+                      )}
+                    </span>
+                  </span>
+
+                  {order.couponDiscount > 0 && (
+                    <span className="flex gap-2">
                       <span>
-                        <span className="text-gray-500">Desconto: </span>
+                        <span className="text-gray-500">Cupom: </span>
                         <span className="text-green-400 font-bold">
-                          -{formatPrice(order.discount)}
+                          -{formatPrice(order.couponDiscount)}
                         </span>
                       </span>
-
                       {order.couponCode && (
                         <StatusBadge variant="neutral">
                           {order.couponCode}

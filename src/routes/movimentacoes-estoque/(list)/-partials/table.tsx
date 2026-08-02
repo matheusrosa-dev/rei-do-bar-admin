@@ -74,14 +74,14 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       },
     },
     {
-      id: "discount",
+      id: "coupon-discount",
       header: "Desconto",
       cell: ({ row }) => {
-        if (!row.original?.order?.discount) {
+        if (!row.original?.order?.couponDiscount) {
           return "-";
         }
 
-        return formatPrice(-row.original.order.discount);
+        return formatPrice(-row.original.order.couponDiscount);
       },
     },
     {
@@ -92,13 +92,13 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
           MOVEMENT_PROPS_BY_ORIGIN[row.original.origin].totalVariant;
         const sign = variant === "active" ? "+" : "-";
 
-        const discount = row.original?.order?.discount ?? 0;
+        const couponDiscount = row.original?.order?.couponDiscount ?? 0;
 
         const total =
           row.original.products.reduce(
             (sum, item) => sum + item.price * item.quantity,
             0,
-          ) - discount;
+          ) - couponDiscount;
 
         return (
           <span

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ConfirmModal } from "@components";
-import type { IOrderWithItems } from "@shared/models";
+import type { IOrderWithItemsAndCustomer } from "@shared/models";
 import { OrderStatus } from "@shared/models";
 import { Column } from "./column";
 import { CancelOrderModal } from "./cancel-order-modal";
@@ -10,11 +10,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 type Props = {
-  orders: Record<OrderStatus, IOrderWithItems[]>;
+  orders: Record<OrderStatus, IOrderWithItemsAndCustomer[]>;
 };
 
 type PendingMove = {
-  order: IOrderWithItems;
+  order: IOrderWithItemsAndCustomer;
   toStatus: OrderStatus;
 };
 

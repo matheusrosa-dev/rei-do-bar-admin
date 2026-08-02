@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ImagePreview, StatusBadge } from "@components";
-import { OrderStatus, type IOrderWithItems } from "@shared/models";
+import { OrderStatus, type IOrderWithItemsAndCustomer } from "@shared/models";
 import { formatPrice } from "@shared/helpers/number";
 import { formatTime } from "@shared/helpers/string";
 import { PiCaretDownBold } from "react-icons/pi";
@@ -8,7 +8,7 @@ import { isOrderMovable } from "./-helpers";
 import { PAYMENT_TYPE_LABEL } from "@shared/helpers/order-status";
 
 type Props = {
-  order: IOrderWithItems;
+  order: IOrderWithItemsAndCustomer;
   isExpanded: boolean;
   onExpandOrderId: (id: string | null) => void;
   onDragStart: () => void;
@@ -74,6 +74,10 @@ export const OrderCard = ({
         </div>
 
         <div className="flex items-center gap-1.5 text-sm text-gray-400">
+          <span>{order.customer.name}</span>
+        </div>
+
+        <div className="flex items-center gap-1.5 text-sm text-gray-400">
           <span>Criado em: {formatTime(order.createdAt)}</span>
           {order.status !== OrderStatus.PENDING && (
             <>
@@ -91,10 +95,17 @@ export const OrderCard = ({
           </span>
         )}
 
-        {order.discount > 0 && (
+        <div className="flex items-center justify-between w-full">
+          <span className="text-gray-500 text-sm">Produtos</span>
+          <span className="text-gray-300 font-bold text-sm">
+            {formatPrice(order.productsTotal - order.productsDiscount)}
+          </span>
+        </div>
+
+        {order.couponDiscount > 0 && (
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-2">
-              <span className="text-gray-500 text-sm">Desconto</span>
+              <span className="text-gray-500 text-sm">Cupom</span>
 
               {order.couponCode && (
                 <StatusBadge variant="neutral">{order.couponCode}</StatusBadge>
@@ -102,7 +113,7 @@ export const OrderCard = ({
             </div>
 
             <span className="text-green-400 font-bold text-sm">
-              -{formatPrice(order.discount)}
+              -{formatPrice(order.couponDiscount)}
             </span>
           </div>
         )}

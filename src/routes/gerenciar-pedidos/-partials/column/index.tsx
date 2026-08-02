@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { MdInbox } from "react-icons/md";
 import { StatusBadge } from "@components";
-import type { IOrderWithItems, OrderStatus } from "@shared/models";
+import type { IOrderWithItemsAndCustomer, OrderStatus } from "@shared/models";
 import { canMoveOrder } from "./-helpers";
 import { OrderCard } from "../order-card";
 import {
@@ -11,7 +11,7 @@ import {
 
 type Props = {
   status: OrderStatus;
-  orders: IOrderWithItems[];
+  orders: IOrderWithItemsAndCustomer[];
   draggingStatus: OrderStatus | null;
   onDropOrder: (orderId: string, status: OrderStatus) => void;
   onOrderDragStart: () => void;

@@ -96,10 +96,20 @@ export const OrderDetailModal = ({ order, onClose }: Props) => {
           </div>
 
           <div className="flex flex-col gap-2 border-t border-white/10 pt-3">
-            {order.discount > 0 && (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-500 text-sm">Produtos</span>
+              </div>
+
+              <span className="text-gray-300 text-sm font-bold">
+                {formatPrice(order.productsTotal - order.productsDiscount)}
+              </span>
+            </div>
+
+            {order.couponDiscount > 0 && (
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-gray-500 text-sm">Desconto</span>
+                  <span className="text-gray-500 text-sm">Cupom</span>
 
                   {order.couponCode && (
                     <StatusBadge variant="neutral">
@@ -109,7 +119,7 @@ export const OrderDetailModal = ({ order, onClose }: Props) => {
                 </div>
 
                 <span className="text-green-400 text-sm font-bold">
-                  -{formatPrice(order.discount)}
+                  -{formatPrice(order.couponDiscount)}
                 </span>
               </div>
             )}

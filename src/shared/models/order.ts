@@ -12,7 +12,10 @@ export interface IOrder {
   deliveryFee: number;
   paymentType: PaymentType;
   couponCode: string | null;
-  discount: number;
+  couponDiscount: number;
+  productsTotal: number;
+  productsDiscount: number;
+  total: number;
 }
 
 export interface IOrderItem {
@@ -23,14 +26,13 @@ export interface IOrderItem {
   imageUrl: string;
   quantity: number;
   price: number;
+  compareAtPrice: number | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface IOrderWithItems extends IOrder {
   items: IOrderItem[];
-  subtotal: number;
-  total: number;
 }
 
 export interface IOrderWithItemsAndCustomer extends IOrderWithItems {
