@@ -112,6 +112,11 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       cell: ({ getValue }) => getValue<number>(),
     },
     {
+      accessorKey: "assignedCustomerCount",
+      header: "Clientes atribuídos",
+      cell: ({ getValue }) => getValue<number>(),
+    },
+    {
       id: "situation",
       header: "Situação",
       cell: ({ row }) => {

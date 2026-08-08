@@ -27,6 +27,7 @@ export type CreateCouponBody = {
   startsAt: Date;
   endsAt?: Date;
   usageLimit?: number;
+  customerIds?: string[];
 };
 
 export type CreateCoupon = (body: CreateCouponBody) => Promise<ICoupon>;

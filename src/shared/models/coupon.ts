@@ -17,6 +17,7 @@ export interface ICoupon {
   endsAt: string | null;
   usageLimit: number | null;
   id: string;
+  assignedCustomerCount: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

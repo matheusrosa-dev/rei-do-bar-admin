@@ -75,9 +75,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     {
       accessorKey: "mainAddress",
       header: "Bairro",
-      cell: ({ row }) => {
-        return row.original.mainAddress.neighborhood;
-      },
+      cell: ({ row }) => row.original.mainAddress?.neighborhood ?? "-",
     },
     {
       accessorKey: "allOrdersCount",
