@@ -6,7 +6,7 @@ import {
 } from "@components";
 import { useDeliveryPersonsService } from "@services";
 import type { IPagination } from "@shared/interfaces";
-import type { IDeliveryPersonListItem } from "@shared/models";
+import type { IDeliveryPerson } from "@shared/models";
 import { formatPhone, formatZipCode } from "@shared/helpers/string";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -18,7 +18,7 @@ import { RemoveModal } from "./remove-modal";
 import { StatusModal } from "./status-modal";
 
 type Props = {
-  data: IDeliveryPersonListItem[];
+  data: IDeliveryPerson[];
   meta?: IPagination<unknown>["meta"];
   limit: number;
   isLoading?: boolean;
@@ -26,9 +26,9 @@ type Props = {
 };
 
 type ModalOpen =
-  | { mode: "edit"; deliveryPerson: IDeliveryPersonListItem }
+  | { mode: "edit"; deliveryPerson: IDeliveryPerson }
   | { mode: "remove"; deliveryPersonId: string }
-  | { mode: "toggle-status"; deliveryPerson: IDeliveryPersonListItem };
+  | { mode: "toggle-status"; deliveryPerson: IDeliveryPerson };
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
@@ -53,7 +53,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   });
 
   const toggleStatusMutation = useMutation({
-    mutationFn: (deliveryPerson: IDeliveryPersonListItem) => {
+    mutationFn: (deliveryPerson: IDeliveryPerson) => {
       if (deliveryPerson.isActive) {
         return deactivateDeliveryPerson(deliveryPerson.id);
       }
@@ -68,7 +68,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const deliveryPersonColumns: ColumnDef<IDeliveryPersonListItem>[] = [
+  const deliveryPersonColumns: ColumnDef<IDeliveryPerson>[] = [
     {
       accessorKey: "name",
       header: "Nome",
@@ -90,14 +90,14 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       },
     },
     {
-      accessorKey: "addressNeighborhood",
+      accessorKey: "address",
       header: "Bairro",
-      cell: ({ getValue }) => getValue<string>(),
+      cell: ({ row }) => row.original.address.neighborhood,
     },
     {
-      accessorKey: "addressZipCode",
+      accessorKey: "address",
       header: "CEP",
-      cell: ({ getValue }) => formatZipCode(getValue<string>()),
+      cell: ({ row }) => formatZipCode(row.original.address.zipCode),
     },
     {
       accessorKey: "ordersCount",

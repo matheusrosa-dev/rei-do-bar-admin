@@ -76,9 +76,9 @@ export const deliveryPersonToForm = (
   phone: deliveryPerson.phone,
   cpf: deliveryPerson.cpf,
   address: {
-    street: deliveryPerson.addressStreet,
-    number: deliveryPerson.addressNumber,
-    neighborhood: deliveryPerson.addressNeighborhood,
-    zipCode: deliveryPerson.addressZipCode,
+    street: deliveryPerson.address.street,
+    number: deliveryPerson.address.number,
+    neighborhood: deliveryPerson.address.neighborhood,
+    zipCode: deliveryPerson.address.zipCode,
   },
 });

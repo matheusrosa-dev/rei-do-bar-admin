@@ -1,9 +1,9 @@
 import type { IPagination, SortDirection } from "@shared/interfaces";
-import type { IDeliveryPerson, IDeliveryPersonListItem } from "@shared/models";
+import type { IDeliveryPerson } from "@shared/models";
 
 export type GetDeliveryPersonsSortKey = "createdAt" | "ordersCount";
 
-export type GetDeliveryPersonsResponse = IPagination<IDeliveryPersonListItem>;
+export type GetDeliveryPersonsResponse = IPagination<IDeliveryPerson>;
 
 export type GetDeliveryPersons = (query?: {
   page?: number;

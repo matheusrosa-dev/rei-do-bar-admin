@@ -10,15 +10,9 @@ export interface IDeliveryPerson {
   name: string;
   phone: string;
   cpf: string;
-  addressStreet: string;
-  addressNumber: string;
-  addressNeighborhood: string;
-  addressZipCode: string;
+  address: IDeliveryPersonAddress;
+  ordersCount: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface IDeliveryPersonListItem extends IDeliveryPerson {
-  ordersCount: number;
 }
