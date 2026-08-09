@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   MdInventory2,
   MdLocalOffer,
+  MdLocalShipping,
   MdReceiptLong,
   MdShoppingBasket,
   MdSwapVert,
@@ -40,6 +41,7 @@ const navItems = [
     icon: MdInventory2,
   },
   { to: "/cupons", label: "Cupons", icon: MdLocalOffer },
+  { to: "/entregadores", label: "Entregadores", icon: MdLocalShipping },
   { to: "/configuracoes", label: "Configurações", icon: FiSettings },
 ] as const;
 

@@ -6,3 +6,5 @@ export { useSettingsService } from "./settings";
 export { useNotificationsService } from "./notifications";
 export { useInventoryService } from "./inventory";
 export { useCouponsService } from "./coupons";
+export { useDeliveryPersonsService } from "./delivery-persons";
+export { useViaCepService } from "./viacep";

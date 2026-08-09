@@ -17,6 +17,7 @@ import { Route as ProdutosCriarIndexRouteImport } from './routes/produtos/criar/
 import { Route as ProdutoslistIndexRouteImport } from './routes/produtos/(list)/index'
 import { Route as PedidoslistIndexRouteImport } from './routes/pedidos/(list)/index'
 import { Route as MovimentacoesEstoquelistIndexRouteImport } from './routes/movimentacoes-estoque/(list)/index'
+import { Route as EntregadoreslistIndexRouteImport } from './routes/entregadores/(list)/index'
 import { Route as CuponslistIndexRouteImport } from './routes/cupons/(list)/index'
 import { Route as ConfiguracoeslistIndexRouteImport } from './routes/configuracoes/(list)/index'
 import { Route as ClienteslistIndexRouteImport } from './routes/clientes/(list)/index'
@@ -68,6 +69,11 @@ const MovimentacoesEstoquelistIndexRoute =
     path: '/movimentacoes-estoque/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const EntregadoreslistIndexRoute = EntregadoreslistIndexRouteImport.update({
+  id: '/entregadores/(list)/',
+  path: '/entregadores/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CuponslistIndexRoute = CuponslistIndexRouteImport.update({
   id: '/cupons/(list)/',
   path: '/cupons/',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/clientes/': typeof ClienteslistIndexRoute
   '/configuracoes/': typeof ConfiguracoeslistIndexRoute
   '/cupons/': typeof CuponslistIndexRoute
+  '/entregadores/': typeof EntregadoreslistIndexRoute
   '/movimentacoes-estoque/': typeof MovimentacoesEstoquelistIndexRoute
   '/pedidos/': typeof PedidoslistIndexRoute
   '/produtos/': typeof ProdutoslistIndexRoute
@@ -142,6 +149,7 @@ export interface FileRoutesByTo {
   '/clientes': typeof ClienteslistIndexRoute
   '/configuracoes': typeof ConfiguracoeslistIndexRoute
   '/cupons': typeof CuponslistIndexRoute
+  '/entregadores': typeof EntregadoreslistIndexRoute
   '/movimentacoes-estoque': typeof MovimentacoesEstoquelistIndexRoute
   '/pedidos': typeof PedidoslistIndexRoute
   '/produtos': typeof ProdutoslistIndexRoute
@@ -161,6 +169,7 @@ export interface FileRoutesById {
   '/clientes/(list)/': typeof ClienteslistIndexRoute
   '/configuracoes/(list)/': typeof ConfiguracoeslistIndexRoute
   '/cupons/(list)/': typeof CuponslistIndexRoute
+  '/entregadores/(list)/': typeof EntregadoreslistIndexRoute
   '/movimentacoes-estoque/(list)/': typeof MovimentacoesEstoquelistIndexRoute
   '/pedidos/(list)/': typeof PedidoslistIndexRoute
   '/produtos/(list)/': typeof ProdutoslistIndexRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/clientes/'
     | '/configuracoes/'
     | '/cupons/'
+    | '/entregadores/'
     | '/movimentacoes-estoque/'
     | '/pedidos/'
     | '/produtos/'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/clientes'
     | '/configuracoes'
     | '/cupons'
+    | '/entregadores'
     | '/movimentacoes-estoque'
     | '/pedidos'
     | '/produtos'
@@ -217,6 +228,7 @@ export interface FileRouteTypes {
     | '/clientes/(list)/'
     | '/configuracoes/(list)/'
     | '/cupons/(list)/'
+    | '/entregadores/(list)/'
     | '/movimentacoes-estoque/(list)/'
     | '/pedidos/(list)/'
     | '/produtos/(list)/'
@@ -236,6 +248,7 @@ export interface RootRouteChildren {
   ClienteslistIndexRoute: typeof ClienteslistIndexRoute
   ConfiguracoeslistIndexRoute: typeof ConfiguracoeslistIndexRoute
   CuponslistIndexRoute: typeof CuponslistIndexRoute
+  EntregadoreslistIndexRoute: typeof EntregadoreslistIndexRoute
   MovimentacoesEstoquelistIndexRoute: typeof MovimentacoesEstoquelistIndexRoute
   PedidoslistIndexRoute: typeof PedidoslistIndexRoute
   ProdutoslistIndexRoute: typeof ProdutoslistIndexRoute
@@ -298,6 +311,13 @@ declare module '@tanstack/react-router' {
       path: '/movimentacoes-estoque'
       fullPath: '/movimentacoes-estoque/'
       preLoaderRoute: typeof MovimentacoesEstoquelistIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/entregadores/(list)/': {
+      id: '/entregadores/(list)/'
+      path: '/entregadores'
+      fullPath: '/entregadores/'
+      preLoaderRoute: typeof EntregadoreslistIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cupons/(list)/': {
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClienteslistIndexRoute: ClienteslistIndexRoute,
   ConfiguracoeslistIndexRoute: ConfiguracoeslistIndexRoute,
   CuponslistIndexRoute: CuponslistIndexRoute,
+  EntregadoreslistIndexRoute: EntregadoreslistIndexRoute,
   MovimentacoesEstoquelistIndexRoute: MovimentacoesEstoquelistIndexRoute,
   PedidoslistIndexRoute: PedidoslistIndexRoute,
   ProdutoslistIndexRoute: ProdutoslistIndexRoute,

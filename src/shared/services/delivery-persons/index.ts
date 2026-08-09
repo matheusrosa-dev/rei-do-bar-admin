@@ -1,0 +1,95 @@
+import type { IDeliveryPerson } from "@shared/models";
+import { api } from "../api";
+import type {
+  ActivateDeliveryPerson,
+  CreateDeliveryPerson,
+  DeactivateDeliveryPerson,
+  GetDeliveryPersonById,
+  GetDeliveryPersons,
+  GetDeliveryPersonsResponse,
+  RemoveDeliveryPerson,
+  UpdateDeliveryPerson,
+  UseDeliveryPersonsService,
+} from "./types";
+
+export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
+  const baseUrl = "/delivery-persons";
+
+  const getDeliveryPersons: GetDeliveryPersons = async (query) => {
+    const response = await api.get<GetDeliveryPersonsResponse>(baseUrl, {
+      params: query,
+    });
+
+    return response.data.data;
+  };
+
+  const getDeliveryPersonById: GetDeliveryPersonById = async (
+    deliveryPersonId,
+  ) => {
+    const response = await api.get<IDeliveryPerson>(
+      `${baseUrl}/${deliveryPersonId}`,
+    );
+
+    return response.data.data;
+  };
+
+  const createDeliveryPerson: CreateDeliveryPerson = async (body) => {
+    const response = await api.post<IDeliveryPerson>(baseUrl, body);
+
+    return response.data.data;
+  };
+
+  const updateDeliveryPerson: UpdateDeliveryPerson = async (
+    deliveryPersonId,
+    body,
+  ) => {
+    const response = await api.put<IDeliveryPerson>(
+      `${baseUrl}/${deliveryPersonId}`,
+      body,
+    );
+
+    return response.data.data;
+  };
+
+  const activateDeliveryPerson: ActivateDeliveryPerson = async (
+    deliveryPersonId,
+  ) => {
+    const response = await api.patch<IDeliveryPerson>(
+      `${baseUrl}/${deliveryPersonId}/activate`,
+    );
+
+    return response.data.data;
+  };
+
+  const deactivateDeliveryPerson: DeactivateDeliveryPerson = async (
+    deliveryPersonId,
+  ) => {
+    const response = await api.patch<IDeliveryPerson>(
+      `${baseUrl}/${deliveryPersonId}/deactivate`,
+    );
+
+    return response.data.data;
+  };
+
+  const removeDeliveryPerson: RemoveDeliveryPerson = async (
+    deliveryPersonId,
+  ) => {
+    await api.delete(`${baseUrl}/${deliveryPersonId}`);
+  };
+
+  return {
+    getDeliveryPersons: {
+      fn: getDeliveryPersons,
+      key: "get-delivery-persons",
+    },
+    getDeliveryPersonById: {
+      fn: getDeliveryPersonById,
+      key: "get-delivery-person-by-id",
+    },
+    createDeliveryPerson,
+    updateDeliveryPerson,
+    activateDeliveryPerson,
+    deactivateDeliveryPerson,
+    removeDeliveryPerson,
+  };
+};
