@@ -9,17 +9,25 @@ import {
 import { formatDateTime, formatPhone } from "@shared/helpers/string";
 import { OrderStatus, type IOrderWithItemsAndCustomer } from "@shared/models";
 import { Link } from "@tanstack/react-router";
-import { RiExternalLinkLine } from "react-icons/ri";
+import { RiExternalLinkLine, RiPencilLine } from "react-icons/ri";
 
 type Props = {
   order: IOrderWithItemsAndCustomer | null;
   onClose: () => void;
+  onEditDeliveryPerson: (order: IOrderWithItemsAndCustomer) => void;
 };
 
-export const OrderDetailModal = ({ order, onClose }: Props) => {
+export const OrderDetailModal = ({
+  order,
+  onClose,
+  onEditDeliveryPerson,
+}: Props) => {
   const isOrderFinalized =
     order?.status === OrderStatus.CANCELLED ||
     order?.status === OrderStatus.DELIVERED;
+
+  const canEditDeliveryPerson =
+    isOrderFinalized || order?.status === OrderStatus.SHIPPED;
 
   return (
     <Modal isOpen={!!order} onClose={onClose}>
@@ -87,13 +95,32 @@ export const OrderDetailModal = ({ order, onClose }: Props) => {
                 <span className="text-gray-300 font-bold">{order.address}</span>
               </div>
 
-              {order.deliveryPerson && (
-                <div>
-                  Entregador:{" "}
-                  <span className="text-gray-300 font-bold">
-                    {order.deliveryPerson.name} ·{" "}
-                    {formatPhone(order.deliveryPerson.phone)}
+              {(order.deliveryPerson || canEditDeliveryPerson) && (
+                <div className="flex items-center gap-1.5">
+                  <span>
+                    Entregador:{" "}
+                    {order.deliveryPerson ? (
+                      <span className="text-gray-300 font-bold">
+                        {order.deliveryPerson.name} ·{" "}
+                        {formatPhone(order.deliveryPerson.phone)}
+                      </span>
+                    ) : (
+                      <span className="text-gray-500 font-bold">
+                        Não atribuído
+                      </span>
+                    )}
                   </span>
+
+                  {canEditDeliveryPerson && (
+                    <button
+                      type="button"
+                      onClick={() => onEditDeliveryPerson(order)}
+                      className="flex items-center gap-1 rounded-md border border-amber-500/50 px-2 py-1 text-xs font-semibold text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer"
+                    >
+                      <RiPencilLine />
+                      Alterar entregador
+                    </button>
+                  )}
                 </div>
               )}
 

@@ -4,6 +4,8 @@ import type {
   GetOrdersManagement,
   GetOrdersManagementResponse,
   GetOrdersResponse,
+  UpdateOrderDeliveryPerson,
+  UpdateOrderDeliveryPersonResponse,
   UpdateOrderStatus,
   UpdateOrderStatusResponse,
   UseOrdersService,
@@ -37,6 +39,18 @@ export const useOrdersService: UseOrdersService = () => {
     return response.data.data;
   };
 
+  const updateOrderDeliveryPerson: UpdateOrderDeliveryPerson = async ({
+    orderId,
+    body,
+  }) => {
+    const response = await api.patch<UpdateOrderDeliveryPersonResponse>(
+      `${baseUrl}/${orderId}/delivery-person`,
+      body,
+    );
+
+    return response.data.data;
+  };
+
   return {
     getOrdersManagement: {
       fn: getOrdersManagement,
@@ -47,5 +61,6 @@ export const useOrdersService: UseOrdersService = () => {
       key: "get-orders",
     },
     updateOrderStatus,
+    updateOrderDeliveryPerson,
   };
 };

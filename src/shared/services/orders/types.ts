@@ -38,6 +38,15 @@ export type UpdateOrderStatus = (props: {
   };
 }) => Promise<UpdateOrderStatusResponse>;
 
+export type UpdateOrderDeliveryPersonResponse = IOrderWithItemsAndCustomer;
+
+export type UpdateOrderDeliveryPerson = (props: {
+  orderId: string;
+  body: {
+    deliveryPersonId: string;
+  };
+}) => Promise<UpdateOrderDeliveryPersonResponse>;
+
 export type UseOrdersService = () => {
   getOrdersManagement: {
     fn: GetOrdersManagement;
@@ -48,4 +57,5 @@ export type UseOrdersService = () => {
     key: string;
   };
   updateOrderStatus: UpdateOrderStatus;
+  updateOrderDeliveryPerson: UpdateOrderDeliveryPerson;
 };

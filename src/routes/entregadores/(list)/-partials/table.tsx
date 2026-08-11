@@ -101,7 +101,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
     {
       accessorKey: "ordersCount",
-      header: "Pedidos",
+      header: "Entregas",
       cell: ({ getValue }) => (
         <span className="ml-10">{getValue<number>()}</span>
       ),

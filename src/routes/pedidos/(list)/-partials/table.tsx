@@ -11,6 +11,7 @@ import { OrderStatus, type IOrderWithItemsAndCustomer } from "@shared/models";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
+import { EditDeliveryPersonModal } from "./edit-delivery-person-modal";
 import { OrderDetailModal } from "./order-detail-modal";
 import { RiExternalLinkLine } from "react-icons/ri";
 
@@ -22,9 +23,12 @@ type Props = {
   isError?: boolean;
 };
 
+type ModalOpen =
+  | { mode: "detail"; order: IOrderWithItemsAndCustomer }
+  | { mode: "edit-delivery-person"; order: IOrderWithItemsAndCustomer };
+
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
-  const [selectedOrder, setSelectedOrder] =
-    useState<IOrderWithItemsAndCustomer | null>(null);
+  const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
 
   const navigate = useNavigate({ from: "/pedidos/" });
 
@@ -54,6 +58,29 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
           <RiExternalLinkLine />
         </Link>
       ),
+    },
+    {
+      accessorKey: "deliveryPerson",
+      header: "Entregador",
+      cell: ({ row }) => {
+        const deliveryPerson = row.original.deliveryPerson;
+
+        if (!deliveryPerson) return "-";
+
+        return (
+          <Link
+            className="text-gray-400 text-sm underline flex w-fit flex-nowrap items-center gap-1 duration-150 hover:text-white"
+            to="/entregadores"
+            search={{ searchTerm: deliveryPerson.name }}
+            target="_blank"
+            rel="noreferrer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {deliveryPerson.name}
+            <RiExternalLinkLine />
+          </Link>
+        );
+      },
     },
     {
       accessorKey: "paymentType",
@@ -121,7 +148,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         isLoading={isLoading}
         isError={isError}
         limit={limit}
-        onRowClick={(order) => setSelectedOrder(order)}
+        onRowClick={(order) => setModalOpen({ mode: "detail", order })}
       />
 
       {meta?.totalPages && (
@@ -129,8 +156,18 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       )}
 
       <OrderDetailModal
-        order={selectedOrder}
-        onClose={() => setSelectedOrder(null)}
+        order={modalOpen?.mode === "detail" ? modalOpen.order : null}
+        onClose={() => setModalOpen(null)}
+        onEditDeliveryPerson={(order) =>
+          setModalOpen({ mode: "edit-delivery-person", order })
+        }
+      />
+
+      <EditDeliveryPersonModal
+        order={
+          modalOpen?.mode === "edit-delivery-person" ? modalOpen.order : null
+        }
+        onClose={() => setModalOpen(null)}
       />
     </div>
   );
