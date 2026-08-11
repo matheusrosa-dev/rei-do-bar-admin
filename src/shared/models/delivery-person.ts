@@ -5,14 +5,24 @@ export interface IDeliveryPersonAddress {
   zipCode: string;
 }
 
-export interface IDeliveryPerson {
+interface IDeliveryPersonBase {
   id: string;
   name: string;
   phone: string;
   cpf: string;
-  address: IDeliveryPersonAddress;
-  ordersCount: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IDeliveryPerson extends IDeliveryPersonBase {
+  address: IDeliveryPersonAddress;
+  ordersCount: number;
+}
+
+export interface IOrderDeliveryPerson extends IDeliveryPersonBase {
+  addressStreet: string;
+  addressNumber: string;
+  addressNeighborhood: string;
+  addressZipCode: string;
 }

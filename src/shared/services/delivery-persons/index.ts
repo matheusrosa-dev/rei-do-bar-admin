@@ -7,6 +7,8 @@ import type {
   GetDeliveryPersonById,
   GetDeliveryPersons,
   GetDeliveryPersonsResponse,
+  GetDeliveryPersonsSimple,
+  GetDeliveryPersonsSimpleResponse,
   RemoveDeliveryPerson,
   UpdateDeliveryPerson,
   UseDeliveryPersonsService,
@@ -19,6 +21,14 @@ export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
     const response = await api.get<GetDeliveryPersonsResponse>(baseUrl, {
       params: query,
     });
+
+    return response.data.data;
+  };
+
+  const getDeliveryPersonsSimple: GetDeliveryPersonsSimple = async () => {
+    const response = await api.get<GetDeliveryPersonsSimpleResponse>(
+      `${baseUrl}?simple=true`,
+    );
 
     return response.data.data;
   };
@@ -81,6 +91,10 @@ export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
     getDeliveryPersons: {
       fn: getDeliveryPersons,
       key: "get-delivery-persons",
+    },
+    getDeliveryPersonsSimple: {
+      fn: getDeliveryPersonsSimple,
+      key: "get-delivery-persons-simple",
     },
     getDeliveryPersonById: {
       fn: getDeliveryPersonById,

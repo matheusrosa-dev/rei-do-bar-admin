@@ -74,15 +74,40 @@ export const OrderCard = ({
         </div>
 
         <div className="flex items-center gap-1.5 text-sm text-gray-400">
-          <span>{order.customer.name}</span>
+          <span>
+            Cliente:{" "}
+            <span className="font-bold text-white">{order.customer.name}</span>
+          </span>
         </div>
 
+        {order.deliveryPerson && (
+          <div className="flex items-center gap-1.5 text-sm text-gray-400">
+            <span>
+              Entregador:
+              <span className="font-bold text-white">
+                {" "}
+                {order.deliveryPerson.name}
+              </span>
+            </span>
+          </div>
+        )}
+
         <div className="flex items-center gap-1.5 text-sm text-gray-400">
-          <span>Criado em: {formatTime(order.createdAt)}</span>
+          <span>
+            Criado em:{" "}
+            <span className="font-bold text-white">
+              {formatTime(order.createdAt)}
+            </span>
+          </span>
           {order.status !== OrderStatus.PENDING && (
             <>
               <span className="text-gray-500">·</span>
-              <span>Alterado em: {formatTime(order.updatedAt)}</span>
+              <span>
+                Alterado em:{" "}
+                <span className="font-bold text-white">
+                  {formatTime(order.updatedAt)}
+                </span>
+              </span>
             </>
           )}
         </div>

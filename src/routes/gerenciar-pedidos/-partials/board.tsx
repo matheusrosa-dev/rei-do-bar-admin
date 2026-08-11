@@ -4,6 +4,7 @@ import type { IOrderWithItemsAndCustomer } from "@shared/models";
 import { OrderStatus } from "@shared/models";
 import { Column } from "./column";
 import { CancelOrderModal } from "./cancel-order-modal";
+import { ShipOrderModal } from "./ship-order-modal";
 import { ORDER_STATUS_LABEL } from "@shared/helpers/order-status";
 import { useOrdersService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -36,12 +37,15 @@ export const Board = ({ orders }: Props) => {
   const queryClient = useQueryClient();
 
   const updateStatusMutation = useMutation({
-    mutationFn: (statusReason: string | undefined) =>
+    mutationFn: (input: { statusReason?: string; deliveryPersonId?: string }) =>
       updateOrderStatus({
         orderId: pendingMove!.order.id,
         body: {
           status: pendingMove!.toStatus,
-          ...(statusReason ? { statusReason } : {}),
+          ...(input.statusReason ? { statusReason: input.statusReason } : {}),
+          ...(input.deliveryPersonId
+            ? { deliveryPersonId: input.deliveryPersonId }
+            : {}),
         },
       }),
     onSuccess: (updatedOrders) => {
@@ -60,6 +64,7 @@ export const Board = ({ orders }: Props) => {
   };
 
   const isCancelling = pendingMove?.toStatus === OrderStatus.CANCELLED;
+  const isShipping = pendingMove?.toStatus === OrderStatus.SHIPPED;
 
   return (
     <>
@@ -78,7 +83,7 @@ export const Board = ({ orders }: Props) => {
       </div>
 
       <ConfirmModal
-        isOpen={pendingMove !== null && !isCancelling}
+        isOpen={pendingMove !== null && !isCancelling && !isShipping}
         title="Mover pedido"
         description={
           pendingMove
@@ -87,7 +92,7 @@ export const Board = ({ orders }: Props) => {
         }
         confirmLabel="Mover"
         onClose={() => setPendingMove(null)}
-        onConfirm={() => updateStatusMutation.mutate(undefined)}
+        onConfirm={() => updateStatusMutation.mutate({})}
       />
 
       <CancelOrderModal
@@ -95,7 +100,19 @@ export const Board = ({ orders }: Props) => {
         orderNumber={pendingMove?.order.orderNumber}
         isPending={updateStatusMutation.isPending}
         onClose={() => setPendingMove(null)}
-        onConfirm={(statusReason) => updateStatusMutation.mutate(statusReason)}
+        onConfirm={(statusReason) =>
+          updateStatusMutation.mutate({ statusReason })
+        }
+      />
+
+      <ShipOrderModal
+        isOpen={pendingMove !== null && isShipping}
+        orderNumber={pendingMove?.order.orderNumber}
+        isPending={updateStatusMutation.isPending}
+        onClose={() => setPendingMove(null)}
+        onConfirm={(deliveryPersonId) =>
+          updateStatusMutation.mutate({ deliveryPersonId })
+        }
       />
     </>
   );

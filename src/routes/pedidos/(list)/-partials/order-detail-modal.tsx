@@ -6,7 +6,7 @@ import {
   ORDER_STATUS_VARIANT,
   PAYMENT_TYPE_LABEL,
 } from "@shared/helpers/order-status";
-import { formatDateTime } from "@shared/helpers/string";
+import { formatDateTime, formatPhone } from "@shared/helpers/string";
 import { OrderStatus, type IOrderWithItemsAndCustomer } from "@shared/models";
 import { Link } from "@tanstack/react-router";
 import { RiExternalLinkLine } from "react-icons/ri";
@@ -86,6 +86,16 @@ export const OrderDetailModal = ({ order, onClose }: Props) => {
                 Endereço:{" "}
                 <span className="text-gray-300 font-bold">{order.address}</span>
               </div>
+
+              {order.deliveryPerson && (
+                <div>
+                  Entregador:{" "}
+                  <span className="text-gray-300 font-bold">
+                    {order.deliveryPerson.name} ·{" "}
+                    {formatPhone(order.deliveryPerson.phone)}
+                  </span>
+                </div>
+              )}
 
               {order.statusReason && (
                 <span className="text-xs text-red-400 font-normal">

@@ -14,6 +14,14 @@ export type GetDeliveryPersons = (query?: {
   sortDirection?: SortDirection;
 }) => Promise<GetDeliveryPersonsResponse>;
 
+export type GetDeliveryPersonsSimpleResponse = Omit<
+  IDeliveryPerson,
+  "ordersCount"
+>[];
+
+export type GetDeliveryPersonsSimple =
+  () => Promise<GetDeliveryPersonsSimpleResponse>;
+
 export type GetDeliveryPersonById = (
   deliveryPersonId: string,
 ) => Promise<IDeliveryPerson>;
@@ -54,6 +62,10 @@ export type RemoveDeliveryPerson = (deliveryPersonId: string) => Promise<void>;
 export type UseDeliveryPersonsService = () => {
   getDeliveryPersons: {
     fn: GetDeliveryPersons;
+    key: string;
+  };
+  getDeliveryPersonsSimple: {
+    fn: GetDeliveryPersonsSimple;
     key: string;
   };
   getDeliveryPersonById: {

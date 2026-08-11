@@ -1,4 +1,5 @@
 import type { ICustomer } from "./customer";
+import type { IOrderDeliveryPerson } from "./delivery-person";
 
 export interface IOrder {
   id: string;
@@ -9,6 +10,7 @@ export interface IOrder {
   customerId: string;
   orderNumber: number;
   statusReason: string | null;
+  deliveryPerson: IOrderDeliveryPerson | null;
   deliveryFee: number;
   paymentType: PaymentType;
   couponCode: string | null;
