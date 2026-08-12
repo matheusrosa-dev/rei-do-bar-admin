@@ -1,5 +1,9 @@
 import type { IPagination, SortDirection } from "@shared/interfaces";
-import type { CouponDiscountType, ICoupon } from "@shared/models";
+import type {
+  CouponDiscountType,
+  ICoupon,
+  ICouponWithRelations,
+} from "@shared/models";
 
 export type GetCouponsSortKey =
   | "discountValue"
@@ -15,7 +19,7 @@ export type GetCoupons = (query?: {
   isFinished?: boolean;
   sortKey?: GetCouponsSortKey;
   sortDirection?: SortDirection;
-}) => Promise<IPagination<ICoupon>>;
+}) => Promise<IPagination<ICouponWithRelations>>;
 
 export type RemoveCoupon = (couponId: string) => Promise<void>;
 

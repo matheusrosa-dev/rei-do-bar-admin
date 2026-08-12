@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { CouponDiscountType, type ICoupon } from "@shared/models";
+import { CouponDiscountType, type ICouponWithRelations } from "@shared/models";
 import type { Resolver } from "react-hook-form";
 import * as yup from "yup";
 
@@ -43,10 +43,30 @@ const schema = yup.object({
     .number()
     .transform((value) => (Number.isNaN(value) ? undefined : value))
     .integer("Valor inválido")
-    .min(1, "Mínimo 1"),
+    .min(1, "Mínimo 1")
+    .when("audience", ([audience], field) =>
+      audience === "customers"
+        ? yup.number().transform(() => undefined)
+        : field,
+    ),
+  audience: yup
+    .string()
+    .oneOf(["all", "customers"] as const)
+    .required(),
+  customerIds: yup
+    .array()
+    .of(yup.string().required())
+    .default([])
+    .when("audience", ([audience], field) =>
+      audience === "customers"
+        ? field.min(1, "Selecione ao menos um cliente")
+        : field,
+    ),
 });
 
 export type Form = yup.InferType<typeof schema>;
+
+export type CouponAudience = Form["audience"];
 
 export const defaultValues: Form = {
   code: "",
@@ -54,16 +74,26 @@ export const defaultValues: Form = {
   discountValue: 0,
   minOrderValue: 0,
   startsAt: new Date(),
+  audience: "all",
+  customerIds: [],
 };
 
 export const resolver = yupResolver(schema) as Resolver<Form>;
 
-export const couponToForm = (coupon: ICoupon): Form => ({
-  code: coupon.code,
-  discountType: coupon.discountType,
-  discountValue: coupon.discountValue,
-  minOrderValue: coupon.minOrderValue,
-  startsAt: new Date(coupon.startsAt),
-  endsAt: coupon.endsAt ? new Date(coupon.endsAt) : undefined,
-  usageLimit: coupon.usageLimit ?? undefined,
-});
+export const couponToForm = (coupon: ICouponWithRelations): Form => {
+  const hasAssignedCustomers = coupon.assignedCustomers.length > 0;
+
+  return {
+    code: coupon.code,
+    discountType: coupon.discountType,
+    discountValue: coupon.discountValue,
+    minOrderValue: coupon.minOrderValue,
+    startsAt: new Date(coupon.startsAt),
+    endsAt: coupon.endsAt ? new Date(coupon.endsAt) : undefined,
+    usageLimit: hasAssignedCustomers
+      ? undefined
+      : (coupon.usageLimit ?? undefined),
+    audience: hasAssignedCustomers ? "customers" : "all",
+    customerIds: coupon.assignedCustomers.map((customer) => customer.id),
+  };
+};

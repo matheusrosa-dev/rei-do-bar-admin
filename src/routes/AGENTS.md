@@ -57,6 +57,11 @@ Route path segments are Portuguese, matching the product's URLs.
 Each `-partials`/`-helpers` folder exposes a barrel and is imported by relative
 path from its sibling route (these are route-internal, not global).
 
+A route-local component that grows beyond one file becomes a **folder with an
+`index.tsx`**, keeping its own assets next to it: sub-pieces in a nested
+`partials/` (barreled, no `-` prefix — it is already inside an excluded folder),
+pure logic in its own `-helpers/`, and its form module as a sibling file.
+
 ## Code patterns
 
 ### URL-driven state
@@ -80,8 +85,9 @@ path from its sibling route (these are route-internal, not global).
 
 ### Forms
 - Build forms with `useForm({ defaultValues, resolver })`, importing
-  `defaultValues` + `resolver` + the inferred `Form` type from the feature's
-  `-shared` form module.
+  `defaultValues` + `resolver` + the inferred `Form` type from a dedicated form
+  module. That module sits next to its consumer; it only moves up to the
+  feature's `-shared` folder once more than one sub-route consumes it.
 - Native fields use `{...register(name)}`; rich fields (currency, select) use
   `Controller`. Surface validation via the field's `error` prop.
 - Disable all inputs and the submit button while the mutation is pending.
@@ -105,10 +111,10 @@ path from its sibling route (these are route-internal, not global).
 | --- | --- |
 | Route export | `export const Route = createFileRoute(path)({ … })`. |
 | Generated tree | Never hand-edit; never import route-local code across features. |
-| Route-local code | `-partials` / `-helpers` / `-shared` / `-types`, barreled per folder. |
+| Route-local code | `-partials` / `-helpers` / `-shared` / `-types`, barreled per folder; a multi-file component becomes a folder with `index.tsx` + its own `partials/`. |
 | Screen state | URL search params (typed, defaults omitted), not component state. |
 | Query key | `[service.key, ...deps]`; deps match request params. |
 | Mutation success | Toast + invalidate + close modal; seed cache when navigating to detail. |
-| Forms | RHF + Yup resolver from `-shared`; `register`/`Controller`; disable while pending. |
+| Forms | RHF + Yup resolver from a form module next to its consumer (`-shared` only when reused); `register`/`Controller`; disable while pending. |
 | Imports | Components via `@components`, data via `@services`, types via `@shared/*`. |
 | UI strings | Portuguese (pt-BR); code and route component names in English. |

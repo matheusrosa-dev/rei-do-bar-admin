@@ -1,3 +1,5 @@
+import type { ICustomer } from "./customer";
+
 export enum CouponDiscountType {
   FIXED = "FIXED",
   PERCENTAGE = "PERCENTAGE",
@@ -17,8 +19,11 @@ export interface ICoupon {
   endsAt: string | null;
   usageLimit: number | null;
   id: string;
-  assignedCustomerCount: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ICouponWithRelations extends ICoupon {
+  assignedCustomers: ICustomer[];
 }

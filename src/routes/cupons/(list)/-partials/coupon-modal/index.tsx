@@ -7,20 +7,21 @@ import {
   NumberInput,
   Select,
 } from "@components";
-import { useCouponsService } from "@services";
-import { CouponDiscountType, type ICoupon } from "@shared/models";
+import { useCouponsService, useCustomersService } from "@services";
+import { CouponDiscountType, type ICouponWithRelations } from "@shared/models";
 import type { UpdateCouponBody } from "@shared/services/coupons/types";
 import * as RadixDialog from "@radix-ui/react-dialog";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { DISCOUNT_TYPE_OPTIONS } from "../../-helpers";
 import { couponToForm, defaultValues, resolver, type Form } from "./form";
+import { AudienceField, CustomerPicker } from "./partials";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  coupon?: ICoupon;
+  coupon?: ICouponWithRelations;
 };
 
 const getSubmitLabel = (isEditing: boolean, isPending: boolean) => {
@@ -31,9 +32,17 @@ const getSubmitLabel = (isEditing: boolean, isPending: boolean) => {
 export const CouponModal = ({ isOpen, onClose, coupon }: Props) => {
   const queryClient = useQueryClient();
   const { createCoupon, updateCoupon, getCoupons } = useCouponsService();
+  const { getCustomersSimple } = useCustomersService();
 
   const isEditing = !!coupon;
   const isStartLocked = coupon?.hasStarted ?? false;
+
+  const { data: customers = [], isLoading: isLoadingCustomers } = useQuery({
+    queryKey: [getCustomersSimple.key],
+    queryFn: getCustomersSimple.fn,
+    enabled: isOpen,
+    retry: false,
+  });
 
   const {
     control,
@@ -50,6 +59,7 @@ export const CouponModal = ({ isOpen, onClose, coupon }: Props) => {
   });
 
   const isPercentage = watch("discountType") === CouponDiscountType.PERCENTAGE;
+  const isCustomerRestricted = watch("audience") === "customers";
 
   const codeField = register("code");
 
@@ -80,6 +90,9 @@ export const CouponModal = ({ isOpen, onClose, coupon }: Props) => {
   const isPending = createMutation.isPending || updateMutation.isPending;
 
   const onSubmit = (data: Form) => {
+    const hasCustomers = data.audience === "customers";
+    const customerIds = hasCustomers ? data.customerIds : [];
+
     if (coupon) {
       updateMutation.mutate({
         couponId: coupon.id,
@@ -89,7 +102,8 @@ export const CouponModal = ({ isOpen, onClose, coupon }: Props) => {
           minOrderValue: data.minOrderValue,
           startsAt: new Date(data.startsAt),
           endsAt: data.endsAt ? new Date(data.endsAt) : undefined,
-          usageLimit: data.usageLimit ?? undefined,
+          usageLimit: hasCustomers ? undefined : (data.usageLimit ?? undefined),
+          customerIds,
         },
       });
       return;
@@ -102,7 +116,8 @@ export const CouponModal = ({ isOpen, onClose, coupon }: Props) => {
       minOrderValue: data.minOrderValue,
       startsAt: new Date(data.startsAt),
       endsAt: data.endsAt ? new Date(data.endsAt) : undefined,
-      usageLimit: data.usageLimit ?? undefined,
+      usageLimit: hasCustomers ? undefined : (data.usageLimit ?? undefined),
+      customerIds,
     });
   };
 
@@ -225,13 +240,42 @@ export const CouponModal = ({ isOpen, onClose, coupon }: Props) => {
             />
           </div>
 
-          <NumberInput
-            label="Limite de uso (opcional)"
-            placeholder="Ilimitado"
-            error={errors.usageLimit?.message}
-            disabled={isPending}
-            {...register("usageLimit", { valueAsNumber: true })}
+          <Controller
+            control={control}
+            name="audience"
+            render={({ field }) => (
+              <AudienceField
+                value={field.value}
+                onChange={field.onChange}
+                disabled={isPending}
+              />
+            )}
           />
+
+          {isCustomerRestricted ? (
+            <Controller
+              control={control}
+              name="customerIds"
+              render={({ field, fieldState }) => (
+                <CustomerPicker
+                  customers={customers}
+                  value={field.value}
+                  onChange={field.onChange}
+                  isLoading={isLoadingCustomers}
+                  error={fieldState.error?.message}
+                  disabled={isPending}
+                />
+              )}
+            />
+          ) : (
+            <NumberInput
+              label="Limite de uso (opcional)"
+              placeholder="Ilimitado"
+              error={errors.usageLimit?.message}
+              disabled={isPending}
+              {...register("usageLimit", { valueAsNumber: true })}
+            />
+          )}
 
           <div className="flex justify-end gap-3 pt-2">
             <Button

@@ -8,7 +8,7 @@ import { useCouponsService } from "@services";
 import { formatPrice } from "@shared/helpers/number";
 import { formatCalendarDate } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
-import type { ICoupon } from "@shared/models";
+import type { ICouponWithRelations } from "@shared/models";
 import { useNavigate } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -20,7 +20,7 @@ import { RemoveModal } from "./remove-modal";
 import { StatusModal } from "./status-modal";
 
 type Props = {
-  data: ICoupon[];
+  data: ICouponWithRelations[];
   meta?: IPagination<unknown>["meta"];
   limit: number;
   isLoading?: boolean;
@@ -29,8 +29,8 @@ type Props = {
 
 type ModalOpen =
   | { mode: "remove"; couponId: string }
-  | { mode: "edit"; coupon: ICoupon }
-  | { mode: "toggle-status"; coupon: ICoupon };
+  | { mode: "edit"; coupon: ICouponWithRelations }
+  | { mode: "toggle-status"; coupon: ICouponWithRelations };
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
@@ -51,7 +51,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   });
 
   const toggleStatusMutation = useMutation({
-    mutationFn: (coupon: ICoupon) => {
+    mutationFn: (coupon: ICouponWithRelations) => {
       if (coupon.isActive) {
         return deactivateCoupon(coupon.id);
       }
@@ -66,7 +66,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const couponColumns: ColumnDef<ICoupon>[] = [
+  const couponColumns: ColumnDef<ICouponWithRelations>[] = [
     {
       accessorKey: "code",
       header: "Código",
@@ -112,9 +112,12 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       cell: ({ getValue }) => getValue<number>(),
     },
     {
-      accessorKey: "assignedCustomerCount",
+      id: "assignedCustomers",
       header: "Clientes atribuídos",
-      cell: ({ getValue }) => getValue<number>(),
+      cell: ({ row }) => {
+        const count = row.original.assignedCustomers.length;
+        return count > 0 ? count : <span className="text-gray-400">Todos</span>;
+      },
     },
     {
       id: "situation",

@@ -6,6 +6,7 @@ import type {
   GetCustomerById,
   GetCustomers,
   GetCustomersResponse,
+  GetCustomersSimple,
   RemoveCustomer,
   UseCustomersService,
 } from "./types";
@@ -25,6 +26,12 @@ export const useCustomersService: UseCustomersService = () => {
     const response = await api.get<ICustomerWithRelations>(
       `${baseUrl}/${customerId}`,
     );
+
+    return response.data.data;
+  };
+
+  const getCustomersSimple: GetCustomersSimple = async () => {
+    const response = await api.get<ICustomer[]>(`${baseUrl}?simple=true`);
 
     return response.data.data;
   };
@@ -57,6 +64,10 @@ export const useCustomersService: UseCustomersService = () => {
     getCustomerById: {
       fn: getCustomerById,
       key: "get-customer-by-id",
+    },
+    getCustomersSimple: {
+      fn: getCustomersSimple,
+      key: "get-customers-simple",
     },
     activateCustomer,
     deactivateCustomer,

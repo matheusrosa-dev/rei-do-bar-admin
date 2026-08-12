@@ -29,6 +29,8 @@ export type GetCustomerById = (
   customerId: string,
 ) => Promise<ICustomerWithRelations>;
 
+export type GetCustomersSimple = () => Promise<ICustomer[]>;
+
 export type ActivateCustomer = (customerId: string) => Promise<ICustomer>;
 
 export type DeactivateCustomer = (customerId: string) => Promise<ICustomer>;
@@ -42,6 +44,10 @@ export type UseCustomersService = () => {
   };
   getCustomerById: {
     fn: GetCustomerById;
+    key: string;
+  };
+  getCustomersSimple: {
+    fn: GetCustomersSimple;
     key: string;
   };
   activateCustomer: ActivateCustomer;

@@ -1,4 +1,4 @@
-import type { ICoupon } from "@shared/models";
+import type { ICoupon, ICouponWithRelations } from "@shared/models";
 import { api } from "../api";
 import type {
   ActivateCoupon,
@@ -15,7 +15,7 @@ export const useCouponsService: UseCouponsService = () => {
   const baseUrl = "/coupons";
 
   const getCoupons: GetCoupons = async (query) => {
-    const response = await api.get<IPagination<ICoupon>>(baseUrl, {
+    const response = await api.get<IPagination<ICouponWithRelations>>(baseUrl, {
       params: query,
     });
 

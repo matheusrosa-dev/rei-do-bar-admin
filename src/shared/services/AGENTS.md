@@ -68,6 +68,13 @@ export const useThingService: UseThingService = () => {
 - Constrain enum-like query params (sort keys, directions) with string-literal
   unions / shared enums, not loose `string`.
 
+### Simplified list reads
+- A domain that feeds a select/multi-select field exposes a `get<Domain>Simple`
+  read alongside its paginated `get<Domain>s`: hits `` `${baseUrl}?simple=true` ``
+  and returns a bare entity array (no pagination envelope) — either `IEntity[]` or
+  a trimmed `Omit<IEntity, …>[]` projection — for callers that just need the full
+  option list.
+
 ### REST conventions
 - Group endpoints under the domain `baseUrl`.
 - Method semantics: `GET` read, `POST` create, `PUT` full update, `PATCH`
