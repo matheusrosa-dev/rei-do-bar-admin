@@ -139,7 +139,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
               onCheckedChange={() =>
                 setModalOpen({ mode: "toggle-status", coupon })
               }
-              disabled={toggleStatusMutation.isPending}
+              disabled={toggleStatusMutation.isPending || coupon.isFinished}
             />
           </span>
         );
