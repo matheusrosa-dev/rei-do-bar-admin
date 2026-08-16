@@ -1,10 +1,17 @@
 import { Button, PageWrapper } from "@components";
 import { useDeliveryPersonsService } from "@services";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { LuLogOut } from "react-icons/lu";
+import { toast } from "sonner";
 import { validateSearch } from "./-helpers";
-import { DeliveryPersonModal, Filters, Table } from "./-partials";
+import {
+  DeliveryPersonModal,
+  Filters,
+  RevokeAllAccessModal,
+  Table,
+} from "./-partials";
 
 export const Route = createFileRoute("/entregadores/(list)/")({
   validateSearch,
@@ -13,8 +20,10 @@ export const Route = createFileRoute("/entregadores/(list)/")({
 
 const LIMIT = 20;
 
+type ModalOpen = { mode: "create" } | { mode: "revoke-all-access" };
+
 function Index() {
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
 
   const {
     page = 1,
@@ -24,7 +33,19 @@ function Index() {
     sortDirection,
   } = Route.useSearch();
 
-  const { getDeliveryPersons } = useDeliveryPersonsService();
+  const queryClient = useQueryClient();
+
+  const { getDeliveryPersons, revokeAllDeliveryPersonsAccess } =
+    useDeliveryPersonsService();
+
+  const revokeAllAccessMutation = useMutation({
+    mutationFn: revokeAllDeliveryPersonsAccess,
+    onSuccess: () => {
+      toast.success("Acesso de todos os entregadores removido com sucesso!");
+      queryClient.invalidateQueries({ queryKey: [getDeliveryPersons.key] });
+      setModalOpen(null);
+    },
+  });
 
   const { data: deliveryPersons, ...deliveryPersonsQuery } = useQuery({
     queryKey: [
@@ -51,9 +72,20 @@ function Index() {
     <PageWrapper
       title="Entregadores"
       headerContent={() => (
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          Criar entregador
-        </Button>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="secondary"
+            onClick={() => setModalOpen({ mode: "revoke-all-access" })}
+            disabled={revokeAllAccessMutation.isPending}
+          >
+            <LuLogOut size={16} />
+            Remover acesso de todos
+          </Button>
+
+          <Button onClick={() => setModalOpen({ mode: "create" })}>
+            Criar entregador
+          </Button>
+        </div>
       )}
     >
       <div className="mb-4">
@@ -72,8 +104,15 @@ function Index() {
       />
 
       <DeliveryPersonModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        isOpen={modalOpen?.mode === "create"}
+        onClose={() => setModalOpen(null)}
+      />
+
+      <RevokeAllAccessModal
+        isOpen={modalOpen?.mode === "revoke-all-access"}
+        canClose={!revokeAllAccessMutation.isPending}
+        onClose={() => setModalOpen(null)}
+        onConfirm={() => revokeAllAccessMutation.mutate()}
       />
     </PageWrapper>
   );

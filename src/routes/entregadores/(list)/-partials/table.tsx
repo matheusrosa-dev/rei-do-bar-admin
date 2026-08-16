@@ -1,12 +1,10 @@
-import {
-  Table as TableComponent,
-  Toggle,
-  Tooltip,
-  TrashButton,
-} from "@components";
+import { StatusBadge, Table as TableComponent, Toggle } from "@components";
 import { useDeliveryPersonsService } from "@services";
 import type { IPagination } from "@shared/interfaces";
-import type { IDeliveryPerson } from "@shared/models";
+import type {
+  IDeliveryPerson,
+  IDeliveryPersonWithSession,
+} from "@shared/models";
 import { formatPhone, formatZipCode } from "@shared/helpers/string";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -14,11 +12,14 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DeliveryPersonModal } from "./delivery-person-modal";
+import { PasswordModal } from "./password-modal";
 import { RemoveModal } from "./remove-modal";
+import { RevokeAccessModal } from "./revoke-access-modal";
+import { RowActions } from "./row-actions";
 import { StatusModal } from "./status-modal";
 
 type Props = {
-  data: IDeliveryPerson[];
+  data: IDeliveryPersonWithSession[];
   meta?: IPagination<unknown>["meta"];
   limit: number;
   isLoading?: boolean;
@@ -28,6 +29,8 @@ type Props = {
 type ModalOpen =
   | { mode: "edit"; deliveryPerson: IDeliveryPerson }
   | { mode: "remove"; deliveryPersonId: string }
+  | { mode: "password"; deliveryPerson: IDeliveryPerson }
+  | { mode: "revoke-access"; deliveryPersonId: string }
   | { mode: "toggle-status"; deliveryPerson: IDeliveryPerson };
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
@@ -41,12 +44,22 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     removeDeliveryPerson,
     activateDeliveryPerson,
     deactivateDeliveryPerson,
+    revokeDeliveryPersonAccess,
   } = useDeliveryPersonsService();
 
   const removeMutation = useMutation({
     mutationFn: removeDeliveryPerson,
     onSuccess: () => {
       toast.success("Entregador removido com sucesso!");
+      queryClient.invalidateQueries({ queryKey: [getDeliveryPersons.key] });
+      setModalOpen(null);
+    },
+  });
+
+  const revokeAccessMutation = useMutation({
+    mutationFn: revokeDeliveryPersonAccess,
+    onSuccess: () => {
+      toast.success("Acesso removido com sucesso!");
       queryClient.invalidateQueries({ queryKey: [getDeliveryPersons.key] });
       setModalOpen(null);
     },
@@ -68,7 +81,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const deliveryPersonColumns: ColumnDef<IDeliveryPerson>[] = [
+  const deliveryPersonColumns: ColumnDef<IDeliveryPersonWithSession>[] = [
     {
       accessorKey: "name",
       header: "Nome",
@@ -125,32 +138,45 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       },
     },
     {
+      accessorKey: "hasSession",
+      header: "Sessão",
+      cell: ({ getValue }) => {
+        const hasSession = getValue<boolean>();
+        return (
+          <StatusBadge variant={hasSession ? "active" : "neutral"}>
+            {hasSession ? "Com sessão" : "Sem sessão"}
+          </StatusBadge>
+        );
+      },
+    },
+    {
       id: "actions",
       header: "",
       cell: ({ row }) => {
         const deliveryPerson = row.original;
         return (
-          <Tooltip
-            disabled={deliveryPerson.ordersCount === 0}
-            content={
-              <>
-                Não é possível remover esse entregador
-                <br /> pois ele possui pedidos vinculados.
-              </>
+          <RowActions
+            ordersCount={deliveryPerson.ordersCount}
+            hasSession={deliveryPerson.hasSession}
+            disabled={
+              revokeAccessMutation.isPending || removeMutation.isPending
             }
-          >
-            <span>
-              <TrashButton
-                disabled={deliveryPerson.ordersCount > 0}
-                onClick={() =>
-                  setModalOpen({
-                    mode: "remove",
-                    deliveryPersonId: deliveryPerson.id,
-                  })
-                }
-              />
-            </span>
-          </Tooltip>
+            onSetPassword={() =>
+              setModalOpen({ mode: "password", deliveryPerson })
+            }
+            onRevokeAccess={() =>
+              setModalOpen({
+                mode: "revoke-access",
+                deliveryPersonId: deliveryPerson.id,
+              })
+            }
+            onRemove={() =>
+              setModalOpen({
+                mode: "remove",
+                deliveryPersonId: deliveryPerson.id,
+              })
+            }
+          />
         );
       },
     },
@@ -192,6 +218,25 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         deliveryPerson={
           modalOpen?.mode === "edit" ? modalOpen.deliveryPerson : undefined
         }
+      />
+
+      <PasswordModal
+        isOpen={modalOpen?.mode === "password"}
+        onClose={() => setModalOpen(null)}
+        deliveryPerson={
+          modalOpen?.mode === "password" ? modalOpen.deliveryPerson : undefined
+        }
+      />
+
+      <RevokeAccessModal
+        isOpen={modalOpen?.mode === "revoke-access"}
+        canClose={!revokeAccessMutation.isPending}
+        onClose={() => setModalOpen(null)}
+        onConfirm={() => {
+          if (modalOpen?.mode === "revoke-access") {
+            revokeAccessMutation.mutate(modalOpen.deliveryPersonId);
+          }
+        }}
       />
 
       <RemoveModal

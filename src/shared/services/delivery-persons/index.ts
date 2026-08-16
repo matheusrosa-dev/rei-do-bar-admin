@@ -10,7 +10,11 @@ import type {
   GetDeliveryPersonsSimple,
   GetDeliveryPersonsSimpleResponse,
   RemoveDeliveryPerson,
+  RevokeAllDeliveryPersonsAccess,
+  RevokeDeliveryPersonAccess,
   UpdateDeliveryPerson,
+  UpdateDeliveryPersonPassword,
+  UpdateDeliveryPersonPasswordResponse,
   UseDeliveryPersonsService,
 } from "./types";
 
@@ -81,6 +85,29 @@ export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
     return response.data.data;
   };
 
+  const updateDeliveryPersonPassword: UpdateDeliveryPersonPassword = async (
+    deliveryPersonId,
+    body,
+  ) => {
+    const response = await api.put<UpdateDeliveryPersonPasswordResponse>(
+      `${baseUrl}/${deliveryPersonId}/password`,
+      body,
+    );
+
+    return response.data.data;
+  };
+
+  const revokeDeliveryPersonAccess: RevokeDeliveryPersonAccess = async (
+    deliveryPersonId,
+  ) => {
+    await api.post(`${baseUrl}/${deliveryPersonId}/revoke-access`);
+  };
+
+  const revokeAllDeliveryPersonsAccess: RevokeAllDeliveryPersonsAccess =
+    async () => {
+      await api.post(`${baseUrl}/revoke-access`);
+    };
+
   const removeDeliveryPerson: RemoveDeliveryPerson = async (
     deliveryPersonId,
   ) => {
@@ -104,6 +131,9 @@ export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
     updateDeliveryPerson,
     activateDeliveryPerson,
     deactivateDeliveryPerson,
+    updateDeliveryPersonPassword,
+    revokeDeliveryPersonAccess,
+    revokeAllDeliveryPersonsAccess,
     removeDeliveryPerson,
   };
 };

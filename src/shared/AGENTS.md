@@ -24,6 +24,9 @@ root `AGENTS.md`.
 - A **model** describes a specific business entity and is `I`-prefixed. Models
   compose by `extends` (a richer view extends the base entity) rather than
   duplicating fields.
+- A richer view is named after **what it adds** — `I<Entity>With<X>` — not after
+  the endpoint that returns it. A paginated list whose items carry more than the
+  base entity is typed with such a view, not with the base entity.
 - An **interface** is reusable across domains and structural (e.g. a generic
   pagination envelope, a sort direction). If a type is parameterized by `T` or
   applies to any entity, it is an interface, not a model.
@@ -52,7 +55,7 @@ root `AGENTS.md`.
 
 | Rule | Detail |
 | --- | --- |
-| models | `I`-prefixed entity types; compose via `extends`; barreled. |
+| models | `I`-prefixed entity types; compose via `extends`, richer views named `I<Entity>With<X>`; barreled. |
 | interfaces | Generic/structural types (`T`-parameterized or cross-domain); barreled. |
 | Nullability | Explicit `\| null` to mirror the API payload. |
 | Primitives | Ids/timestamps as `string`; enumerable values as enum/union. |

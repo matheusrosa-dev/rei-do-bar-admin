@@ -1,9 +1,13 @@
 import type { IPagination, SortDirection } from "@shared/interfaces";
-import type { IDeliveryPerson } from "@shared/models";
+import type {
+  IDeliveryPerson,
+  IDeliveryPersonWithSession,
+} from "@shared/models";
 
 export type GetDeliveryPersonsSortKey = "createdAt" | "ordersCount";
 
-export type GetDeliveryPersonsResponse = IPagination<IDeliveryPerson>;
+export type GetDeliveryPersonsResponse =
+  IPagination<IDeliveryPersonWithSession>;
 
 export type GetDeliveryPersons = (query?: {
   page?: number;
@@ -57,6 +61,26 @@ export type DeactivateDeliveryPerson = (
   deliveryPersonId: string,
 ) => Promise<IDeliveryPerson>;
 
+export type UpdateDeliveryPersonPasswordBody = {
+  password: string;
+};
+
+export type UpdateDeliveryPersonPasswordResponse = Omit<
+  IDeliveryPerson,
+  "ordersCount"
+>;
+
+export type UpdateDeliveryPersonPassword = (
+  deliveryPersonId: string,
+  body: UpdateDeliveryPersonPasswordBody,
+) => Promise<UpdateDeliveryPersonPasswordResponse>;
+
+export type RevokeDeliveryPersonAccess = (
+  deliveryPersonId: string,
+) => Promise<void>;
+
+export type RevokeAllDeliveryPersonsAccess = () => Promise<void>;
+
 export type RemoveDeliveryPerson = (deliveryPersonId: string) => Promise<void>;
 
 export type UseDeliveryPersonsService = () => {
@@ -76,5 +100,8 @@ export type UseDeliveryPersonsService = () => {
   updateDeliveryPerson: UpdateDeliveryPerson;
   activateDeliveryPerson: ActivateDeliveryPerson;
   deactivateDeliveryPerson: DeactivateDeliveryPerson;
+  updateDeliveryPersonPassword: UpdateDeliveryPersonPassword;
+  revokeDeliveryPersonAccess: RevokeDeliveryPersonAccess;
+  revokeAllDeliveryPersonsAccess: RevokeAllDeliveryPersonsAccess;
   removeDeliveryPerson: RemoveDeliveryPerson;
 };

@@ -5,6 +5,7 @@ export { PageError } from "./page/page-error";
 export { PageLoading } from "./page/page-loading";
 export { ImagePreview } from "./image-preview";
 export { Input } from "./form/input";
+export { PasswordInput } from "./form/password-input";
 export { CurrencyInput } from "./form/currency-input";
 export { NumberInput } from "./form/number-input";
 export { PhoneInput } from "./form/phone-input";

@@ -62,8 +62,9 @@ export const useThingService: UseThingService = () => {
 
 ### Operation types
 - Each operation has a named function type in `types.ts` (e.g. one per action).
-- Build request bodies from entity types with `Pick<IEntity, …>` rather than
-  re-declaring fields.
+- Build request bodies from entity types with `Pick`/`Omit` when the body is a
+  subset of the entity. Declare the shape literally when it is not — write-only
+  fields (never present on the entity) or a payload nested differently from it.
 - Type paginated responses through the generic pagination interface.
 - Constrain enum-like query params (sort keys, directions) with string-literal
   unions / shared enums, not loose `string`.
@@ -78,8 +79,13 @@ export const useThingService: UseThingService = () => {
 ### REST conventions
 - Group endpoints under the domain `baseUrl`.
 - Method semantics: `GET` read, `POST` create, `PUT` full update, `PATCH`
-  partial update / domain action (action expressed as a path suffix), `DELETE`
-  remove.
+  partial update, `DELETE` remove.
+- Domain actions are expressed as a **path suffix**, either on a single resource
+  (`:id/activate`, `:id/password`) or on the collection, when the action hits
+  every record at once (`/revoke-access`). They keep the verb the backend defines
+  for them: `PATCH` for a state flip, `PUT` when the action fully replaces a
+  field, `POST` when it carries no body. A `204` action returns nothing — `await`
+  the call without unwrapping `response.data.data`.
 
 ## Conventions
 
@@ -91,6 +97,6 @@ export const useThingService: UseThingService = () => {
 | Writes | Bare async functions for `useMutation`. |
 | HTTP client | Shared typed Axios instance; return `response.data.data`. |
 | Errors | Handled globally by the interceptor; no per-call `try/catch`/toast. |
-| Bodies | `Pick<IEntity, …>`; paginated reads via the pagination generic. |
+| Bodies | `Pick`/`Omit` of the entity when the body is a subset of it, literal shape otherwise; paginated reads via the pagination generic. |
 | Params | Literal-union / enum types for sort keys and directions. |
 | No hooks here | No `useQuery`/`useMutation`; this layer stays React-Query-free. |
