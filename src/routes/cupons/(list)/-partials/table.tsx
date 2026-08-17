@@ -6,7 +6,7 @@ import {
 } from "@components";
 import { useCouponsService } from "@services";
 import { formatPrice } from "@shared/helpers/number";
-import { formatCalendarDate } from "@shared/helpers/string";
+import { formatDate } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
 import type { ICouponWithRelations } from "@shared/models";
 import { useNavigate } from "@tanstack/react-router";
@@ -91,14 +91,14 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     {
       accessorKey: "startsAt",
       header: "Início",
-      cell: ({ getValue }) => formatCalendarDate(getValue<string>()),
+      cell: ({ getValue }) => formatDate(getValue<string>()),
     },
     {
       accessorKey: "endsAt",
       header: "Término",
       cell: ({ getValue }) => {
         const endsAt = getValue<string | null>();
-        return endsAt ? formatCalendarDate(endsAt) : "Sem término";
+        return endsAt ? formatDate(endsAt) : "Sem término";
       },
     },
     {
