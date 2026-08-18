@@ -1,13 +1,19 @@
 import { useState } from "react";
 import { MdInbox } from "react-icons/md";
 import { StatusBadge } from "@components";
-import type { IOrderWithItemsAndCustomer, OrderStatus } from "@shared/models";
+import type { IOrderWithItemsAndCustomer } from "@shared/models";
+import { OrderStatus } from "@shared/models";
 import { canMoveOrder } from "./-helpers";
 import { OrderCard } from "../order-card";
 import {
   ORDER_STATUS_LABEL,
   ORDER_STATUS_VARIANT,
 } from "@shared/helpers/order-status";
+
+const COLUMN_HINT: Partial<Record<OrderStatus, string>> = {
+  [OrderStatus.DELIVERED]: "Últimas 4 horas",
+  [OrderStatus.CANCELLED]: "Últimas 4 horas",
+};
 
 type Props = {
   status: OrderStatus;
@@ -57,6 +63,11 @@ export const Column = ({
         <span className="text-gray-500 text-sm font-medium">
           {orders.length}
         </span>
+        {COLUMN_HINT[status] && (
+          <span className="ml-auto text-gray-500 text-xs">
+            {COLUMN_HINT[status]}
+          </span>
+        )}
       </div>
 
       <div className="overflow-y-auto h-full">
