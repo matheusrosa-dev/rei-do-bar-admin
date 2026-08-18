@@ -11,8 +11,8 @@ import {
 } from "@shared/helpers/order-status";
 
 const COLUMN_HINT: Partial<Record<OrderStatus, string>> = {
-  [OrderStatus.DELIVERED]: "Últimas 4 horas",
-  [OrderStatus.CANCELLED]: "Últimas 4 horas",
+  [OrderStatus.DELIVERED]: "Últimas 10 horas",
+  [OrderStatus.CANCELLED]: "Últimas 10 horas",
 };
 
 type Props = {
