@@ -6,6 +6,8 @@ import type {
   DeactivateDeliveryPerson,
   GetDeliveryPersonById,
   GetDeliveryPersons,
+  GetDeliveryPersonsHasAccess,
+  GetDeliveryPersonsHasAccessResponse,
   GetDeliveryPersonsResponse,
   GetDeliveryPersonsSimple,
   GetDeliveryPersonsSimpleResponse,
@@ -32,6 +34,14 @@ export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
   const getDeliveryPersonsSimple: GetDeliveryPersonsSimple = async () => {
     const response = await api.get<GetDeliveryPersonsSimpleResponse>(
       `${baseUrl}?simple=true`,
+    );
+
+    return response.data.data;
+  };
+
+  const getDeliveryPersonsHasAccess: GetDeliveryPersonsHasAccess = async () => {
+    const response = await api.get<GetDeliveryPersonsHasAccessResponse>(
+      `${baseUrl}/has-access`,
     );
 
     return response.data.data;
@@ -122,6 +132,10 @@ export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
     getDeliveryPersonsSimple: {
       fn: getDeliveryPersonsSimple,
       key: "get-delivery-persons-simple",
+    },
+    getDeliveryPersonsHasAccess: {
+      fn: getDeliveryPersonsHasAccess,
+      key: "get-delivery-persons-has-access",
     },
     getDeliveryPersonById: {
       fn: getDeliveryPersonById,

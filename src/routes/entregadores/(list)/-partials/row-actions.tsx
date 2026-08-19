@@ -3,7 +3,7 @@ import { LuKeyRound, LuLogOut } from "react-icons/lu";
 
 type Props = {
   ordersCount: number;
-  hasSession: boolean;
+  hasAccess: boolean;
   disabled?: boolean;
   onSetPassword: () => void;
   onRevokeAccess: () => void;
@@ -15,7 +15,7 @@ const ICON_BUTTON_CLASSES =
 
 export const RowActions = ({
   ordersCount,
-  hasSession,
+  hasAccess,
   disabled,
   onSetPassword,
   onRevokeAccess,
@@ -24,10 +24,10 @@ export const RowActions = ({
   return (
     <div className="flex justify-end gap-1">
       <Tooltip
-        disabled={!hasSession}
+        disabled={!hasAccess}
         content={
           <>
-            Este entregador está com sessão ativa.
+            Este entregador já tem acesso ao app.
             <br /> Remova o acesso antes de definir uma nova senha.
           </>
         }
@@ -37,7 +37,7 @@ export const RowActions = ({
             type="button"
             title="Definir senha"
             aria-label="Definir senha"
-            disabled={disabled || hasSession}
+            disabled={disabled || hasAccess}
             onClick={(e) => {
               e.stopPropagation();
               onSetPassword();
@@ -50,15 +50,15 @@ export const RowActions = ({
       </Tooltip>
 
       <Tooltip
-        disabled={hasSession}
-        content="Este entregador não tem sessão ativa."
+        disabled={hasAccess}
+        content="Este entregador não tem acesso para remover."
       >
         <span>
           <button
             type="button"
             title="Remover acesso"
             aria-label="Remover acesso"
-            disabled={disabled || !hasSession}
+            disabled={disabled || !hasAccess}
             onClick={(e) => {
               e.stopPropagation();
               onRevokeAccess();

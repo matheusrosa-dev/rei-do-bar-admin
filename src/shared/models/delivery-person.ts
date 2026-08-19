@@ -20,8 +20,8 @@ export interface IDeliveryPerson extends IDeliveryPersonBase {
   ordersCount: number;
 }
 
-export interface IDeliveryPersonWithSession extends IDeliveryPerson {
-  hasSession: boolean;
+export interface IDeliveryPersonWithAccess extends IDeliveryPerson {
+  hasAccess: boolean;
 }
 
 export interface IOrderDeliveryPerson extends IDeliveryPersonBase {

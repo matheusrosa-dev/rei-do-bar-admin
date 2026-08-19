@@ -3,7 +3,7 @@ import { useDeliveryPersonsService } from "@services";
 import type { IPagination } from "@shared/interfaces";
 import type {
   IDeliveryPerson,
-  IDeliveryPersonWithSession,
+  IDeliveryPersonWithAccess,
 } from "@shared/models";
 import { formatPhone, formatZipCode } from "@shared/helpers/string";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,7 +19,7 @@ import { RowActions } from "./row-actions";
 import { StatusModal } from "./status-modal";
 
 type Props = {
-  data: IDeliveryPersonWithSession[];
+  data: IDeliveryPersonWithAccess[];
   meta?: IPagination<unknown>["meta"];
   limit: number;
   isLoading?: boolean;
@@ -41,6 +41,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
 
   const {
     getDeliveryPersons,
+    getDeliveryPersonsHasAccess,
     removeDeliveryPerson,
     activateDeliveryPerson,
     deactivateDeliveryPerson,
@@ -52,6 +53,9 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     onSuccess: () => {
       toast.success("Entregador removido com sucesso!");
       queryClient.invalidateQueries({ queryKey: [getDeliveryPersons.key] });
+      queryClient.invalidateQueries({
+        queryKey: [getDeliveryPersonsHasAccess.key],
+      });
       setModalOpen(null);
     },
   });
@@ -61,6 +65,9 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     onSuccess: () => {
       toast.success("Acesso removido com sucesso!");
       queryClient.invalidateQueries({ queryKey: [getDeliveryPersons.key] });
+      queryClient.invalidateQueries({
+        queryKey: [getDeliveryPersonsHasAccess.key],
+      });
       setModalOpen(null);
     },
   });
@@ -81,7 +88,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const deliveryPersonColumns: ColumnDef<IDeliveryPersonWithSession>[] = [
+  const deliveryPersonColumns: ColumnDef<IDeliveryPersonWithAccess>[] = [
     {
       accessorKey: "name",
       header: "Nome",
@@ -138,13 +145,13 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       },
     },
     {
-      accessorKey: "hasSession",
-      header: "Sessão",
+      accessorKey: "hasAccess",
+      header: "Acesso",
       cell: ({ getValue }) => {
-        const hasSession = getValue<boolean>();
+        const hasAccess = getValue<boolean>();
         return (
-          <StatusBadge variant={hasSession ? "active" : "neutral"}>
-            {hasSession ? "Com sessão" : "Sem sessão"}
+          <StatusBadge variant={hasAccess ? "active" : "neutral"}>
+            {hasAccess ? "Com acesso" : "Sem acesso"}
           </StatusBadge>
         );
       },
@@ -157,7 +164,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         return (
           <RowActions
             ordersCount={deliveryPerson.ordersCount}
-            hasSession={deliveryPerson.hasSession}
+            hasAccess={deliveryPerson.hasAccess}
             disabled={
               revokeAccessMutation.isPending || removeMutation.isPending
             }

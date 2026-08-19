@@ -1,4 +1,4 @@
-import { Button, PageWrapper } from "@components";
+import { Button, PageWrapper, Tooltip } from "@components";
 import { useDeliveryPersonsService } from "@services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -25,45 +25,45 @@ type ModalOpen = { mode: "create" } | { mode: "revoke-all-access" };
 function Index() {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
 
-  const {
-    page = 1,
-    searchTerm,
-    isActive,
-    sortKey,
-    sortDirection,
-  } = Route.useSearch();
+  const { page = 1, searchTerm, isActive } = Route.useSearch();
 
   const queryClient = useQueryClient();
 
-  const { getDeliveryPersons, revokeAllDeliveryPersonsAccess } =
-    useDeliveryPersonsService();
+  const {
+    getDeliveryPersons,
+    getDeliveryPersonsHasAccess,
+    revokeAllDeliveryPersonsAccess,
+  } = useDeliveryPersonsService();
 
   const revokeAllAccessMutation = useMutation({
     mutationFn: revokeAllDeliveryPersonsAccess,
     onSuccess: () => {
       toast.success("Acesso de todos os entregadores removido com sucesso!");
       queryClient.invalidateQueries({ queryKey: [getDeliveryPersons.key] });
+      queryClient.invalidateQueries({
+        queryKey: [getDeliveryPersonsHasAccess.key],
+      });
       setModalOpen(null);
     },
   });
 
+  const hasAccessQuery = useQuery({
+    queryKey: [getDeliveryPersonsHasAccess.key],
+    queryFn: getDeliveryPersonsHasAccess.fn,
+    retry: false,
+  });
+
+  const hasAccess =
+    hasAccessQuery.isError || (hasAccessQuery.data?.hasAccess ?? false);
+
   const { data: deliveryPersons, ...deliveryPersonsQuery } = useQuery({
-    queryKey: [
-      getDeliveryPersons.key,
-      page,
-      searchTerm,
-      isActive,
-      sortKey,
-      sortDirection,
-    ],
+    queryKey: [getDeliveryPersons.key, page, searchTerm, isActive],
     queryFn: () =>
       getDeliveryPersons.fn({
         page,
         limit: LIMIT,
         isActive,
         searchTerm,
-        sortKey,
-        sortDirection,
       }),
     retry: false,
   });
@@ -73,14 +73,22 @@ function Index() {
       title="Entregadores"
       headerContent={() => (
         <div className="flex items-center gap-3">
-          <Button
-            variant="secondary"
-            onClick={() => setModalOpen({ mode: "revoke-all-access" })}
-            disabled={revokeAllAccessMutation.isPending}
+          <Tooltip
+            side="bottom"
+            disabled={hasAccess || hasAccessQuery.isPending}
+            content="Nenhum entregador tem acesso ao app no momento."
           >
-            <LuLogOut size={16} />
-            Remover acesso de todos
-          </Button>
+            <span>
+              <Button
+                variant="secondary"
+                onClick={() => setModalOpen({ mode: "revoke-all-access" })}
+                disabled={revokeAllAccessMutation.isPending || !hasAccess}
+              >
+                <LuLogOut size={16} />
+                Remover acesso de todos
+              </Button>
+            </span>
+          </Tooltip>
 
           <Button onClick={() => setModalOpen({ mode: "create" })}>
             Criar entregador

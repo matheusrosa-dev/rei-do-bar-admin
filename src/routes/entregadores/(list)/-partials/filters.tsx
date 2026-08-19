@@ -1,6 +1,4 @@
-import { RefetchButton, SearchInput, Select, SortSelect } from "@components";
-import type { SortDirection } from "@shared/interfaces";
-import type { GetDeliveryPersonsSortKey } from "@shared/services/delivery-persons/types";
+import { RefetchButton, SearchInput, Select } from "@components";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useRef } from "react";
 import { FiX } from "react-icons/fi";
@@ -18,7 +16,7 @@ const STATUS_OPTIONS = [
 ];
 
 export const Filters = ({ onRefetch, isRefetching }: Props) => {
-  const { isActive, searchTerm, sortKey, sortDirection } = useSearch({
+  const { isActive, searchTerm } = useSearch({
     from: "/entregadores/(list)/",
   });
 
@@ -36,24 +34,10 @@ export const Filters = ({ onRefetch, isRefetching }: Props) => {
     });
   };
 
-  const onChangeSorting = (
-    key: GetDeliveryPersonsSortKey,
-    direction: SortDirection | undefined,
-  ) => {
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        page: undefined,
-        sortKey: direction ? key : undefined,
-        sortDirection: direction,
-      }),
-    });
-  };
-
   const statusValue =
     isActive === true ? "true" : isActive === false ? "false" : "all";
 
-  const hasActiveFilters = statusValue !== "all" || sortKey || !!searchTerm;
+  const hasActiveFilters = statusValue !== "all" || !!searchTerm;
 
   return (
     <div className="flex items-end gap-3">
@@ -82,22 +66,6 @@ export const Filters = ({ onRefetch, isRefetching }: Props) => {
             value={statusValue}
             onChange={(newValue) => onChangeStatusFilter(newValue || "all")}
             active={statusValue !== "all"}
-          />
-        </div>
-
-        <div className="w-40">
-          <SortSelect
-            label="Data de criação"
-            value={sortKey === "createdAt" ? sortDirection : undefined}
-            onChange={(value) => onChangeSorting("createdAt", value)}
-          />
-        </div>
-
-        <div className="w-40">
-          <SortSelect
-            label="Pedidos"
-            value={sortKey === "ordersCount" ? sortDirection : undefined}
-            onChange={(value) => onChangeSorting("ordersCount", value)}
           />
         </div>
       </div>

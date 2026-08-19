@@ -100,6 +100,15 @@ pure logic in its own `-helpers/`, and its form module as a sibling file.
 - List screens pass `isLoading`/`isError` down to the generic table instead of
   early-returning.
 
+### Disabled controls
+- When a control is disabled for a **domain reason** — not merely a pending
+  mutation — explain it with a `Tooltip` whose `disabled` prop is the inverse of
+  that reason, so the explanation appears only while the control is actually
+  blocked.
+- Wrap the control in a non-interactive element inside the tooltip: a disabled
+  control emits no pointer events, so it cannot be the trigger itself.
+- Disabling for a pending mutation carries no tooltip.
+
 ### Modal state
 - Model multiple modals per screen as a discriminated union in a single state
   slot: `useState<ModalOpen | null>` where each variant carries a `mode` plus the
@@ -115,6 +124,7 @@ pure logic in its own `-helpers/`, and its form module as a sibling file.
 | Screen state | URL search params (typed, defaults omitted), not component state. |
 | Query key | `[service.key, ...deps]`; deps match request params. |
 | Mutation success | Toast + invalidate + close modal; seed cache when navigating to detail. |
+| Disabled controls | Domain-reason disabling gets a `Tooltip` (inverse `disabled`) around a non-interactive wrapper; pending-state disabling does not. |
 | Forms | RHF + Yup resolver from a form module next to its consumer (`-shared` only when reused); `register`/`Controller`; disable while pending. |
 | Imports | Components via `@components`, data via `@services`, types via `@shared/*`. |
 | UI strings | Portuguese (pt-BR); code and route component names in English. |

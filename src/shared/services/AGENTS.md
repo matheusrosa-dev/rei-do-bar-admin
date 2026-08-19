@@ -86,6 +86,10 @@ export const useThingService: UseThingService = () => {
   for them: `PATCH` for a state flip, `PUT` when the action fully replaces a
   field, `POST` when it carries no body. A `204` action returns nothing — `await`
   the call without unwrapping `response.data.data`.
+- A suffix on the collection also names a **read** — an alternate projection of
+  the list, or a derived answer about it as a whole (a flag the UI needs before
+  offering a collection-wide action). It stays a `GET`, takes no path params, and
+  is returned as `{ fn, key }` like any other read.
 
 ## Conventions
 

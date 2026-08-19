@@ -1,21 +1,16 @@
-import type { IPagination, SortDirection } from "@shared/interfaces";
+import type { IPagination } from "@shared/interfaces";
 import type {
   IDeliveryPerson,
-  IDeliveryPersonWithSession,
+  IDeliveryPersonWithAccess,
 } from "@shared/models";
 
-export type GetDeliveryPersonsSortKey = "createdAt" | "ordersCount";
-
-export type GetDeliveryPersonsResponse =
-  IPagination<IDeliveryPersonWithSession>;
+export type GetDeliveryPersonsResponse = IPagination<IDeliveryPersonWithAccess>;
 
 export type GetDeliveryPersons = (query?: {
   page?: number;
   limit?: number;
   isActive?: boolean;
   searchTerm?: string;
-  sortKey?: GetDeliveryPersonsSortKey;
-  sortDirection?: SortDirection;
 }) => Promise<GetDeliveryPersonsResponse>;
 
 export type GetDeliveryPersonsSimpleResponse = Omit<
@@ -25,6 +20,13 @@ export type GetDeliveryPersonsSimpleResponse = Omit<
 
 export type GetDeliveryPersonsSimple =
   () => Promise<GetDeliveryPersonsSimpleResponse>;
+
+export interface GetDeliveryPersonsHasAccessResponse {
+  hasAccess: boolean;
+}
+
+export type GetDeliveryPersonsHasAccess =
+  () => Promise<GetDeliveryPersonsHasAccessResponse>;
 
 export type GetDeliveryPersonById = (
   deliveryPersonId: string,
@@ -90,6 +92,10 @@ export type UseDeliveryPersonsService = () => {
   };
   getDeliveryPersonsSimple: {
     fn: GetDeliveryPersonsSimple;
+    key: string;
+  };
+  getDeliveryPersonsHasAccess: {
+    fn: GetDeliveryPersonsHasAccess;
     key: string;
   };
   getDeliveryPersonById: {

@@ -15,8 +15,11 @@ type Props = {
 
 export const PasswordModal = ({ isOpen, onClose, deliveryPerson }: Props) => {
   const queryClient = useQueryClient();
-  const { updateDeliveryPersonPassword, getDeliveryPersons } =
-    useDeliveryPersonsService();
+  const {
+    updateDeliveryPersonPassword,
+    getDeliveryPersons,
+    getDeliveryPersonsHasAccess,
+  } = useDeliveryPersonsService();
 
   const {
     register,
@@ -39,6 +42,9 @@ export const PasswordModal = ({ isOpen, onClose, deliveryPerson }: Props) => {
     onSuccess: () => {
       toast.success("Senha atualizada com sucesso!");
       queryClient.invalidateQueries({ queryKey: [getDeliveryPersons.key] });
+      queryClient.invalidateQueries({
+        queryKey: [getDeliveryPersonsHasAccess.key],
+      });
       onCloseHandler();
     },
   });
@@ -62,7 +68,7 @@ export const PasswordModal = ({ isOpen, onClose, deliveryPerson }: Props) => {
 
           <RadixDialog.Description className="text-zinc-400 text-sm">
             {deliveryPerson
-              ? `Defina a senha de acesso ao app de ${deliveryPerson.name}. A sessão ativa será encerrada e ele precisará entrar novamente.`
+              ? `Defina a senha de acesso ao app de ${deliveryPerson.name}.`
               : "Defina a senha de acesso ao app do entregador."}
           </RadixDialog.Description>
         </div>

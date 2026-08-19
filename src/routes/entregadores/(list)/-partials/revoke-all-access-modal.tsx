@@ -17,7 +17,7 @@ export const RevokeAllAccessModal = ({
     <ConfirmModal
       isOpen={isOpen}
       title="Tem certeza que deseja remover o acesso de todos os entregadores?"
-      description="Todas as sessões ativas no app serão encerradas e cada entregador precisará entrar novamente. Nenhuma senha é alterada — para bloquear alguém, desative o entregador."
+      description="As senhas cadastradas serão removidas e as sessões ativas no app serão encerradas. Cada entregador só volta a acessar o app depois que você definir uma nova senha."
       onClose={onClose}
       variant="danger"
       canClose={canClose}
