@@ -4,6 +4,7 @@ import { LuKeyRound, LuLogOut } from "react-icons/lu";
 type Props = {
   ordersCount: number;
   hasAccess: boolean;
+  isActive: boolean;
   disabled?: boolean;
   onSetPassword: () => void;
   onRevokeAccess: () => void;
@@ -16,6 +17,7 @@ const ICON_BUTTON_CLASSES =
 export const RowActions = ({
   ordersCount,
   hasAccess,
+  isActive,
   disabled,
   onSetPassword,
   onRevokeAccess,
@@ -23,52 +25,56 @@ export const RowActions = ({
 }: Props) => {
   return (
     <div className="flex justify-end gap-1">
-      <Tooltip
-        disabled={!hasAccess}
-        content={
-          <>
-            Este entregador já tem acesso ao app.
-            <br /> Remova o acesso antes de definir uma nova senha.
-          </>
-        }
-      >
-        <span>
-          <button
-            type="button"
-            title="Definir senha"
-            aria-label="Definir senha"
-            disabled={disabled || hasAccess}
-            onClick={(e) => {
-              e.stopPropagation();
-              onSetPassword();
-            }}
-            className={ICON_BUTTON_CLASSES}
+      {isActive && (
+        <>
+          <Tooltip
+            disabled={!hasAccess}
+            content={
+              <>
+                Este entregador já tem acesso ao app.
+                <br /> Remova o acesso antes de definir uma nova senha.
+              </>
+            }
           >
-            <LuKeyRound size={16} />
-          </button>
-        </span>
-      </Tooltip>
+            <span>
+              <button
+                type="button"
+                title="Definir senha"
+                aria-label="Definir senha"
+                disabled={disabled || hasAccess}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSetPassword();
+                }}
+                className={ICON_BUTTON_CLASSES}
+              >
+                <LuKeyRound size={16} />
+              </button>
+            </span>
+          </Tooltip>
 
-      <Tooltip
-        disabled={hasAccess}
-        content="Este entregador não tem acesso para remover."
-      >
-        <span>
-          <button
-            type="button"
-            title="Remover acesso"
-            aria-label="Remover acesso"
-            disabled={disabled || !hasAccess}
-            onClick={(e) => {
-              e.stopPropagation();
-              onRevokeAccess();
-            }}
-            className={ICON_BUTTON_CLASSES}
+          <Tooltip
+            disabled={hasAccess}
+            content="Este entregador não tem acesso para remover."
           >
-            <LuLogOut size={16} />
-          </button>
-        </span>
-      </Tooltip>
+            <span>
+              <button
+                type="button"
+                title="Remover acesso"
+                aria-label="Remover acesso"
+                disabled={disabled || !hasAccess}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRevokeAccess();
+                }}
+                className={ICON_BUTTON_CLASSES}
+              >
+                <LuLogOut size={16} />
+              </button>
+            </span>
+          </Tooltip>
+        </>
+      )}
 
       <Tooltip
         disabled={ordersCount === 0}

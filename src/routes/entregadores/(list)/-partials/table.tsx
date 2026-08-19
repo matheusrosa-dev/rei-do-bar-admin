@@ -165,6 +165,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
           <RowActions
             ordersCount={deliveryPerson.ordersCount}
             hasAccess={deliveryPerson.hasAccess}
+            isActive={deliveryPerson.isActive}
             disabled={
               revokeAccessMutation.isPending || removeMutation.isPending
             }
