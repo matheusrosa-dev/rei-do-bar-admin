@@ -1,9 +1,14 @@
-import { StatusBadge, Table as TableComponent, Toggle } from "@components";
+import {
+  StatusBadge,
+  Table as TableComponent,
+  Toggle,
+  Tooltip,
+} from "@components";
 import { useDeliveryPersonsService } from "@services";
 import type { IPagination } from "@shared/interfaces";
 import type {
   IDeliveryPerson,
-  IDeliveryPersonWithAccess,
+  IDeliveryPersonWithRecentDeliveries,
 } from "@shared/models";
 import { formatPhone, formatZipCode } from "@shared/helpers/string";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,7 +24,7 @@ import { RowActions } from "./row-actions";
 import { StatusModal } from "./status-modal";
 
 type Props = {
-  data: IDeliveryPersonWithAccess[];
+  data: IDeliveryPersonWithRecentDeliveries[];
   meta?: IPagination<unknown>["meta"];
   limit: number;
   isLoading?: boolean;
@@ -88,7 +93,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const deliveryPersonColumns: ColumnDef<IDeliveryPersonWithAccess>[] = [
+  const columns: ColumnDef<IDeliveryPersonWithRecentDeliveries>[] = [
     {
       accessorKey: "name",
       header: "Nome",
@@ -120,11 +125,28 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       cell: ({ row }) => formatZipCode(row.original.address.zipCode),
     },
     {
-      accessorKey: "ordersCount",
-      header: "Entregas",
-      cell: ({ getValue }) => (
-        <span className="ml-10">{getValue<number>()}</span>
+      accessorKey: "recentDeliveredCount",
+      header: () => (
+        <Tooltip content="Entregas concluídas nas últimas 10 horas">
+          <button type="button" className="cursor-help uppercase">
+            Entregas (10h)
+          </button>
+        </Tooltip>
       ),
+      cell: ({ getValue }) => {
+        const recentDeliveredCount = getValue<number>();
+        return (
+          <span
+            className={
+              recentDeliveredCount > 0
+                ? "font-medium text-white"
+                : "text-gray-500"
+            }
+          >
+            {recentDeliveredCount}
+          </span>
+        );
+      },
     },
     {
       accessorKey: "isActive",
@@ -207,7 +229,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
 
       <TableComponent
         data={data}
-        columns={deliveryPersonColumns}
+        columns={columns}
         isLoading={isLoading}
         isError={isError}
         limit={limit}

@@ -1,10 +1,11 @@
 import type { IPagination } from "@shared/interfaces";
 import type {
   IDeliveryPerson,
-  IDeliveryPersonWithAccess,
+  IDeliveryPersonWithRecentDeliveries,
 } from "@shared/models";
 
-export type GetDeliveryPersonsResponse = IPagination<IDeliveryPersonWithAccess>;
+export type GetDeliveryPersonsResponse =
+  IPagination<IDeliveryPersonWithRecentDeliveries>;
 
 export type GetDeliveryPersons = (query?: {
   page?: number;

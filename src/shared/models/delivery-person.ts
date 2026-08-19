@@ -24,6 +24,11 @@ export interface IDeliveryPersonWithAccess extends IDeliveryPerson {
   hasAccess: boolean;
 }
 
+export interface IDeliveryPersonWithRecentDeliveries
+  extends IDeliveryPersonWithAccess {
+  recentDeliveredCount: number;
+}
+
 export interface IOrderDeliveryPerson extends IDeliveryPersonBase {
   addressStreet: string;
   addressNumber: string;
