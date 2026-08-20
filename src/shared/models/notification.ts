@@ -9,3 +9,19 @@ export enum NotificationTarget {
 export enum NotificationAction {
   REDIRECT_TO_ORDERS = "REDIRECT_TO_ORDERS",
 }
+
+export enum NotificationStatus {
+  SENT = "SENT",
+  FAILED = "FAILED",
+}
+
+export interface INotification {
+  id: string;
+  target: NotificationTarget;
+  title: string;
+  description: string;
+  action: NotificationAction | null;
+  status: NotificationStatus;
+  customersCount: number;
+  createdAt: string;
+}

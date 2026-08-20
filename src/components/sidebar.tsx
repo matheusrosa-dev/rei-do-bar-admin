@@ -4,6 +4,7 @@ import {
   MdInventory2,
   MdLocalOffer,
   MdLocalShipping,
+  MdNotificationsActive,
   MdReceiptLong,
   MdShoppingBasket,
   MdSwapVert,
@@ -42,6 +43,7 @@ const navItems = [
   },
   { to: "/cupons", label: "Cupons", icon: MdLocalOffer },
   { to: "/entregadores", label: "Entregadores", icon: MdLocalShipping },
+  { to: "/notificacoes", label: "Notificações", icon: MdNotificationsActive },
   { to: "/configuracoes", label: "Configurações", icon: FiSettings },
 ] as const;
 

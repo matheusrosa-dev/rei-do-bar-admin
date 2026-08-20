@@ -7,8 +7,8 @@ import {
   NOTIFICATION_ACTIONS,
   NOTIFICATION_TARGET_LABEL,
   NOTIFICATION_TARGETS,
-} from "./helpers/notification-target";
-import { useMutation } from "@tanstack/react-query";
+} from "../../-helpers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNotificationsService } from "@services";
 import { toast } from "sonner";
 
@@ -18,7 +18,9 @@ type Props = {
 };
 
 export const PushNotificationModal = ({ isOpen, onClose }: Props) => {
-  const { pushNotification } = useNotificationsService();
+  const { getNotifications, pushNotification } = useNotificationsService();
+
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -39,7 +41,11 @@ export const PushNotificationModal = ({ isOpen, onClose }: Props) => {
   const pushNotificationMutation = useMutation({
     mutationFn: pushNotification,
     onSuccess: () => {
-      toast.success("Notificação enviada com sucesso!");
+      toast.success("Notificação enviada com sucesso!", {
+        description:
+          "O registro pode levar alguns segundos para aparecer na lista.",
+      });
+      queryClient.invalidateQueries({ queryKey: [getNotifications.key] });
       handleClose();
     },
   });
@@ -114,9 +120,9 @@ export const PushNotificationModal = ({ isOpen, onClose }: Props) => {
               render={({ field, fieldState }) => (
                 <Select
                   label="Ação ao pressionar"
-                  options={NOTIFICATION_ACTIONS.map((target) => ({
-                    label: NOTIFICATION_ACTION_LABEL[target],
-                    value: target,
+                  options={NOTIFICATION_ACTIONS.map((action) => ({
+                    label: NOTIFICATION_ACTION_LABEL[action],
+                    value: action,
                   }))}
                   clearable
                   placeholder="Sem ação"
