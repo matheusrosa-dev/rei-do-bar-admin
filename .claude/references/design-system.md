@@ -58,6 +58,7 @@ The app is **dark-theme only**, rendered over a black body background.
 | Label | `text-sm font-medium`. |
 | Body / table cell | `text-sm`. |
 | Table header | `text-xs font-semibold uppercase tracking-wider`. |
+| Stat value | `text-2xl font-bold` (the headline number of a summary/KPI card). |
 | Meta / badge / error | `text-xs`. |
 | Button | `text-sm font-semibold`. |
 

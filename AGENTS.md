@@ -58,6 +58,7 @@ definition.
 | Motion (`motion/react`) | Enter/exit animations for overlays, modals and error messages. |
 | React Icons | Icon set across navigation, buttons and fields. |
 | Sonner | Toast notifications for success and API error feedback. |
+| Recharts | Charts on the dashboard screen. Colors are passed as props, so they come from a route-local constant referencing the theme's color variables — never a raw hex. |
 
 ### Tooling
 | Tool | Role here |

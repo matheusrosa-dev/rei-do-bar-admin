@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReordenarProdutosIndexRouteImport } from './routes/reordenar-produtos/index'
 import { Route as ReordenarCategoriasIndexRouteImport } from './routes/reordenar-categorias/index'
+import { Route as PainelIndexRouteImport } from './routes/painel/index'
 import { Route as GerenciarPedidosIndexRouteImport } from './routes/gerenciar-pedidos/index'
 import { Route as ProdutosCriarIndexRouteImport } from './routes/produtos/criar/index'
 import { Route as ProdutoslistIndexRouteImport } from './routes/produtos/(list)/index'
@@ -44,6 +45,11 @@ const ReordenarCategoriasIndexRoute =
     path: '/reordenar-categorias/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const PainelIndexRoute = PainelIndexRouteImport.update({
+  id: '/painel/',
+  path: '/painel/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GerenciarPedidosIndexRoute = GerenciarPedidosIndexRouteImport.update({
   id: '/gerenciar-pedidos/',
   path: '/gerenciar-pedidos/',
@@ -126,6 +132,7 @@ const CategoriasEditarCategoryIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gerenciar-pedidos/': typeof GerenciarPedidosIndexRoute
+  '/painel/': typeof PainelIndexRoute
   '/reordenar-categorias/': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos/': typeof ReordenarProdutosIndexRoute
   '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gerenciar-pedidos': typeof GerenciarPedidosIndexRoute
+  '/painel': typeof PainelIndexRoute
   '/reordenar-categorias': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos': typeof ReordenarProdutosIndexRoute
   '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/gerenciar-pedidos/': typeof GerenciarPedidosIndexRoute
+  '/painel/': typeof PainelIndexRoute
   '/reordenar-categorias/': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos/': typeof ReordenarProdutosIndexRoute
   '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
@@ -189,6 +198,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/gerenciar-pedidos/'
+    | '/painel/'
     | '/reordenar-categorias/'
     | '/reordenar-produtos/'
     | '/categorias/editar/$categoryId'
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/gerenciar-pedidos'
+    | '/painel'
     | '/reordenar-categorias'
     | '/reordenar-produtos'
     | '/categorias/editar/$categoryId'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/gerenciar-pedidos/'
+    | '/painel/'
     | '/reordenar-categorias/'
     | '/reordenar-produtos/'
     | '/categorias/editar/$categoryId'
@@ -250,6 +262,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GerenciarPedidosIndexRoute: typeof GerenciarPedidosIndexRoute
+  PainelIndexRoute: typeof PainelIndexRoute
   ReordenarCategoriasIndexRoute: typeof ReordenarCategoriasIndexRoute
   ReordenarProdutosIndexRoute: typeof ReordenarProdutosIndexRoute
   CategoriasEditarCategoryIdRoute: typeof CategoriasEditarCategoryIdRoute
@@ -289,6 +302,13 @@ declare module '@tanstack/react-router' {
       path: '/reordenar-categorias'
       fullPath: '/reordenar-categorias/'
       preLoaderRoute: typeof ReordenarCategoriasIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/painel/': {
+      id: '/painel/'
+      path: '/painel'
+      fullPath: '/painel/'
+      preLoaderRoute: typeof PainelIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gerenciar-pedidos/': {
@@ -402,6 +422,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GerenciarPedidosIndexRoute: GerenciarPedidosIndexRoute,
+  PainelIndexRoute: PainelIndexRoute,
   ReordenarCategoriasIndexRoute: ReordenarCategoriasIndexRoute,
   ReordenarProdutosIndexRoute: ReordenarProdutosIndexRoute,
   CategoriasEditarCategoryIdRoute: CategoriasEditarCategoryIdRoute,

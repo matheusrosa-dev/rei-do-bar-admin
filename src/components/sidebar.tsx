@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
+  MdDashboard,
   MdInventory2,
   MdLocalOffer,
   MdLocalShipping,
@@ -21,6 +22,7 @@ import {
 import { twMerge } from "tailwind-merge";
 
 const navItems = [
+  { to: "/painel", label: "Painel", icon: MdDashboard },
   { to: "/gerenciar-pedidos", label: "Gerenciar pedidos", icon: FiShoppingBag },
   { to: "/pedidos", label: "Pedidos", icon: MdReceiptLong },
   { to: "/produtos", label: "Produtos", icon: MdShoppingBasket },
