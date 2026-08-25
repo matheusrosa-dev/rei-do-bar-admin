@@ -99,13 +99,24 @@ export const OrderCard = ({
               {formatTime(order.createdAt)}
             </span>
           </span>
-          {order.status !== OrderStatus.PENDING && (
+          {order.status === OrderStatus.DELIVERED && (
             <>
               <span className="text-gray-500">·</span>
               <span>
-                Alterado em:{" "}
+                Entregue em:{" "}
                 <span className="font-bold text-white">
-                  {formatTime(order.updatedAt)}
+                  {formatTime(order.deliveredAt)}
+                </span>
+              </span>
+            </>
+          )}
+          {order.status === OrderStatus.CANCELLED && (
+            <>
+              <span className="text-gray-500">·</span>
+              <span>
+                Cancelado em:{" "}
+                <span className="font-bold text-white">
+                  {formatTime(order.canceledAt)}
                 </span>
               </span>
             </>

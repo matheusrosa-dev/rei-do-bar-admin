@@ -53,11 +53,20 @@ export const OrderDetailModal = ({
                   </span>
                 </div>
 
-                {isOrderFinalized && (
+                {order.status === OrderStatus.DELIVERED && (
                   <div>
-                    Finalizado em:{" "}
+                    Entregue em:{" "}
                     <span className="text-gray-300 font-bold">
-                      {formatDateTime(order.updatedAt)}
+                      {formatDateTime(order.deliveredAt)}
+                    </span>
+                  </div>
+                )}
+
+                {order.status === OrderStatus.CANCELLED && (
+                  <div>
+                    Cancelado em:{" "}
+                    <span className="text-gray-300 font-bold">
+                      {formatDateTime(order.canceledAt)}
                     </span>
                   </div>
                 )}
