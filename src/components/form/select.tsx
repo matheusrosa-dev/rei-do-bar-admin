@@ -18,6 +18,8 @@ type Props = {
   disabled?: boolean;
   error?: string;
   clearable?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export function Select({
@@ -30,6 +32,8 @@ export function Select({
   disabled,
   error,
   clearable,
+  open,
+  onOpenChange,
 }: Props) {
   const [clearKey, setClearKey] = useState(0);
 
@@ -45,6 +49,8 @@ export function Select({
 
       <div className="relative">
         <RadixSelect.Root
+          open={open}
+          onOpenChange={onOpenChange}
           key={clearKey}
           value={value ?? ""}
           onValueChange={onChange}
@@ -93,7 +99,7 @@ export function Select({
                 data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95
               "
             >
-              <RadixSelect.Viewport className="p-1">
+              <RadixSelect.Viewport className="p-1 max-h-72 overflow-y-auto">
                 {options.map((option) => (
                   <RadixSelect.Item
                     key={option.value}

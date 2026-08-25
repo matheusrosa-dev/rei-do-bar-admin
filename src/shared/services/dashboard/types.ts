@@ -15,8 +15,10 @@ export type GetDeliveryPersonsPerformanceResponse = {
   deliveryPersons: DeliveryPersonPerformance[];
 };
 
-export type GetDeliveryPersonsPerformance =
-  () => Promise<GetDeliveryPersonsPerformanceResponse>;
+export type GetDeliveryPersonsPerformance = (queries?: {
+  startDate?: Date;
+  endDate?: Date;
+}) => Promise<GetDeliveryPersonsPerformanceResponse>;
 
 export type UseDashboardService = () => {
   getDeliveryPersonsPerformance: {

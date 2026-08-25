@@ -8,14 +8,16 @@ import type {
 export const useDashboardService: UseDashboardService = () => {
   const baseUrl = "/dashboard";
 
-  const getDeliveryPersonsPerformance: GetDeliveryPersonsPerformance =
-    async () => {
-      const response = await api.get<GetDeliveryPersonsPerformanceResponse>(
-        `${baseUrl}/delivery-persons`,
-      );
+  const getDeliveryPersonsPerformance: GetDeliveryPersonsPerformance = async (
+    queries,
+  ) => {
+    const response = await api.get<GetDeliveryPersonsPerformanceResponse>(
+      `${baseUrl}/delivery-persons`,
+      { params: queries },
+    );
 
-      return response.data.data;
-    };
+    return response.data.data;
+  };
 
   return {
     getDeliveryPersonsPerformance: {
