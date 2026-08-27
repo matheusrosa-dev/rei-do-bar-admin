@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ImagePreview, StatusBadge } from "@components";
-import { OrderStatus, type IOrderWithItemsAndCustomer } from "@shared/models";
+import type { IOrderWithItemsAndCustomer } from "@shared/models";
 import { formatPrice } from "@shared/helpers/number";
 import { formatTime } from "@shared/helpers/string";
 import { PiCaretDownBold } from "react-icons/pi";
@@ -99,7 +99,20 @@ export const OrderCard = ({
               {formatTime(order.createdAt)}
             </span>
           </span>
-          {order.status === OrderStatus.DELIVERED && (
+
+          {order.shippedAt && (
+            <>
+              <span className="text-gray-500">·</span>
+              <span>
+                Saiu em:{" "}
+                <span className="font-bold text-white">
+                  {formatTime(order.shippedAt)}
+                </span>
+              </span>
+            </>
+          )}
+
+          {order.deliveredAt && (
             <>
               <span className="text-gray-500">·</span>
               <span>
@@ -110,13 +123,13 @@ export const OrderCard = ({
               </span>
             </>
           )}
-          {order.status === OrderStatus.CANCELLED && (
+          {order.cancelledAt && (
             <>
               <span className="text-gray-500">·</span>
               <span>
                 Cancelado em:{" "}
                 <span className="font-bold text-white">
-                  {formatTime(order.canceledAt)}
+                  {formatTime(order.cancelledAt)}
                 </span>
               </span>
             </>

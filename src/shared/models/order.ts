@@ -4,8 +4,9 @@ import type { IOrderDeliveryPerson } from "./delivery-person";
 export interface IOrder {
   id: string;
   createdAt: string;
-  deliveredAt: string;
-  canceledAt: string;
+  shippedAt: string | null;
+  deliveredAt: string | null;
+  cancelledAt: string | null;
   updatedAt: string;
   status: OrderStatus;
   address: string;

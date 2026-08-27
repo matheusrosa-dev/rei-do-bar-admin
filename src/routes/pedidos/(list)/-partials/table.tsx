@@ -7,7 +7,7 @@ import {
 } from "@shared/helpers/order-status";
 import { formatDateTime } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
-import { OrderStatus, type IOrderWithItemsAndCustomer } from "@shared/models";
+import type { IOrderWithItemsAndCustomer } from "@shared/models";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
@@ -115,12 +115,14 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "finalizedAt",
       header: "Finalizado em",
       cell: ({ row }) => {
-        const isFinalized =
-          row.original.status === OrderStatus.CANCELLED ||
-          row.original.status === OrderStatus.DELIVERED;
+        const { deliveredAt, cancelledAt } = row.original;
 
-        if (isFinalized) {
-          return formatDateTime(row.original.updatedAt);
+        if (deliveredAt) {
+          return formatDateTime(deliveredAt);
+        }
+
+        if (cancelledAt) {
+          return formatDateTime(cancelledAt);
         }
 
         return "-";
