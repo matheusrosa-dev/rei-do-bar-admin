@@ -2,9 +2,7 @@ import { DatePicker, RefetchButton } from "@components";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { FiX } from "react-icons/fi";
 import {
-  DEFAULT_DATE_PRESET_ID,
   type DatePreset,
-  findDatePreset,
   fromDateTimeParam,
   toDateTimeParam,
   toDayStart,
@@ -68,7 +66,17 @@ export const Filters = ({ onRefetch, isRefetching }: Props) => {
   const startDateValue = fromDateTimeParam(startDate);
   const endDateValue = fromDateTimeParam(endDate);
 
-  const isDefaultRange = preset === DEFAULT_DATE_PRESET_ID;
+  const onClearFilters = () => {
+    navigate({
+      search: () => ({
+        startDate: undefined,
+        endDate: undefined,
+        preset: undefined,
+      }),
+    });
+  };
+
+  const hasFilters = Boolean(startDate || endDate || preset);
 
   return (
     <div className="flex flex-col gap-3">
@@ -101,12 +109,10 @@ export const Filters = ({ onRefetch, isRefetching }: Props) => {
           </div>
         </div>
 
-        {!isDefaultRange && (
+        {hasFilters && (
           <button
             type="button"
-            onClick={() =>
-              onSelectPreset(findDatePreset(DEFAULT_DATE_PRESET_ID))
-            }
+            onClick={onClearFilters}
             className="flex items-center gap-1.5 px-3 py-2.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer"
           >
             <FiX className="size-4" />

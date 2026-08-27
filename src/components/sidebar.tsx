@@ -21,6 +21,8 @@ import {
 } from "react-icons/fi";
 import { twMerge } from "tailwind-merge";
 
+const PAINEL_DEFAULT_SEARCH = { preset: "last-10-hours" } as const;
+
 const navItems = [
   { to: "/painel", label: "Painel", icon: MdDashboard },
   { to: "/gerenciar-pedidos", label: "Gerenciar pedidos", icon: FiShoppingBag },
@@ -139,6 +141,8 @@ export function Sidebar({
               <Link
                 key={to}
                 to={to}
+                search={to === "/painel" ? PAINEL_DEFAULT_SEARCH : undefined}
+                activeOptions={{ includeSearch: false }}
                 onClick={onClose}
                 className="flex items-center gap-3 whitespace-nowrap rounded-lg px-3 h-10 text-sm text-gray-400 transition-colors hover:text-white hover:bg-white/5"
                 activeProps={{

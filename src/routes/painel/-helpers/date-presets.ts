@@ -15,8 +15,6 @@ export type DatePreset = {
   toRange: (now: Date) => DatePresetRange;
 };
 
-export const DEFAULT_DATE_PRESET_ID: DatePresetId = "last-10-hours";
-
 const hoursBefore = (now: Date, hours: number): Date => {
   const date = new Date(now);
   date.setHours(date.getHours() - hours);

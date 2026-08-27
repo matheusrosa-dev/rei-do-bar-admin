@@ -8,6 +8,8 @@ export type DeliveryPersonsPerformanceTotals = {
   totalOrdersCount: number;
   deliveredOrdersCount: number;
   cancelledOrdersCount: number;
+  averageDeliveryMinutes: number | null;
+  averageCancellationAfterShippingMinutes: number | null;
 };
 
 export type GetDeliveryPersonsPerformanceResponse = {

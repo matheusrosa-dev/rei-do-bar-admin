@@ -4,7 +4,6 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { twMerge } from "tailwind-merge";
 import {
-  DEFAULT_DATE_PRESET_ID,
   findDatePreset,
   fromDateTimeParam,
   toDateTimeParam,
@@ -15,16 +14,16 @@ import { DeliveryPersonsChart, Filters, SummaryCards } from "./-partials";
 export const Route = createFileRoute("/painel/")({
   validateSearch,
   beforeLoad: ({ search }) => {
-    if (search.startDate || search.preset) return;
+    if (!search.preset || search.startDate) return;
 
-    const range = findDatePreset(DEFAULT_DATE_PRESET_ID).toRange(new Date());
+    const range = findDatePreset(search.preset).toRange(new Date());
 
     throw redirect({
       to: "/painel",
       search: {
         startDate: toDateTimeParam(range.startDate),
         endDate: range.endDate ? toDateTimeParam(range.endDate) : undefined,
-        preset: DEFAULT_DATE_PRESET_ID,
+        preset: search.preset,
       },
       replace: true,
     });
