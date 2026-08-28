@@ -22,9 +22,34 @@ export type GetDeliveryPersonsPerformance = (queries?: {
   endDate?: Date;
 }) => Promise<GetDeliveryPersonsPerformanceResponse>;
 
+export interface RevenueTotals {
+  deliveredOrdersCount: number;
+  revenue: number;
+  couponDiscount: number;
+  couponDiscountPercentage: number | null;
+}
+
+export interface RevenuePoint extends RevenueTotals {
+  label: string;
+}
+
+export interface GetRevenueResponse {
+  totals: RevenueTotals;
+  series: RevenuePoint[];
+}
+
+export type GetRevenue = (queries?: {
+  startDate?: Date;
+  endDate?: Date;
+}) => Promise<GetRevenueResponse>;
+
 export type UseDashboardService = () => {
   getDeliveryPersonsPerformance: {
     fn: GetDeliveryPersonsPerformance;
+    key: string;
+  };
+  getRevenue: {
+    fn: GetRevenue;
     key: string;
   };
 };

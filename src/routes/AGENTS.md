@@ -62,20 +62,28 @@ A route-local component that grows beyond one file becomes a **folder with an
 `partials/` (barreled, no `-` prefix — it is already inside an excluded folder),
 pure logic in its own `-helpers/`, and its form module as a sibling file.
 
+A partial consumed by **sibling partials** rather than by the route file sits at
+the `-partials/` root and is imported from them by relative path; the barrel
+exposes only what the route itself consumes.
+
 ## Code patterns
 
 ### URL-driven state
 - Screen filters, sorting and pagination live in **typed search params**, not in
   component state. Declare the shape and parse it in a `validateSearch` helper.
 - Read params with the route's `useSearch`; update them with `navigate({ search:
-  (prev) => ({ ...prev, … }) })`.
+  (prev) => ({ ...prev, … }) })`. Route-local partials that need the same state
+  read it directly with `useSearch({ from })` rather than taking it as props.
 - **Omit defaults from the URL**: write `undefined` for the default value (e.g.
   first page, "all" filter) so clean URLs stay clean. Changing a filter resets
   page back to default in the same update.
 
 ### Server state
 - Reads use `useQuery` with a query key of `[service.key, ...dependencies]`,
-  where the dependencies are exactly the params the request depends on.
+  where the dependencies are exactly the search params the request depends on. A
+  bound the query function resolves at fetch time (an open-ended range closed at
+  the current instant) stays **out** of the key: putting a moving value in it
+  would refetch on every render.
 - `retry: false` for screen queries; disable refetch-on-focus where a stable view
   is expected.
 - Writes use `useMutation`; on success: show a Sonner toast, invalidate the
@@ -99,6 +107,28 @@ pure logic in its own `-helpers/`, and its form module as a sibling file.
   state before rendering content.
 - List screens pass `isLoading`/`isError` down to the generic table instead of
   early-returning.
+- Panel screens (a dashboard of independent data regions) split into **panel
+  partials**: each owns its own query and early-returns a section-level loading
+  and error state inside the content area. A failing endpoint then blanks only
+  its own panel, never the sibling panels or the filter bar, and each panel
+  carries its own placeholder dimming.
+- A panel screen refreshes by refetching its **active** queries instead of
+  enumerating each panel's key, so a new panel joins the refresh with no extra
+  wiring in the route.
+
+### Charts
+- A chart is a card: the shared wrapper surface, a header holding the title and a
+  legend of colored dots naming each series, then the plot area.
+- Colors live in a chart-local constant of theme color variables — never a raw
+  hex — and reach the chart primitives as props.
+- An empty dataset replaces the plot with a centered icon and a pt-BR message;
+  the legend is hidden along with it.
+- The plot area carries `role="img"` and an `aria-label` describing what is
+  plotted — the rendered SVG is not keyboard-navigable, so the label carries the
+  meaning.
+- One tooltip component is shared by every chart of the feature. A chart showing
+  a formatted value (currency, duration) passes its formatter in as a prop
+  instead of forking the component.
 
 ### Disabled controls
 - When a control is disabled for a **domain reason** — not merely a pending
@@ -120,9 +150,11 @@ pure logic in its own `-helpers/`, and its form module as a sibling file.
 | --- | --- |
 | Route export | `export const Route = createFileRoute(path)({ … })`. |
 | Generated tree | Never hand-edit; never import route-local code across features. |
-| Route-local code | `-partials` / `-helpers` / `-shared` / `-types`, barreled per folder; a multi-file component becomes a folder with `index.tsx` + its own `partials/`. |
+| Route-local code | `-partials` / `-helpers` / `-shared` / `-types`, barreled per folder; a multi-file component becomes a folder with `index.tsx` + its own `partials/`; a partial used by sibling partials sits at the `-partials` root. |
 | Screen state | URL search params (typed, defaults omitted), not component state. |
-| Query key | `[service.key, ...deps]`; deps match request params. |
+| Query key | `[service.key, ...deps]`; deps are the search params the request depends on — a bound resolved at fetch time stays out. |
+| Loading & error | Page-level early return on detail/create screens; in-table on list screens; per-panel section states on panel screens. |
+| Charts | Card shell + legend, theme-variable color constant, empty state, `role="img"` + `aria-label`, one shared tooltip taking a value formatter. |
 | Mutation success | Toast + invalidate + close modal; seed cache when navigating to detail. |
 | Disabled controls | Domain-reason disabling gets a `Tooltip` (inverse `disabled`) around a non-interactive wrapper; pending-state disabling does not. |
 | Forms | RHF + Yup resolver from a form module next to its consumer (`-shared` only when reused); `register`/`Controller`; disable while pending. |

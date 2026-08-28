@@ -68,6 +68,10 @@ export const useThingService: UseThingService = () => {
 - Type paginated responses through the generic pagination interface.
 - Constrain enum-like query params (sort keys, directions) with string-literal
   unions / shared enums, not loose `string`.
+- A response field the API can leave without a value is an explicit `| null`
+  union mirroring the payload, never an optional `?` property — a metric that has
+  no value for the requested period arrives as `null`, not absent, and `null` is
+  distinct from a zero the backend actually measured.
 
 ### Simplified list reads
 - A domain that feeds a select/multi-select field exposes a `get<Domain>Simple`
@@ -102,5 +106,6 @@ export const useThingService: UseThingService = () => {
 | HTTP client | Shared typed Axios instance; return `response.data.data`. |
 | Errors | Handled globally by the interceptor; no per-call `try/catch`/toast. |
 | Bodies | `Pick`/`Omit` of the entity when the body is a subset of it, literal shape otherwise; paginated reads via the pagination generic. |
+| Nullability | Response fields the API can leave empty are explicit `\| null` unions, not optional `?` properties. |
 | Params | Literal-union / enum types for sort keys and directions. |
 | No hooks here | No `useQuery`/`useMutation`; this layer stays React-Query-free. |

@@ -1,10 +1,15 @@
 import type { TooltipContentProps } from "recharts";
 
+type Props = TooltipContentProps & {
+  formatValue?: (value: number, dataKey: string) => string;
+};
+
 export const ChartTooltip = ({
   active,
   label,
   payload,
-}: TooltipContentProps) => {
+  formatValue = String,
+}: Props) => {
   if (!active || !payload?.length) return null;
 
   return (
@@ -23,7 +28,7 @@ export const ChartTooltip = ({
             />
             {entry.name}
             <span className="ml-auto font-semibold text-white">
-              {String(entry.value)}
+              {formatValue(Number(entry.value), String(entry.dataKey))}
             </span>
           </div>
         ))}

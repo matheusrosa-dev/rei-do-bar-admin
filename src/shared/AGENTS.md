@@ -43,8 +43,10 @@ root `AGENTS.md`.
 
 - **Pure and stateless**: same input → same output, no mutation of arguments, no
   I/O, no React.
-- Exported as named `function` declarations, grouped by subject into a single
-  file per subject area.
+- Named exports grouped by subject into a single file per subject area, matching
+  the declaration style already in that file (`function` declaration or `const`
+  arrow). A subject file may also export constant lookup maps beside its
+  functions.
 - Locale-aware formatting uses the platform `Intl` / locale APIs with the app
   locale (pt-BR) and returns display strings. Formatting helpers never throw on
   unexpected input — they degrade to the original/empty value.
@@ -59,5 +61,5 @@ root `AGENTS.md`.
 | interfaces | Generic/structural types (`T`-parameterized or cross-domain); barreled. |
 | Nullability | Explicit `\| null` to mirror the API payload. |
 | Primitives | Ids/timestamps as `string`; enumerable values as enum/union. |
-| helpers | Pure, named `function` exports; locale = pt-BR; no barrel. |
+| helpers | Pure named exports (functions, plus constant maps where the subject needs them); locale = pt-BR; no barrel. |
 | Boundaries | No HTTP, no React, no side effects, no business workflows. |

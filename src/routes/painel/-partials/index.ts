@@ -1,3 +1,3 @@
 export { Filters } from "./filters";
-export { SummaryCards } from "./summary-cards";
-export { DeliveryPersonsChart } from "./delivery-persons-chart";
+export { RevenuePanel } from "./revenue-panel";
+export { DeliveryPersonsPanel } from "./delivery-persons-panel";

@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts";
 import { CHART_COLORS, formatName, getChartHeight } from "./-helpers";
-import { ChartTooltip } from "./partials";
+import { ChartTooltip } from "../chart-tooltip";
 
 type Props = {
   data: DeliveryPersonPerformance[];
