@@ -47,7 +47,7 @@ export const SummaryCards = ({ totals }: Props) => {
       iconClassName: "text-amber-500",
     },
     {
-      label: "Cancelamento médio após envio",
+      label: "Tempo médio cancelamento após envio",
       value: formatMinutes(totals.averageCancellationAfterShippingMinutes),
       icon: MdTimerOff,
       iconClassName: "text-red-500",
