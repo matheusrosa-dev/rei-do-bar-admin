@@ -33,6 +33,31 @@ The app is **dark-theme only**, rendered over a black body background.
 | Text muted | `zinc-400` / `gray-400` | `#a1a1aa` / `#9ca3af` | Secondary/meta text, icons. |
 | Text faint/placeholder | `zinc-500` / `gray-500` | `#71717a` / `#6b7280` | Placeholders, disabled. |
 
+### Chart series
+| Semantic | Token | Used for |
+| --- | --- | --- |
+| Revenue / delivered | `amber-500` | "Faturamento" line, "Entregues" bars. |
+| Average order value | `violet-400` | "Ticket médio" line; also the icon of the "Ticket médio" and "Maior pedido" KPI cards. |
+| Discount | `green-400` | "Desconto em cupons" line. |
+| Count | `zinc-300` | "Pedidos entregues" line (right-hand axis). |
+| Cancelled | `red-500` | "Cancelados" bars. |
+
+> Series colors reach the chart primitives as props from a chart-local constant
+> of theme variables — never a raw hex.
+
+> **`violet` is the order-value hue.** The palette is otherwise warm + neutral,
+> and a chart plotting several series at once runs out of separable hues: amber,
+> green and red are already spoken for by revenue, discount and cancellation, so
+> a fourth series could only differ by lightness. `violet` breaks that tie and
+> carries a single meaning — the value of an order (average, highest) — across
+> both the chart line and the KPI cards. It is not a status color and must not
+> leak into buttons, badges, borders or feedback states.
+
+> A color named only as `var(--color-*)` inside a chart constant is not enough
+> for Tailwind to emit the variable: the same shade must also appear as a real
+> utility class in the scanned source. The legend's `dotClassName` covers that
+> for every series — keep the two in sync.
+
 > Two neutral families (`zinc` and `gray`) coexist in the codebase. Match the
 > family already used by neighboring elements; do not introduce a third.
 
@@ -46,7 +71,7 @@ The app is **dark-theme only**, rendered over a black body background.
 | Status: inactive | `red-500/15` + `red-400` | `#ef4444` / `#f87171` | "Inactive" badge. |
 | Status: alert | `orange-500/15` + `orange-400` | `#f97316` / `#fb923c` | "Alert" badge (e.g. out of stock). |
 | Status: neutral | `white/10` + `gray-300` | — | Neutral badge for a non-status token (e.g. the coupon code on an order). |
-| Discount | `green-400` | `#4ade80` | A deducted amount, always rendered with a `-` prefix (order summaries, orders table). |
+| Discount | `green-400` | `#4ade80` | A deducted amount, always rendered with a `-` prefix (order summaries, orders table); also the icon of the coupon KPI cards ("Desconto em cupons", "Pedidos com cupom"). |
 
 ## Typography
 
@@ -135,7 +160,8 @@ Elevation is carried mostly by **border + translucent surface**, not shadows.
 - ❌ No raw hex/rgb inside components — use palette tokens (the only raw values
   live in the global stylesheet for body background and scrollbar).
 - ❌ No new color families — stay within amber (accent), zinc/neutral/gray +
-  white-opacity (neutrals), red/green/orange (semantic).
+  white-opacity (neutrals), red/green/orange (semantic), plus `violet` for the
+  order-value metric (see [Chart series](#chart-series)).
 - ❌ No more than the three type weights (medium/semibold/bold) per the scale.
 - ❌ No gradients.
 - ❌ No hand-built dialogs/selects/switches — wrap the Radix primitive.

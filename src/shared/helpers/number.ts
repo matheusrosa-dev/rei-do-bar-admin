@@ -1,7 +1,10 @@
 const CENTS_IN_UNIT = 100;
 const PERCENT_SCALE = 100;
+export const EMPTY_VALUE = "-";
 
-export const formatPrice = (value: number) => {
+export const formatPrice = (value: number | null) => {
+  if (value === null || !Number.isFinite(value)) return EMPTY_VALUE;
+
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",

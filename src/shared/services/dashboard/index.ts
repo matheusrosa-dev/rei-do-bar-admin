@@ -2,8 +2,10 @@ import { api } from "../api";
 import type {
   GetDeliveryPersonsPerformance,
   GetDeliveryPersonsPerformanceResponse,
-  GetRevenue,
-  GetRevenueResponse,
+  GetSeries,
+  GetSeriesResponse,
+  GetSummary,
+  GetSummaryResponse,
   UseDashboardService,
 } from "./types";
 
@@ -21,8 +23,16 @@ export const useDashboardService: UseDashboardService = () => {
     return response.data.data;
   };
 
-  const getRevenue: GetRevenue = async (queries) => {
-    const response = await api.get<GetRevenueResponse>(`${baseUrl}/revenue`, {
+  const getSeries: GetSeries = async (queries) => {
+    const response = await api.get<GetSeriesResponse>(`${baseUrl}/series`, {
+      params: queries,
+    });
+
+    return response.data.data;
+  };
+
+  const getSummary: GetSummary = async (queries) => {
+    const response = await api.get<GetSummaryResponse>(`${baseUrl}/summary`, {
       params: queries,
     });
 
@@ -34,9 +44,13 @@ export const useDashboardService: UseDashboardService = () => {
       fn: getDeliveryPersonsPerformance,
       key: "get-delivery-persons-performance",
     },
-    getRevenue: {
-      fn: getRevenue,
-      key: "get-revenue",
+    getSeries: {
+      fn: getSeries,
+      key: "get-series",
+    },
+    getSummary: {
+      fn: getSummary,
+      key: "get-summary",
     },
   };
 };

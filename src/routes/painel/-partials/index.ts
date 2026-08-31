@@ -1,3 +1,4 @@
 export { Filters } from "./filters";
-export { RevenuePanel } from "./revenue-panel";
+export { SummaryPanel } from "./summary-panel";
+export { SeriesPanel } from "./series-panel";
 export { DeliveryPersonsPanel } from "./delivery-persons-panel";

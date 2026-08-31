@@ -5,8 +5,6 @@ export type DeliveryPersonPerformance = {
 };
 
 export type DeliveryPersonsPerformanceTotals = {
-  totalOrdersCount: number;
-  deliveredOrdersCount: number;
   cancelledOrdersCount: number;
   averageDeliveryMinutes: number | null;
   averageCancellationAfterShippingMinutes: number | null;
@@ -22,34 +20,51 @@ export type GetDeliveryPersonsPerformance = (queries?: {
   endDate?: Date;
 }) => Promise<GetDeliveryPersonsPerformanceResponse>;
 
-export interface RevenueTotals {
+export interface SeriesPoint {
+  label: string;
   deliveredOrdersCount: number;
+  averageOrderValue: number;
   revenue: number;
   couponDiscount: number;
-  couponDiscountPercentage: number | null;
+  couponDiscountPercentage: number;
 }
 
-export interface RevenuePoint extends RevenueTotals {
-  label: string;
+export interface GetSeriesResponse {
+  series: SeriesPoint[];
 }
 
-export interface GetRevenueResponse {
-  totals: RevenueTotals;
-  series: RevenuePoint[];
-}
-
-export type GetRevenue = (queries?: {
+export type GetSeries = (queries?: {
   startDate?: Date;
   endDate?: Date;
-}) => Promise<GetRevenueResponse>;
+}) => Promise<GetSeriesResponse>;
+
+export interface GetSummaryResponse {
+  deliveredOrdersCount: number;
+  cancelledOrdersCount: number;
+  averageOrderValue: number;
+  highestOrderValue: number;
+  redeemedCouponOrdersCount: number;
+  revenue: number;
+  couponDiscount: number;
+  couponDiscountPercentage: number;
+}
+
+export type GetSummary = (queries?: {
+  startDate?: Date;
+  endDate?: Date;
+}) => Promise<GetSummaryResponse>;
 
 export type UseDashboardService = () => {
   getDeliveryPersonsPerformance: {
     fn: GetDeliveryPersonsPerformance;
     key: string;
   };
-  getRevenue: {
-    fn: GetRevenue;
+  getSeries: {
+    fn: GetSeries;
+    key: string;
+  };
+  getSummary: {
+    fn: GetSummary;
     key: string;
   };
 };

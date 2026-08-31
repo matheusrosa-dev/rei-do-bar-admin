@@ -2,7 +2,12 @@ import { PageWrapper } from "@components";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { findDatePreset, toDateTimeParam, validateSearch } from "./-helpers";
-import { DeliveryPersonsPanel, Filters, RevenuePanel } from "./-partials";
+import {
+  DeliveryPersonsPanel,
+  Filters,
+  SeriesPanel,
+  SummaryPanel,
+} from "./-partials";
 
 export const Route = createFileRoute("/painel/")({
   validateSearch,
@@ -42,7 +47,8 @@ function Index() {
       </div>
 
       <div className="flex flex-col gap-4">
-        <RevenuePanel />
+        <SummaryPanel />
+        <SeriesPanel />
         <DeliveryPersonsPanel />
       </div>
     </PageWrapper>

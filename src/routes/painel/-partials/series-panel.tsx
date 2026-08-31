@@ -2,20 +2,19 @@ import { useDashboardService } from "@services";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
 import { twMerge } from "tailwind-merge";
-import { toRevenueRange } from "../-helpers";
-import { RevenueCards } from "./revenue-cards";
-import { RevenueChart } from "./revenue-chart";
+import { toSeriesRange } from "../-helpers";
 import { SectionError } from "./section-error";
 import { SectionLoading } from "./section-loading";
+import { SeriesChart } from "./series-chart";
 
-export const RevenuePanel = () => {
+export const SeriesPanel = () => {
   const { startDate, endDate } = useSearch({ from: "/painel/" });
 
-  const { getRevenue } = useDashboardService();
+  const { getSeries } = useDashboardService();
 
   const { data, isLoading, isError, isPlaceholderData } = useQuery({
-    queryKey: [getRevenue.key, startDate, endDate],
-    queryFn: () => getRevenue.fn(toRevenueRange(startDate, endDate)),
+    queryKey: [getSeries.key, startDate, endDate],
+    queryFn: () => getSeries.fn(toSeriesRange(startDate, endDate)),
     placeholderData: keepPreviousData,
     retry: false,
   });
@@ -27,12 +26,11 @@ export const RevenuePanel = () => {
   return (
     <div
       className={twMerge(
-        "flex flex-col gap-4 transition-opacity duration-200",
+        "transition-opacity duration-200",
         isPlaceholderData && "opacity-60",
       )}
     >
-      <RevenueCards totals={data.totals} />
-      <RevenueChart data={data.series} />
+      <SeriesChart data={data.series} />
     </div>
   );
 };

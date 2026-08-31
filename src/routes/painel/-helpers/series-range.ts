@@ -1,16 +1,16 @@
 import { fromDateTimeParam } from "./date-param";
 
-type RevenueRange = {
+type SeriesRange = {
   startDate?: Date;
   endDate?: Date;
 };
 
 // The API buckets the series by month whenever a bound is missing, so an
 // open-ended range is closed at the current instant to get hourly/daily points.
-export const toRevenueRange = (
+export const toSeriesRange = (
   startDate?: string,
   endDate?: string,
-): RevenueRange => {
+): SeriesRange => {
   const start = fromDateTimeParam(startDate);
   const end = fromDateTimeParam(endDate);
 

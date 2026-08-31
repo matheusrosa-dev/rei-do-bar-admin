@@ -129,6 +129,14 @@ exposes only what the route itself consumes.
 - One tooltip component is shared by every chart of the feature. A chart showing
   a formatted value (currency, duration) passes its formatter in as a prop
   instead of forking the component.
+- A series that can carry `null` keeps its dots rendered: a point whose
+  neighbours are both `null` draws no segment, so without a dot it would vanish
+  from the plot. `connectNulls` stays off — a gap means "nothing measured", never
+  zero.
+- A legend whose dots toggle their series renders each entry as a `button` with
+  `aria-pressed`, keeps the hidden set in the chart's local state, and drops the
+  hidden series (and any axis left without one) from the plot instead of only
+  dimming it. The `aria-label` is then built from the visible series.
 
 ### Disabled controls
 - When a control is disabled for a **domain reason** — not merely a pending

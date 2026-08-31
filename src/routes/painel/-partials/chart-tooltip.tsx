@@ -1,14 +1,22 @@
+import { EMPTY_VALUE } from "@shared/helpers/number";
 import type { TooltipContentProps } from "recharts";
 
+export type FormatValue = (value: number | null, dataKey: string) => string;
+
 type Props = TooltipContentProps & {
-  formatValue?: (value: number, dataKey: string) => string;
+  formatValue?: FormatValue;
 };
+
+const toValue = (value: unknown) =>
+  value === null || value === undefined ? null : Number(value);
+
+const formatRawValue: FormatValue = (value) => value?.toString() ?? EMPTY_VALUE;
 
 export const ChartTooltip = ({
   active,
   label,
   payload,
-  formatValue = String,
+  formatValue = formatRawValue,
 }: Props) => {
   if (!active || !payload?.length) return null;
 
@@ -28,7 +36,7 @@ export const ChartTooltip = ({
             />
             {entry.name}
             <span className="ml-auto font-semibold text-white">
-              {formatValue(Number(entry.value), String(entry.dataKey))}
+              {formatValue(toValue(entry.value), String(entry.dataKey))}
             </span>
           </div>
         ))}
