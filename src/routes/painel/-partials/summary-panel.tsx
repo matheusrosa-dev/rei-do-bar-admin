@@ -8,7 +8,9 @@ import {
   MdConfirmationNumber,
   MdEmojiEvents,
   MdLocalOffer,
+  MdGroupAdd,
   MdPayments,
+  MdPersonAddAlt1,
   MdReceiptLong,
 } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
@@ -40,52 +42,25 @@ export const SummaryPanel = () => {
   return (
     <div
       className={twMerge(
-        "grid grid-cols-1 sm:grid-cols-2 gap-4 transition-opacity duration-200",
+        "flex flex-col gap-4 transition-opacity duration-200",
         isPlaceholderData && "opacity-60",
       )}
     >
-      <SummaryCard
-        label="Pedidos entregues"
-        value={String(data.deliveredOrdersCount)}
-        icon={MdCheckCircle}
-        iconClassName="text-amber-500"
-      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <SummaryCard
+          label="Pedidos entregues"
+          value={String(data.deliveredOrdersCount)}
+          icon={MdCheckCircle}
+          iconClassName="text-zinc-300"
+        />
 
-      <SummaryCard
-        label="Pedidos cancelados"
-        value={String(data.cancelledOrdersCount)}
-        icon={MdCancel}
-        iconClassName="text-red-500"
-      />
-
-      <SummaryCard
-        label="Ticket médio"
-        value={formatPrice(data.averageOrderValue)}
-        icon={MdReceiptLong}
-        iconClassName="text-violet-400"
-      />
-
-      <SummaryCard
-        label="Maior pedido"
-        value={formatPrice(data.highestOrderValue)}
-        icon={MdEmojiEvents}
-        iconClassName="text-violet-400"
-      />
-
-      <SummaryCard
-        label="Pedidos com cupom"
-        value={String(data.redeemedCouponOrdersCount)}
-        icon={MdConfirmationNumber}
-        iconClassName="text-green-400"
-      />
-
-      <SummaryCard
-        label="Desconto em cupons"
-        value={formatPrice(data.couponDiscount)}
-        icon={MdLocalOffer}
-        iconClassName="text-green-400"
-        hint={`${formatPercentage(data.couponDiscountPercentage)} do faturamento bruto`}
-      />
+        <SummaryCard
+          label="Pedidos cancelados"
+          value={String(data.cancelledOrdersCount)}
+          icon={MdCancel}
+          iconClassName="text-red-500"
+        />
+      </div>
 
       <SummaryCard
         label="Faturamento"
@@ -93,6 +68,53 @@ export const SummaryPanel = () => {
         icon={MdPayments}
         iconClassName="text-amber-500"
       />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <SummaryCard
+          label="Ticket médio"
+          value={formatPrice(data.averageOrderValue)}
+          icon={MdReceiptLong}
+          iconClassName="text-violet-400"
+        />
+
+        <SummaryCard
+          label="Maior pedido"
+          value={formatPrice(data.highestOrderValue)}
+          icon={MdEmojiEvents}
+          iconClassName="text-violet-400"
+        />
+
+        <SummaryCard
+          label="Pedidos com cupom"
+          value={String(data.redeemedCouponOrdersCount)}
+          icon={MdConfirmationNumber}
+          iconClassName="text-green-400"
+        />
+
+        <SummaryCard
+          label="Desconto em cupons"
+          value={formatPrice(data.couponDiscount)}
+          icon={MdLocalOffer}
+          iconClassName="text-green-400"
+          hint={`${formatPercentage(data.couponDiscountPercentage)} do faturamento bruto`}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <SummaryCard
+          label="Novos clientes"
+          value={String(data.newCustomersCount)}
+          icon={MdGroupAdd}
+          iconClassName="text-sky-400"
+        />
+
+        <SummaryCard
+          label="Primeiros pedidos"
+          value={String(data.firstDeliveredOrdersCount)}
+          icon={MdPersonAddAlt1}
+          iconClassName="text-sky-400"
+        />
+      </div>
     </div>
   );
 };

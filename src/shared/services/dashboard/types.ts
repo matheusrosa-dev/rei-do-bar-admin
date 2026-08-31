@@ -40,6 +40,8 @@ export type GetSeries = (queries?: {
 
 export interface GetSummaryResponse {
   deliveredOrdersCount: number;
+  firstDeliveredOrdersCount: number;
+  newCustomersCount: number;
   cancelledOrdersCount: number;
   averageOrderValue: number;
   highestOrderValue: number;

@@ -41,6 +41,7 @@ The app is **dark-theme only**, rendered over a black body background.
 | Discount | `green-400` | "Desconto em cupons" line. |
 | Count | `zinc-300` | "Pedidos entregues" line (right-hand axis). |
 | Cancelled | `red-500` | "Cancelados" bars. |
+| Acquisition | `sky-400` | Icon of the acquisition KPI cards ("Novos clientes", "Primeiros pedidos"). |
 
 > Series colors reach the chart primitives as props from a chart-local constant
 > of theme variables — never a raw hex.
@@ -161,7 +162,8 @@ Elevation is carried mostly by **border + translucent surface**, not shadows.
   live in the global stylesheet for body background and scrollbar).
 - ❌ No new color families — stay within amber (accent), zinc/neutral/gray +
   white-opacity (neutrals), red/green/orange (semantic), plus `violet` for the
-  order-value metric (see [Chart series](#chart-series)).
+  order-value metric and `sky` for the acquisition KPI cards (see
+  [Chart series](#chart-series)).
 - ❌ No more than the three type weights (medium/semibold/bold) per the scale.
 - ❌ No gradients.
 - ❌ No hand-built dialogs/selects/switches — wrap the Radix primitive.
