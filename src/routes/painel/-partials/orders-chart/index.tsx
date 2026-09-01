@@ -1,5 +1,4 @@
 import { Wrapper } from "@components";
-import { formatCompactPrice } from "@shared/helpers/number";
 import type { SeriesPoint } from "@shared/services/dashboard/types";
 import { useState } from "react";
 import { MdInbox } from "react-icons/md";
@@ -26,12 +25,12 @@ type Props = {
   data: SeriesPoint[];
 };
 
-export const SeriesChart = ({ data }: Props) => {
+export const OrdersChart = ({ data }: Props) => {
   const [hiddenSeries, setHiddenSeries] = useState<SeriesKey[]>([]);
 
   const isVisible = (key: SeriesKey) => !hiddenSeries.includes(key);
 
-  const hasMoneyAxis = SERIES.some(({ key }) => isVisible(key));
+  const hasCountAxis = SERIES.some(({ key }) => isVisible(key));
 
   const onToggleSeries = (key: SeriesKey) => {
     setHiddenSeries((previous) =>
@@ -45,7 +44,7 @@ export const SeriesChart = ({ data }: Props) => {
     <Wrapper>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h4 className="text-white font-bold text-lg tracking-tight">
-          Vendas ao longo do tempo
+          Pedidos ao longo do tempo
         </h4>
 
         {data.length > 0 && (
@@ -60,7 +59,7 @@ export const SeriesChart = ({ data }: Props) => {
       {data.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 gap-3 text-zinc-500">
           <MdInbox size={32} />
-          <span className="text-sm">Nenhuma venda no período.</span>
+          <span className="text-sm">Nenhuma entrega no período.</span>
         </div>
       ) : (
         <div role="img" aria-label={formatChartLabel(SERIES, hiddenSeries)}>
@@ -75,13 +74,13 @@ export const SeriesChart = ({ data }: Props) => {
                 tick={{ fontSize: 12 }}
               />
 
-              {hasMoneyAxis && (
+              {hasCountAxis && (
                 <YAxis
-                  yAxisId="money"
+                  yAxisId="count"
+                  allowDecimals={false}
                   width="auto"
                   stroke={CHART_COLORS.axis}
                   tick={{ fontSize: 12 }}
-                  tickFormatter={formatCompactPrice}
                 />
               )}
 
@@ -92,39 +91,39 @@ export const SeriesChart = ({ data }: Props) => {
                 )}
               />
 
-              {isVisible("revenue") && (
+              {isVisible("deliveredOrdersCount") && (
                 <Line
-                  yAxisId="money"
+                  yAxisId="count"
                   type="monotone"
-                  dataKey="revenue"
-                  name="Faturamento"
-                  stroke={CHART_COLORS.revenue}
+                  dataKey="deliveredOrdersCount"
+                  name="Pedidos entregues"
+                  stroke={CHART_COLORS.deliveredOrdersCount}
                   strokeWidth={2}
                   dot={false}
                   activeDot={{ r: 4 }}
                 />
               )}
 
-              {isVisible("averageOrderValue") && (
+              {isVisible("firstDeliveredOrdersCount") && (
                 <Line
-                  yAxisId="money"
+                  yAxisId="count"
                   type="monotone"
-                  dataKey="averageOrderValue"
-                  name="Ticket médio"
-                  stroke={CHART_COLORS.averageOrderValue}
+                  dataKey="firstDeliveredOrdersCount"
+                  name="Primeiros pedidos"
+                  stroke={CHART_COLORS.firstDeliveredOrdersCount}
                   strokeWidth={2}
                   dot={false}
                   activeDot={{ r: 4 }}
                 />
               )}
 
-              {isVisible("couponDiscount") && (
+              {isVisible("redeemedCouponOrdersCount") && (
                 <Line
-                  yAxisId="money"
+                  yAxisId="count"
                   type="monotone"
-                  dataKey="couponDiscount"
-                  name="Desconto em cupons"
-                  stroke={CHART_COLORS.couponDiscount}
+                  dataKey="redeemedCouponOrdersCount"
+                  name="Pedidos com cupom"
+                  stroke={CHART_COLORS.redeemedCouponOrdersCount}
                   strokeWidth={2}
                   dot={false}
                   activeDot={{ r: 4 }}

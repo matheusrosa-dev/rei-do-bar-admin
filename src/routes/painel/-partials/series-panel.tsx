@@ -3,6 +3,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
 import { twMerge } from "tailwind-merge";
 import { toSeriesRange } from "../-helpers";
+import { OrdersChart } from "./orders-chart";
 import { SectionError } from "./section-error";
 import { SectionLoading } from "./section-loading";
 import { SeriesChart } from "./series-chart";
@@ -26,11 +27,12 @@ export const SeriesPanel = () => {
   return (
     <div
       className={twMerge(
-        "transition-opacity duration-200",
+        "flex flex-col gap-4 transition-opacity duration-200",
         isPlaceholderData && "opacity-60",
       )}
     >
       <SeriesChart data={data.series} />
+      <OrdersChart data={data.series} />
     </div>
   );
 };

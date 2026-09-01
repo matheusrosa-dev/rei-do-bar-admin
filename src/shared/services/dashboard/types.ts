@@ -18,6 +18,7 @@ export interface SeriesPoint {
   deliveredOrdersCount: number;
   averageOrderValue: number;
   firstDeliveredOrdersCount: number;
+  redeemedCouponOrdersCount: number;
   revenue: number;
   couponDiscount: number;
   couponDiscountPercentage: number;
