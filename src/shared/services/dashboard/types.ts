@@ -4,14 +4,7 @@ export type DeliveryPersonPerformance = {
   cancelledOrdersCount: number;
 };
 
-export type DeliveryPersonsPerformanceTotals = {
-  cancelledOrdersCount: number;
-  averageDeliveryMinutes: number | null;
-  averageCancellationAfterShippingMinutes: number | null;
-};
-
 export type GetDeliveryPersonsPerformanceResponse = {
-  totals: DeliveryPersonsPerformanceTotals;
   deliveryPersons: DeliveryPersonPerformance[];
 };
 
@@ -44,6 +37,9 @@ export interface GetSummaryResponse {
   firstDeliveredOrdersCount: number;
   newCustomersCount: number;
   cancelledOrdersCount: number;
+  assignedCancelledOrdersCount: number;
+  averageDeliveryMinutes: number | null;
+  averageCancellationAfterShippingMinutes: number | null;
   averageOrderValue: number;
   highestOrderValue: number;
   redeemedCouponOrdersCount: number;

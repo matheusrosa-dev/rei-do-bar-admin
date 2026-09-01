@@ -1,8 +1,10 @@
 import { useDashboardService } from "@services";
+import { formatMinutes } from "@shared/helpers/duration";
 import { formatPercentage, formatPrice } from "@shared/helpers/number";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
 import {
+  MdAvTimer,
   MdCancel,
   MdCheckCircle,
   MdConfirmationNumber,
@@ -13,6 +15,7 @@ import {
   MdPayments,
   MdPersonAddAlt1,
   MdReceiptLong,
+  MdTimerOff,
   MdTrendingUp,
 } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
@@ -60,6 +63,29 @@ export const SummaryPanel = () => {
           label="Pedidos cancelados"
           value={String(data.cancelledOrdersCount)}
           icon={MdCancel}
+          iconClassName="text-red-500"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <SummaryCard
+          label="Pedidos cancelados após envio"
+          value={String(data.assignedCancelledOrdersCount)}
+          icon={MdCancel}
+          iconClassName="text-red-500"
+        />
+
+        <SummaryCard
+          label="Tempo médio de entrega"
+          value={formatMinutes(data.averageDeliveryMinutes)}
+          icon={MdAvTimer}
+          iconClassName="text-amber-500"
+        />
+
+        <SummaryCard
+          label="Tempo médio cancelamento após envio"
+          value={formatMinutes(data.averageCancellationAfterShippingMinutes)}
+          icon={MdTimerOff}
           iconClassName="text-red-500"
         />
       </div>

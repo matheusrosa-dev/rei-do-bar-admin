@@ -6,7 +6,6 @@ import { fromDateTimeParam } from "../-helpers";
 import { DeliveryPersonsChart } from "./delivery-persons-chart";
 import { SectionError } from "./section-error";
 import { SectionLoading } from "./section-loading";
-import { SummaryCards } from "./summary-cards";
 
 export const DeliveryPersonsPanel = () => {
   const { startDate, endDate } = useSearch({ from: "/painel/" });
@@ -35,7 +34,6 @@ export const DeliveryPersonsPanel = () => {
         isPlaceholderData && "opacity-60",
       )}
     >
-      <SummaryCards totals={data.totals} />
       <DeliveryPersonsChart data={data.deliveryPersons} />
     </div>
   );
