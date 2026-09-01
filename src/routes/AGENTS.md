@@ -3,21 +3,13 @@
 Scope rules for file-based routing and feature code. Read together with the root
 `AGENTS.md`.
 
-## What belongs here
+## Scope
 
-- Route definitions and their page components.
-- Feature composition: wiring queries, mutations, and shared components into a
-  working screen.
-- **Route-local** code that supports a route or feature: scoped components, pure
-  helpers, local types, and feature form schemas.
-
-## What does NOT belong here
-
-- Reusable presentational components → the components layer.
-- HTTP calls, query keys, request/response types → the services layer.
-- Domain entity types or generic cross-domain types → the shared models/interfaces.
-
-Routes **consume** those layers; they do not define them.
+Route definitions, their page components, feature composition (wiring queries,
+mutations and shared components into a working screen), and route-local support
+code: scoped components, pure helpers, local types and feature form schemas.
+Routes **consume** the components, services and shared layers — they never define
+what belongs in them.
 
 ## Routing conventions (TanStack Router)
 
@@ -43,8 +35,6 @@ export const Route = createFileRoute("/<path>/")({
 });
 ```
 
-Route path segments are Portuguese, matching the product's URLs.
-
 ## Route-local folders (`-` prefix)
 
 | Folder / file | Holds |
@@ -55,7 +45,8 @@ Route path segments are Portuguese, matching the product's URLs.
 | `-types.ts` | Types local to the route. |
 
 Each `-partials`/`-helpers` folder exposes a barrel and is imported by relative
-path from its sibling route (these are route-internal, not global).
+path from its sibling route (these are route-internal, not global). Route-local
+code is never imported across features.
 
 A route-local component that grows beyond one file becomes a **folder with an
 `index.tsx`**, keeping its own assets next to it: sub-pieces in a nested
@@ -151,20 +142,3 @@ exposes only what the route itself consumes.
 - Model multiple modals per screen as a discriminated union in a single state
   slot: `useState<ModalOpen | null>` where each variant carries a `mode` plus the
   data that modal needs. Open by setting the variant, close by setting `null`.
-
-## Conventions
-
-| Rule | Detail |
-| --- | --- |
-| Route export | `export const Route = createFileRoute(path)({ … })`. |
-| Generated tree | Never hand-edit; never import route-local code across features. |
-| Route-local code | `-partials` / `-helpers` / `-shared` / `-types`, barreled per folder; a multi-file component becomes a folder with `index.tsx` + its own `partials/`; a partial used by sibling partials sits at the `-partials` root. |
-| Screen state | URL search params (typed, defaults omitted), not component state. |
-| Query key | `[service.key, ...deps]`; deps are the search params the request depends on — a bound resolved at fetch time stays out. |
-| Loading & error | Page-level early return on detail/create screens; in-table on list screens; per-panel section states on panel screens. |
-| Charts | Card shell + legend, theme-variable color constant, empty state, `role="img"` + `aria-label`, one shared tooltip taking a value formatter. |
-| Mutation success | Toast + invalidate + close modal; seed cache when navigating to detail. |
-| Disabled controls | Domain-reason disabling gets a `Tooltip` (inverse `disabled`) around a non-interactive wrapper; pending-state disabling does not. |
-| Forms | RHF + Yup resolver from a form module next to its consumer (`-shared` only when reused); `register`/`Controller`; disable while pending. |
-| Imports | Components via `@components`, data via `@services`, types via `@shared/*`. |
-| UI strings | Portuguese (pt-BR); code and route component names in English. |

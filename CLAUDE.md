@@ -39,15 +39,7 @@ This project has a visual interface. Before writing or changing any UI:
    - `npm run typecheck` (TypeScript build-mode type check, no bundle)
 2. Launch an **independent subagent** with `.claude/commands/review-changes.md`
    and wait for its full report.
-3. Fix **every** Critical and Warning finding, then re-run the verification
-   command.
+3. Fix **every** Critical and Warning finding (criteria in the review command),
+   then re-run the verification command.
 4. Run `.claude/commands/review-agents-docs.md` to audit the documentation for the
    directories you touched.
-
-### Review severity
-
-- **Critical** — broken contract, bug, security risk, or a violation of a
-  structural project convention. Must fix.
-- **Warning** — style inconsistency, a pattern applied incompletely, or a
-  decision that creates debt. Must fix.
-- **Suggestion** — optional improvement with no immediate impact.

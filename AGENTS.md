@@ -6,66 +6,35 @@ working in (see [Folder Structure](#folder-structure)).
 
 ## Project Overview
 
-Administrative dashboard ("admin") for the Rei do Bar product. It is a
-single-page web application used internally to manage products, categories,
-customers and their orders against a REST backend.
-
-- **Platform**: Browser SPA (desktop-first, responsive down to mobile).
-- **Paradigm**: File-based routing with feature-oriented route folders. UI is
-  composed of a generic, reusable component layer plus per-feature route code.
-- **Typing**: TypeScript in strict-null mode, bundler module resolution,
-  `verbatimModuleSyntax` enabled (type-only imports are mandatory).
-- **State model**: Server state lives in TanStack Query; UI/filter state lives
-  in the URL (typed search params) and local component state. There is no global
-  client store.
+Administrative dashboard ("admin") for the Rei do Bar product: a browser SPA
+(desktop-first, responsive down to mobile) used internally to manage products,
+categories, customers and their orders against a REST backend. File-based
+routing with feature-oriented route folders, over a generic reusable component
+layer. TypeScript runs in strict-null mode with `verbatimModuleSyntax`. Server
+state lives in TanStack Query and UI/filter state in the URL plus local component
+state — there is no global client store.
 
 ## Technology Stack
 
-One line per library describing how it is used **here**, not its generic
-definition.
+Only what changes a decision; the rest is in `package.json`.
 
-### Core
-| Library | Role here |
-| --- | --- |
-| React 19 | UI runtime. Function components only. |
-| React Compiler | Enabled via Babel preset in the Vite build; do not hand-write `useMemo`/`useCallback` for things the compiler already optimizes. |
-| TypeScript | Strict typing; `import type` enforced by `verbatimModuleSyntax`. |
-
-### Routing
-| Library | Role here |
-| --- | --- |
-| TanStack Router | File-based routes under the routes directory, with automatic code-splitting. The route tree is generated — never edit the generated tree file. |
-
-### Data & Server State
-| Library | Role here |
-| --- | --- |
-| TanStack Query | All server reads (`useQuery`) and writes (`useMutation`); cache invalidation after mutations. |
-| Axios | Single typed instance for HTTP. Wraps every response as `{ data: T }` and centralizes auth + error toasts via interceptor. |
-| TanStack Table | Headless table model behind the generic table component. |
-
-### Forms & Validation
-| Library | Role here |
-| --- | --- |
-| React Hook Form | Form state and submission for create/edit screens. |
-| Yup + @hookform/resolvers | Schema validation; schema + inferred type + resolver live together in a per-feature form module. |
-
-### UI & Styling
-| Library | Role here |
-| --- | --- |
-| Tailwind CSS v4 | Utility-first styling, configured CSS-first (no `tailwind.config`); imported through the Vite plugin. Dark theme only. |
-| tailwind-merge | Merges incoming `className` overrides with base classes in reusable components. |
-| Radix UI | Accessible primitives (dialog, select, switch, tooltip) wrapped by local components. |
-| Motion (`motion/react`) | Enter/exit animations for overlays, modals and error messages. |
-| React Icons | Icon set across navigation, buttons and fields. |
-| Sonner | Toast notifications for success and API error feedback. |
-| Recharts | Charts on the dashboard screen. Colors are passed as props, so they come from a route-local constant referencing the theme's color variables — never a raw hex. |
-
-### Tooling
-| Tool | Role here |
-| --- | --- |
-| Vite | Dev server and build (`tsc -b` typecheck + bundle). |
-| Biome | Linter + formatter (2-space indent, double quotes). The single source of style truth. |
-| Husky | Git hooks. |
+- **React Compiler** runs in the build — do not hand-write `useMemo`/
+  `useCallback` for what it already optimizes.
+- **TanStack Router**: file-based routes; the route tree file is generated, never
+  hand-edited.
+- **TanStack Query** owns every server read and write, plus invalidation.
+- **Axios**: one typed instance; the backend wraps every response as
+  `{ data: T }`; auth and error toasts live in its interceptor.
+- **React Hook Form + Yup**: schema, inferred type and resolver together in a
+  per-feature form module.
+- **Tailwind v4**, CSS-first — no `tailwind.config`, dark theme only; merge
+  incoming `className` with `tailwind-merge`.
+- **Radix UI** is always behind a local wrapper, never used raw.
+- **Recharts** colors arrive as props from a constant of theme color variables,
+  never a raw hex.
+- **Motion**, **Sonner** and **React Icons** are the animation, toast and icon
+  libraries — do not add a second of any.
+- **Biome** is the single source of style truth (2-space indent, double quotes).
 
 > **Installed but currently unused:** `zustand` is a dependency but no store
 > exists in the codebase. Do not introduce global client state without

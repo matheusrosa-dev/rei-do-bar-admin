@@ -1,37 +1,36 @@
 # Design System
 
-Stable visual reference for the admin UI. Derived from the actual styles in the
-codebase (Tailwind v4, CSS-first — there is **no** `tailwind.config`, so the
-**Tailwind utility class is the canonical token**; hex values below come from
-Tailwind's default palette and are for reference only).
+Stable visual reference for the admin UI. Tailwind v4 is CSS-first — there is
+**no** `tailwind.config`, so the **Tailwind utility class is the canonical
+token**.
 
 The app is **dark-theme only**, rendered over a black body background.
 
 ## Color tokens
 
 ### Brand / accent — amber
-| Semantic | Token | Hex (ref) | Used for |
-| --- | --- | --- | --- |
-| Accent | `amber-500` | `#f59e0b` | Primary button bg, focus ring/border, active toggle, active-filter border. |
-| Accent hover/active | `amber-400` | `#fbbf24` | Primary button hover, active label text, checked item text. |
-| Accent wash | `amber-500/10`, `amber-500/5` | — | Subtle background of an active control. |
+| Semantic | Token | Used for |
+| --- | --- | --- |
+| Accent | `amber-500` | Primary button bg, focus ring/border, active toggle, active-filter border. |
+| Accent hover/active | `amber-400` | Primary button hover, active label text, checked item text. |
+| Accent wash | `amber-500/10`, `amber-500/5` | Subtle background of an active control. |
 
 ### Neutrals — surfaces, borders, text
-| Semantic | Token | Hex (ref) | Used for |
-| --- | --- | --- | --- |
-| App background | `black` (body) | `#000000` | Page backdrop (set in global CSS). |
-| Raised surface | `white/5` | — | Cards, table, hover rows. |
-| Header / faint surface | `white/3` | — | Page header, desktop sidebar. |
-| Solid panel | `zinc-900` | `#18181b` | Modal surface. |
-| Input surface | `zinc-800` | `#27272a` | Inputs, select trigger, dropdown menu. |
-| Sidebar (mobile) | `neutral-950` | `#0a0a0a` | Off-canvas sidebar. |
-| Primary border | `white/10` | — | Dividers, card/table/modal borders. |
-| Control border | `zinc-700` | `#3f3f46` | Input/select borders, unchecked toggle. |
-| Text primary | `white` | `#ffffff` | Headings, primary text. |
-| Text label | `zinc-300` | `#d4d4d8` | Field labels. |
-| Text body/table | `gray-200` / `gray-300` | `#e5e7eb` / `#d1d5db` | Table cells, body copy. |
-| Text muted | `zinc-400` / `gray-400` | `#a1a1aa` / `#9ca3af` | Secondary/meta text, icons. |
-| Text faint/placeholder | `zinc-500` / `gray-500` | `#71717a` / `#6b7280` | Placeholders, disabled. |
+| Semantic | Token | Used for |
+| --- | --- | --- |
+| App background | `black` (body) | Page backdrop (set in global CSS). |
+| Raised surface | `white/5` | Cards, table, hover rows. |
+| Header / faint surface | `white/3` | Page header, desktop sidebar. |
+| Solid panel | `zinc-900` | Modal surface. |
+| Input surface | `zinc-800` | Inputs, select trigger, dropdown menu. |
+| Sidebar (mobile) | `neutral-950` | Off-canvas sidebar. |
+| Primary border | `white/10` | Dividers, card/table/modal borders. |
+| Control border | `zinc-700` | Input/select borders, unchecked toggle. |
+| Text primary | `white` | Headings, primary text. |
+| Text label | `zinc-300` | Field labels. |
+| Text body/table | `gray-200` / `gray-300` | Table cells, body copy. |
+| Text muted | `zinc-400` / `gray-400` | Secondary/meta text, icons. |
+| Text faint/placeholder | `zinc-500` / `gray-500` | Placeholders, disabled. |
 
 ### Chart series
 | Semantic | Token | Used for |
@@ -44,35 +43,29 @@ The app is **dark-theme only**, rendered over a black body background.
 | Acquisition | `sky-400` | "Primeiros pedidos" line (order-volume chart); icon of the acquisition KPI cards ("Novos clientes", "Primeiros pedidos"). |
 
 > Series colors reach the chart primitives as props from a chart-local constant
-> of theme variables — never a raw hex.
+> of theme variables — never a raw hex. Naming a color only as `var(--color-*)`
+> in that constant is not enough for Tailwind to emit it: the same shade must
+> also appear as a real utility class in the scanned source, which the legend's
+> `dotClassName` covers — keep the two in sync.
 
-> **`violet` is the order-value hue.** The palette is otherwise warm + neutral,
-> and a chart plotting several series at once runs out of separable hues: amber,
-> green and red are already spoken for by revenue, discount and cancellation, so
-> a fourth series could only differ by lightness. `violet` breaks that tie and
-> carries a single meaning — the value of an order (average, highest) — across
-> both the chart line and the KPI cards. It is not a status color and must not
-> leak into buttons, badges, borders or feedback states.
+> **`violet` is the order-value hue** — average and highest order value, in both
+> the chart line and the KPI cards. It is not a status color and must not leak
+> into buttons, badges, borders or feedback states.
 
-> A color named only as `var(--color-*)` inside a chart constant is not enough
-> for Tailwind to emit the variable: the same shade must also appear as a real
-> utility class in the scanned source. The legend's `dotClassName` covers that
-> for every series — keep the two in sync.
-
-> Two neutral families (`zinc` and `gray`) coexist in the codebase. Match the
-> family already used by neighboring elements; do not introduce a third.
+> Two neutral families (`zinc` and `gray`) coexist. Match the family already used
+> by neighboring elements; do not introduce a third.
 
 ### Semantic — feedback
-| Semantic | Token | Hex (ref) | Used for |
-| --- | --- | --- | --- |
-| Danger | `red-600` | `#dc2626` | Danger button bg. |
-| Error | `red-500` | `#ef4444` | Error border, ring, message text. |
-| Error wash | `red-500/5`, `red-500/15` | — | Error field bg, inactive badge bg. |
-| Status: active | `green-500/15` + `green-400` | `#22c55e` / `#4ade80` | "Active" badge. |
-| Status: inactive | `red-500/15` + `red-400` | `#ef4444` / `#f87171` | "Inactive" badge. |
-| Status: alert | `orange-500/15` + `orange-400` | `#f97316` / `#fb923c` | "Alert" badge (e.g. out of stock). |
-| Status: neutral | `white/10` + `gray-300` | — | Neutral badge for a non-status token (e.g. the coupon code on an order). |
-| Discount | `green-400` | `#4ade80` | A deducted amount, always rendered with a `-` prefix (order summaries, orders table); also the icon of the coupon KPI cards ("Desconto em cupons", "Pedidos com cupom"). |
+| Semantic | Token | Used for |
+| --- | --- | --- |
+| Danger | `red-600` | Danger button bg. |
+| Error | `red-500` | Error border, ring, message text. |
+| Error wash | `red-500/5`, `red-500/15` | Error field bg, inactive badge bg. |
+| Status: active | `green-500/15` + `green-400` | "Active" badge. |
+| Status: inactive | `red-500/15` + `red-400` | "Inactive" badge. |
+| Status: alert | `orange-500/15` + `orange-400` | "Alert" badge (e.g. out of stock). |
+| Status: neutral | `white/10` + `gray-300` | Neutral badge for a non-status token (e.g. the coupon code on an order). |
+| Discount | `green-400` | A deducted amount, always rendered with a `-` prefix (order summaries, orders table); also the icon of the coupon KPI cards ("Desconto em cupons", "Pedidos com cupom"). |
 
 ## Typography
 

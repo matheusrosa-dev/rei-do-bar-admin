@@ -5,7 +5,7 @@ Scope rules for the non-UI shared layer: **models**, **interfaces**, and
 dedicated `AGENTS.md` — do not apply these rules there.) Read together with the
 root `AGENTS.md`.
 
-## What belongs here
+## Scope
 
 | Sub-folder | Holds | Barrel |
 | --- | --- | --- |
@@ -13,11 +13,9 @@ root `AGENTS.md`.
 | `interfaces/` | **Generic, cross-domain** structural types not tied to one entity. | Wildcard re-export barrel. |
 | `helpers/` | **Pure** utility/formatting functions. | No barrel — imported by direct sub-path. |
 
-## What does NOT belong here
-
-- HTTP calls, query keys, request/response types → the services layer.
-- React components, hooks, JSX, or any browser/DOM side effects.
-- Business workflows or stateful logic. These are types and pure functions only.
+Types and pure functions only: no HTTP calls or query keys (those are the
+services layer), no React components, hooks, JSX or DOM side effects, and no
+business workflows or stateful logic.
 
 ## models/ vs. interfaces/
 
@@ -52,14 +50,3 @@ root `AGENTS.md`.
   unexpected input — they degrade to the original/empty value.
 - Imported by direct sub-path (no barrel), since each subject file is consumed
   independently.
-
-## Conventions
-
-| Rule | Detail |
-| --- | --- |
-| models | `I`-prefixed entity types; compose via `extends`, richer views named `I<Entity>With<X>`; barreled. |
-| interfaces | Generic/structural types (`T`-parameterized or cross-domain); barreled. |
-| Nullability | Explicit `\| null` to mirror the API payload. |
-| Primitives | Ids/timestamps as `string`; enumerable values as enum/union. |
-| helpers | Pure named exports (functions, plus constant maps where the subject needs them); locale = pt-BR; no barrel. |
-| Boundaries | No HTTP, no React, no side effects, no business workflows. |

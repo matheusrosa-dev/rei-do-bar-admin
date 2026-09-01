@@ -3,20 +3,15 @@
 Scope rules for the API / data-access layer. Read together with the root
 `AGENTS.md`.
 
-## What belongs here
+## Scope
 
-- All HTTP communication with the backend.
-- Request argument shapes and response types for each endpoint.
-- Stable query-key strings for reads.
-- The single typed Axios instance and its auth + error-handling interceptor.
-
-## What does NOT belong here
-
-- React Query hooks (`useQuery`/`useMutation`) → those live in routes. This layer
-  exposes plain async functions (and keys), not query subscriptions.
-- UI, toasts triggered per-call, or navigation. (Global API-error toasts are the
-  one exception, handled once in the shared instance interceptor.)
-- Domain entity definitions → the shared models. Services **import** entities.
+All HTTP communication with the backend: request argument shapes and response
+types per endpoint, stable query-key strings for reads, and the single typed
+Axios instance with its auth + error interceptor. The layer stays
+React-Query-free — it exposes plain async functions and keys, while
+`useQuery`/`useMutation` live in routes. No UI, navigation, or per-call toasts
+(global API-error toasts happen once, in the interceptor). Entity definitions are
+imported from the shared models, never declared here.
 
 ## Internal structure
 
@@ -94,18 +89,3 @@ export const useThingService: UseThingService = () => {
   the list, or a derived answer about it as a whole (a flag the UI needs before
   offering a collection-wide action). It stays a `GET`, takes no path params, and
   is returned as `{ fn, key }` like any other read.
-
-## Conventions
-
-| Rule | Detail |
-| --- | --- |
-| One file per domain | `index.ts` (hook) + `types.ts` (operation types). |
-| Hook | `use<Domain>Service` factory returning the operations object. |
-| Reads | `{ fn, key }`, stable `kebab-case` key for query keys. |
-| Writes | Bare async functions for `useMutation`. |
-| HTTP client | Shared typed Axios instance; return `response.data.data`. |
-| Errors | Handled globally by the interceptor; no per-call `try/catch`/toast. |
-| Bodies | `Pick`/`Omit` of the entity when the body is a subset of it, literal shape otherwise; paginated reads via the pagination generic. |
-| Nullability | Response fields the API can leave empty are explicit `\| null` unions, not optional `?` properties. |
-| Params | Literal-union / enum types for sort keys and directions. |
-| No hooks here | No `useQuery`/`useMutation`; this layer stays React-Query-free. |
