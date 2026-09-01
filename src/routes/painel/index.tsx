@@ -3,6 +3,7 @@ import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { findDatePreset, toDateTimeParam, validateSearch } from "./-helpers";
 import {
+  AccountsPanel,
   DeliveryPersonsPanel,
   Filters,
   SeriesPanel,
@@ -49,6 +50,7 @@ function Index() {
       <div className="flex flex-col gap-4">
         <SummaryPanel />
         <SeriesPanel />
+        <AccountsPanel />
         <DeliveryPersonsPanel />
       </div>
     </PageWrapper>

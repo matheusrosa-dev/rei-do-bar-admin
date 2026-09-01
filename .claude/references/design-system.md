@@ -38,9 +38,9 @@ The app is **dark-theme only**, rendered over a black body background.
 | Revenue / delivered | `amber-500` | "Faturamento" line, "Entregues" bars. |
 | Average order value | `violet-400` | "Ticket médio" line; also the icon of the "Ticket médio" and "Maior pedido" KPI cards. |
 | Discount | `green-400` | "Desconto em cupons" line; "Pedidos com cupom" line (order-volume chart). |
-| Count | `zinc-300` | "Pedidos entregues" line (order-volume chart). |
+| Count | `zinc-300` | "Pedidos entregues" line (order-volume chart); "Clientes anônimos" line (accounts chart). |
 | Cancelled | `red-500` | "Cancelados" bars. |
-| Acquisition | `sky-400` | "Primeiros pedidos" line (order-volume chart); icon of the acquisition KPI cards ("Novos clientes", "Primeiros pedidos"). |
+| Acquisition | `sky-400` | "Primeiros pedidos" line (order-volume chart); "Clientes cadastrados" line (accounts chart); icon of the acquisition KPI cards ("Clientes cadastrados", "Primeiros pedidos"). |
 
 > Series colors reach the chart primitives as props from a chart-local constant
 > of theme variables — never a raw hex. Naming a color only as `var(--color-*)`

@@ -147,7 +147,7 @@ export const SummaryPanel = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SummaryCard
-          label="Novos clientes"
+          label="Clientes cadastrados"
           value={String(data.newCustomersCount)}
           icon={MdGroupAdd}
           iconClassName="text-sky-400"

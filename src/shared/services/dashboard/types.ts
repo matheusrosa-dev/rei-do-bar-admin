@@ -33,6 +33,21 @@ export type GetSeries = (queries?: {
   endDate?: Date;
 }) => Promise<GetSeriesResponse>;
 
+export interface AccountsSeriesPoint {
+  label: string;
+  newAnonymousCustomersCount: number;
+  newCustomersCount: number;
+}
+
+export interface GetAccountsSeriesResponse {
+  series: AccountsSeriesPoint[];
+}
+
+export type GetAccountsSeries = (queries?: {
+  startDate?: Date;
+  endDate?: Date;
+}) => Promise<GetAccountsSeriesResponse>;
+
 export interface GetSummaryResponse {
   deliveredOrdersCount: number;
   firstDeliveredOrdersCount: number;
@@ -58,6 +73,10 @@ export type GetSummary = (queries?: {
 }) => Promise<GetSummaryResponse>;
 
 export type UseDashboardService = () => {
+  getAccountsSeries: {
+    fn: GetAccountsSeries;
+    key: string;
+  };
   getDeliveryPersonsPerformance: {
     fn: GetDeliveryPersonsPerformance;
     key: string;
