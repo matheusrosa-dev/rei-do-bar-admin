@@ -9,9 +9,11 @@ import {
   MdEmojiEvents,
   MdLocalOffer,
   MdGroupAdd,
+  MdInventory2,
   MdPayments,
   MdPersonAddAlt1,
   MdReceiptLong,
+  MdTrendingUp,
 } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import { fromDateTimeParam } from "../-helpers";
@@ -62,12 +64,29 @@ export const SummaryPanel = () => {
         />
       </div>
 
-      <SummaryCard
-        label="Faturamento"
-        value={formatPrice(data.revenue)}
-        icon={MdPayments}
-        iconClassName="text-amber-500"
-      />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <SummaryCard
+          label="Faturamento"
+          value={formatPrice(data.revenue)}
+          icon={MdPayments}
+          iconClassName="text-amber-500"
+        />
+
+        <SummaryCard
+          label="Custo de reposição"
+          value={formatPrice(data.restockCost)}
+          icon={MdInventory2}
+          iconClassName="text-amber-500"
+        />
+
+        <SummaryCard
+          label="Lucro"
+          value={formatPrice(data.profit)}
+          icon={MdTrendingUp}
+          iconClassName="text-amber-500"
+          hint={`${formatPercentage(data.profitPercentage)} do faturamento`}
+        />
+      </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <SummaryCard

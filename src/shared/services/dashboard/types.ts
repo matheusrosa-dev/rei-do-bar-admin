@@ -24,6 +24,7 @@ export interface SeriesPoint {
   label: string;
   deliveredOrdersCount: number;
   averageOrderValue: number;
+  firstDeliveredOrdersCount: number;
   revenue: number;
   couponDiscount: number;
   couponDiscountPercentage: number;
@@ -47,6 +48,9 @@ export interface GetSummaryResponse {
   highestOrderValue: number;
   redeemedCouponOrdersCount: number;
   revenue: number;
+  restockCost: number;
+  profit: number;
+  profitPercentage: number;
   couponDiscount: number;
   couponDiscountPercentage: number;
 }

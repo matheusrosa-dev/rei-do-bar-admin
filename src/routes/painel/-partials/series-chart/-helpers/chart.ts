@@ -7,6 +7,7 @@ export const CHART_COLORS = {
   averageOrderValue: "var(--color-violet-400)",
   couponDiscount: "var(--color-green-400)",
   deliveredOrdersCount: "var(--color-zinc-300)",
+  firstDeliveredOrdersCount: "var(--color-sky-400)",
   axis: "var(--color-zinc-400)",
   grid: "color-mix(in oklab, var(--color-white) 10%, transparent)",
   cursor: "color-mix(in oklab, var(--color-white) 5%, transparent)",
@@ -18,7 +19,8 @@ export type SeriesKey =
   | "revenue"
   | "averageOrderValue"
   | "couponDiscount"
-  | "deliveredOrdersCount";
+  | "deliveredOrdersCount"
+  | "firstDeliveredOrdersCount";
 
 export const SERIES: Series<SeriesKey>[] = [
   { key: "revenue", label: "Faturamento", dotClassName: "bg-amber-500" },
@@ -37,6 +39,11 @@ export const SERIES: Series<SeriesKey>[] = [
     label: "Pedidos entregues",
     dotClassName: "bg-zinc-300",
   },
+  {
+    key: "firstDeliveredOrdersCount",
+    label: "Primeiros pedidos",
+    dotClassName: "bg-sky-400",
+  },
 ];
 
 export const MONEY_KEYS: SeriesKey[] = [
@@ -45,10 +52,15 @@ export const MONEY_KEYS: SeriesKey[] = [
   "couponDiscount",
 ];
 
-const COUNT_KEY: SeriesKey = "deliveredOrdersCount";
+export const COUNT_KEYS: SeriesKey[] = [
+  "deliveredOrdersCount",
+  "firstDeliveredOrdersCount",
+];
 
 export const formatSeriesValue: FormatValue = (value, dataKey) => {
   if (value === null) return EMPTY_VALUE;
 
-  return dataKey === COUNT_KEY ? String(value) : formatPrice(value);
+  return COUNT_KEYS.some((key) => key === dataKey)
+    ? String(value)
+    : formatPrice(value);
 };

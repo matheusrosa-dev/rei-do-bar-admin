@@ -17,6 +17,7 @@ import { ChartTooltip } from "../chart-tooltip";
 import {
   CHART_COLORS,
   CHART_HEIGHT,
+  COUNT_KEYS,
   formatSeriesValue,
   MONEY_KEYS,
   SERIES,
@@ -33,6 +34,8 @@ export const SeriesChart = ({ data }: Props) => {
   const isVisible = (key: SeriesKey) => !hiddenSeries.includes(key);
 
   const hasMoneyAxis = MONEY_KEYS.some(isVisible);
+
+  const hasCountAxis = COUNT_KEYS.some(isVisible);
 
   const onToggleSeries = (key: SeriesKey) => {
     setHiddenSeries((previous) =>
@@ -86,7 +89,7 @@ export const SeriesChart = ({ data }: Props) => {
                 />
               )}
 
-              {isVisible("deliveredOrdersCount") && (
+              {hasCountAxis && (
                 <YAxis
                   yAxisId="count"
                   orientation="right"
@@ -150,6 +153,19 @@ export const SeriesChart = ({ data }: Props) => {
                   dataKey="deliveredOrdersCount"
                   name="Pedidos entregues"
                   stroke={CHART_COLORS.deliveredOrdersCount}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                />
+              )}
+
+              {isVisible("firstDeliveredOrdersCount") && (
+                <Line
+                  yAxisId="count"
+                  type="monotone"
+                  dataKey="firstDeliveredOrdersCount"
+                  name="Primeiros pedidos"
+                  stroke={CHART_COLORS.firstDeliveredOrdersCount}
                   strokeWidth={2}
                   dot={false}
                   activeDot={{ r: 4 }}
