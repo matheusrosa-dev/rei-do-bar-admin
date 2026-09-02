@@ -1,10 +1,17 @@
 import { EMPTY_VALUE } from "@shared/helpers/number";
+import type { ReactNode } from "react";
 import type { TooltipContentProps } from "recharts";
 
 export type FormatValue = (value: number | null, dataKey: string) => string;
 
+export type TooltipFooter = {
+  label: string;
+  value: ReactNode;
+};
+
 type Props = TooltipContentProps & {
   formatValue?: FormatValue;
+  footer?: TooltipFooter | null;
 };
 
 const toValue = (value: unknown) =>
@@ -17,6 +24,7 @@ export const ChartTooltip = ({
   label,
   payload,
   formatValue = formatRawValue,
+  footer,
 }: Props) => {
   if (!active || !payload?.length) return null;
 
@@ -41,6 +49,15 @@ export const ChartTooltip = ({
           </div>
         ))}
       </div>
+
+      {footer ? (
+        <div className="mt-1.5 flex items-center gap-2 border-t border-white/10 pt-1.5 text-xs text-zinc-400">
+          {footer.label}
+          <span className="ml-auto font-semibold text-white">
+            {footer.value}
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 };

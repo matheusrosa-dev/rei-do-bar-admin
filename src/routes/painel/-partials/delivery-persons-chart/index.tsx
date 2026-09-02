@@ -10,7 +10,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { CHART_COLORS, formatName, getChartHeight } from "./-helpers";
+import {
+  CHART_COLORS,
+  formatName,
+  getChartHeight,
+  getDeliveryFeeFooter,
+} from "./-helpers";
 import { ChartTooltip } from "../chart-tooltip";
 
 type Props = {
@@ -34,7 +39,7 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
 
             <span className="flex items-center gap-1.5">
               <span className="size-2.5 rounded-full bg-red-500" />
-              Cancelados
+              Falhas na entrega
             </span>
           </div>
         )}
@@ -48,7 +53,7 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
       ) : (
         <div
           role="img"
-          aria-label="Pedidos entregues e cancelados por entregador"
+          aria-label="Pedidos entregues e falhas na entrega por entregador"
         >
           <ResponsiveContainer
             width="100%"
@@ -75,7 +80,12 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
 
               <Tooltip
                 cursor={{ fill: CHART_COLORS.cursor }}
-                content={ChartTooltip}
+                content={(props) => (
+                  <ChartTooltip
+                    {...props}
+                    footer={getDeliveryFeeFooter(props.payload?.[0]?.payload)}
+                  />
+                )}
               />
 
               <Bar
@@ -88,7 +98,7 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
 
               <Bar
                 dataKey="cancelledOrdersCount"
-                name="Cancelados"
+                name="Falhas na entrega"
                 fill={CHART_COLORS.cancelled}
                 radius={[0, 4, 4, 0]}
                 maxBarSize={22}

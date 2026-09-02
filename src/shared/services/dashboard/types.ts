@@ -2,6 +2,7 @@ export type DeliveryPersonPerformance = {
   name: string;
   deliveredOrdersCount: number;
   cancelledOrdersCount: number;
+  deliveryFeeTotal: number;
 };
 
 export type GetDeliveryPersonsPerformanceResponse = {
@@ -52,10 +53,8 @@ export interface GetSummaryResponse {
   deliveredOrdersCount: number;
   firstDeliveredOrdersCount: number;
   newCustomersCount: number;
-  cancelledOrdersCount: number;
-  assignedCancelledOrdersCount: number;
+  failedDeliveriesCount: number;
   averageDeliveryMinutes: number | null;
-  averageCancellationAfterShippingMinutes: number | null;
   averageOrderValue: number;
   highestOrderValue: number;
   redeemedCouponOrdersCount: number;
