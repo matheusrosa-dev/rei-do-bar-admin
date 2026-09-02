@@ -17,6 +17,7 @@ import {
   MdPersonAddAlt1,
   MdReceiptLong,
   MdTrendingUp,
+  MdVolunteerActivism,
 } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import { fromDateTimeParam } from "../-helpers";
@@ -74,7 +75,7 @@ export const SummaryPanel = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <SummaryCard
           label="Faturamento"
           value={formatPrice(data.revenue)}
@@ -87,6 +88,14 @@ export const SummaryPanel = () => {
           value={formatPrice(data.deliveryFeeTotal)}
           icon={MdDeliveryDining}
           iconClassName="text-amber-500"
+        />
+
+        <SummaryCard
+          label="Bônus de entregadores"
+          value={formatPrice(data.deliveryPersonBonusTotal)}
+          icon={MdVolunteerActivism}
+          iconClassName="text-amber-500"
+          hint="Inclui entregas canceladas"
         />
 
         <SummaryCard

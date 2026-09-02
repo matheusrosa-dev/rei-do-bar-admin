@@ -3,6 +3,8 @@ export type DeliveryPersonPerformance = {
   deliveredOrdersCount: number;
   cancelledOrdersCount: number;
   deliveryFeeTotal: number;
+  deliveryPersonBonusTotal: number;
+  payoutTotal: number;
 };
 
 export type GetDeliveryPersonsPerformanceResponse = {
@@ -61,6 +63,7 @@ export interface GetSummaryResponse {
   revenue: number;
   deliveryFeeTotal: number;
   restockCost: number;
+  deliveryPersonBonusTotal: number;
   profit: number;
   profitPercentage: number;
   couponDiscount: number;

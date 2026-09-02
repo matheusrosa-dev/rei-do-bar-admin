@@ -14,7 +14,7 @@ import {
   CHART_COLORS,
   formatName,
   getChartHeight,
-  getDeliveryFeeFooter,
+  getDeliveryPersonFooters,
 } from "./-helpers";
 import { ChartTooltip } from "../chart-tooltip";
 
@@ -83,7 +83,9 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
                 content={(props) => (
                   <ChartTooltip
                     {...props}
-                    footer={getDeliveryFeeFooter(props.payload?.[0]?.payload)}
+                    footer={getDeliveryPersonFooters(
+                      props.payload?.[0]?.payload,
+                    )}
                   />
                 )}
               />

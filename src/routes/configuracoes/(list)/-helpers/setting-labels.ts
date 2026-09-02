@@ -2,6 +2,7 @@ import { SettingKey } from "@shared/models";
 
 export const SETTING_KEY_LABEL: Record<SettingKey, string> = {
   [SettingKey.DELIVERY_FEE]: "Taxa de entrega",
+  [SettingKey.DELIVERY_PERSON_BONUS]: "Bônus do entregador",
   [SettingKey.ALERT_MESSAGE]: "Mensagem de alerta",
   [SettingKey.MIN_ORDER_VALUE]: "Valor mínimo do pedido (inclui frete)",
   [SettingKey.ON_BREAK]: "Loja pausada",

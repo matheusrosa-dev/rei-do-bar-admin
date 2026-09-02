@@ -11,7 +11,7 @@ export type TooltipFooter = {
 
 type Props = TooltipContentProps & {
   formatValue?: FormatValue;
-  footer?: TooltipFooter | null;
+  footer?: TooltipFooter | TooltipFooter[] | null;
 };
 
 const toValue = (value: unknown) =>
@@ -27,6 +27,8 @@ export const ChartTooltip = ({
   footer,
 }: Props) => {
   if (!active || !payload?.length) return null;
+
+  const footerItems = [footer].flat().filter((item) => item != null);
 
   return (
     <div className="rounded-lg border border-white/10 bg-zinc-800 px-3 py-2 shadow-xl">
@@ -50,12 +52,19 @@ export const ChartTooltip = ({
         ))}
       </div>
 
-      {footer ? (
-        <div className="mt-1.5 flex items-center gap-2 border-t border-white/10 pt-1.5 text-xs text-zinc-400">
-          {footer.label}
-          <span className="ml-auto font-semibold text-white">
-            {footer.value}
-          </span>
+      {footerItems.length > 0 ? (
+        <div className="mt-1.5 flex flex-col gap-1 border-t border-white/10 pt-1.5">
+          {footerItems.map((item) => (
+            <div
+              key={item.label}
+              className="flex items-center gap-2 text-xs text-zinc-400"
+            >
+              {item.label}
+              <span className="ml-auto font-semibold text-white">
+                {item.value}
+              </span>
+            </div>
+          ))}
         </div>
       ) : null}
     </div>

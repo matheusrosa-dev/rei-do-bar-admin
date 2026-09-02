@@ -21,13 +21,23 @@ const MAX_NAME_LENGTH = 18;
 export const formatName = (name: string) =>
   name.length > MAX_NAME_LENGTH ? `${name.slice(0, MAX_NAME_LENGTH)}…` : name;
 
-export const getDeliveryFeeFooter = (
+export const getDeliveryPersonFooters = (
   datum: DeliveryPersonPerformance | undefined,
-): TooltipFooter | null => {
+): TooltipFooter[] | null => {
   if (!datum) return null;
 
-  return {
-    label: "Taxa de entrega",
-    value: formatPrice(datum.deliveryFeeTotal),
-  };
+  return [
+    {
+      label: "Taxa de entrega",
+      value: formatPrice(datum.deliveryFeeTotal),
+    },
+    {
+      label: "Bônus",
+      value: formatPrice(datum.deliveryPersonBonusTotal),
+    },
+    {
+      label: "Total",
+      value: formatPrice(datum.payoutTotal),
+    },
+  ];
 };
