@@ -18,15 +18,11 @@ interface IDeliveryPersonBase {
 export interface IDeliveryPerson extends IDeliveryPersonBase {
   address: IDeliveryPersonAddress;
   ordersCount: number;
+  isVolunteer: boolean;
 }
 
 export interface IDeliveryPersonWithAccess extends IDeliveryPerson {
   hasAccess: boolean;
-}
-
-export interface IDeliveryPersonWithRecentDeliveries
-  extends IDeliveryPersonWithAccess {
-  recentDeliveredCount: number;
 }
 
 export interface IOrderDeliveryPerson extends IDeliveryPersonBase {

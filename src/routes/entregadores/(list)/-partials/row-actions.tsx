@@ -1,11 +1,13 @@
 import { Tooltip, TrashButton } from "@components";
-import { LuKeyRound, LuLogOut } from "react-icons/lu";
+import { LuHeartHandshake, LuKeyRound, LuLogOut } from "react-icons/lu";
 
 type Props = {
   ordersCount: number;
   hasAccess: boolean;
   isActive: boolean;
+  isVolunteer: boolean;
   disabled?: boolean;
+  onToggleVolunteer: () => void;
   onSetPassword: () => void;
   onRevokeAccess: () => void;
   onRemove: () => void;
@@ -18,13 +20,31 @@ export const RowActions = ({
   ordersCount,
   hasAccess,
   isActive,
+  isVolunteer,
   disabled,
+  onToggleVolunteer,
   onSetPassword,
   onRevokeAccess,
   onRemove,
 }: Props) => {
   return (
     <div className="flex justify-end gap-1">
+      <button
+        type="button"
+        title={isVolunteer ? "Desmarcar voluntário" : "Marcar como voluntário"}
+        aria-label={
+          isVolunteer ? "Desmarcar voluntário" : "Marcar como voluntário"
+        }
+        disabled={disabled}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleVolunteer();
+        }}
+        className={ICON_BUTTON_CLASSES}
+      >
+        <LuHeartHandshake size={16} />
+      </button>
+
       {isActive && (
         <>
           <Tooltip

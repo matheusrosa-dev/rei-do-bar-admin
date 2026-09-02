@@ -11,9 +11,11 @@ import type {
   GetDeliveryPersonsResponse,
   GetDeliveryPersonsSimple,
   GetDeliveryPersonsSimpleResponse,
+  MarkDeliveryPersonAsVolunteer,
   RemoveDeliveryPerson,
   RevokeAllDeliveryPersonsAccess,
   RevokeDeliveryPersonAccess,
+  UnmarkDeliveryPersonAsVolunteer,
   UpdateDeliveryPerson,
   UpdateDeliveryPersonPassword,
   UpdateDeliveryPersonPasswordResponse,
@@ -95,6 +97,25 @@ export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
     return response.data.data;
   };
 
+  const markDeliveryPersonAsVolunteer: MarkDeliveryPersonAsVolunteer = async (
+    deliveryPersonId,
+  ) => {
+    const response = await api.patch<IDeliveryPerson>(
+      `${baseUrl}/${deliveryPersonId}/mark-volunteer`,
+    );
+
+    return response.data.data;
+  };
+
+  const unmarkDeliveryPersonAsVolunteer: UnmarkDeliveryPersonAsVolunteer =
+    async (deliveryPersonId) => {
+      const response = await api.patch<IDeliveryPerson>(
+        `${baseUrl}/${deliveryPersonId}/unmark-volunteer`,
+      );
+
+      return response.data.data;
+    };
+
   const updateDeliveryPersonPassword: UpdateDeliveryPersonPassword = async (
     deliveryPersonId,
     body,
@@ -145,6 +166,8 @@ export const useDeliveryPersonsService: UseDeliveryPersonsService = () => {
     updateDeliveryPerson,
     activateDeliveryPerson,
     deactivateDeliveryPerson,
+    markDeliveryPersonAsVolunteer,
+    unmarkDeliveryPersonAsVolunteer,
     updateDeliveryPersonPassword,
     revokeDeliveryPersonAccess,
     revokeAllDeliveryPersonsAccess,

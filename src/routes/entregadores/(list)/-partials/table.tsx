@@ -1,14 +1,9 @@
-import {
-  StatusBadge,
-  Table as TableComponent,
-  Toggle,
-  Tooltip,
-} from "@components";
+import { StatusBadge, Table as TableComponent, Toggle } from "@components";
 import { useDeliveryPersonsService } from "@services";
 import type { IPagination } from "@shared/interfaces";
 import type {
   IDeliveryPerson,
-  IDeliveryPersonWithRecentDeliveries,
+  IDeliveryPersonWithAccess,
 } from "@shared/models";
 import { formatPhone, formatZipCode } from "@shared/helpers/string";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,9 +17,10 @@ import { RemoveModal } from "./remove-modal";
 import { RevokeAccessModal } from "./revoke-access-modal";
 import { RowActions } from "./row-actions";
 import { StatusModal } from "./status-modal";
+import { VolunteerModal } from "./volunteer-modal";
 
 type Props = {
-  data: IDeliveryPersonWithRecentDeliveries[];
+  data: IDeliveryPersonWithAccess[];
   meta?: IPagination<unknown>["meta"];
   limit: number;
   isLoading?: boolean;
@@ -36,7 +32,8 @@ type ModalOpen =
   | { mode: "remove"; deliveryPersonId: string }
   | { mode: "password"; deliveryPerson: IDeliveryPerson }
   | { mode: "revoke-access"; deliveryPersonId: string }
-  | { mode: "toggle-status"; deliveryPerson: IDeliveryPerson };
+  | { mode: "toggle-status"; deliveryPerson: IDeliveryPerson }
+  | { mode: "toggle-volunteer"; deliveryPerson: IDeliveryPerson };
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
@@ -50,6 +47,8 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     removeDeliveryPerson,
     activateDeliveryPerson,
     deactivateDeliveryPerson,
+    markDeliveryPersonAsVolunteer,
+    unmarkDeliveryPersonAsVolunteer,
     revokeDeliveryPersonAccess,
   } = useDeliveryPersonsService();
 
@@ -93,7 +92,25 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
     },
   });
 
-  const columns: ColumnDef<IDeliveryPersonWithRecentDeliveries>[] = [
+  const toggleVolunteerMutation = useMutation({
+    mutationFn: (deliveryPerson: IDeliveryPerson) => {
+      if (deliveryPerson.isVolunteer) {
+        return unmarkDeliveryPersonAsVolunteer(deliveryPerson.id);
+      }
+      return markDeliveryPersonAsVolunteer(deliveryPerson.id);
+    },
+    onSuccess: (updatedDeliveryPerson) => {
+      toast.success(
+        updatedDeliveryPerson.isVolunteer
+          ? "Entregador marcado como voluntário!"
+          : "Marcação de voluntário removida!",
+      );
+      queryClient.invalidateQueries({ queryKey: [getDeliveryPersons.key] });
+      setModalOpen(null);
+    },
+  });
+
+  const columns: ColumnDef<IDeliveryPersonWithAccess>[] = [
     {
       accessorKey: "name",
       header: "Nome",
@@ -123,30 +140,6 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       accessorKey: "address",
       header: "CEP",
       cell: ({ row }) => formatZipCode(row.original.address.zipCode),
-    },
-    {
-      accessorKey: "recentDeliveredCount",
-      header: () => (
-        <Tooltip content="Entregas concluídas nas últimas 10 horas">
-          <button type="button" className="cursor-help uppercase">
-            Entregas (10h)
-          </button>
-        </Tooltip>
-      ),
-      cell: ({ getValue }) => {
-        const recentDeliveredCount = getValue<number>();
-        return (
-          <span
-            className={
-              recentDeliveredCount > 0
-                ? "font-medium text-white"
-                : "text-gray-500"
-            }
-          >
-            {recentDeliveredCount}
-          </span>
-        );
-      },
     },
     {
       accessorKey: "isActive",
@@ -179,6 +172,18 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       },
     },
     {
+      accessorKey: "isVolunteer",
+      header: "Voluntário",
+      cell: ({ getValue }) => {
+        const isVolunteer = getValue<boolean>();
+        return (
+          <StatusBadge variant={isVolunteer ? "active" : "neutral"}>
+            {isVolunteer ? "Voluntário" : "Não"}
+          </StatusBadge>
+        );
+      },
+    },
+    {
       id: "actions",
       header: "",
       cell: ({ row }) => {
@@ -188,8 +193,14 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
             ordersCount={deliveryPerson.ordersCount}
             hasAccess={deliveryPerson.hasAccess}
             isActive={deliveryPerson.isActive}
+            isVolunteer={deliveryPerson.isVolunteer}
             disabled={
-              revokeAccessMutation.isPending || removeMutation.isPending
+              revokeAccessMutation.isPending ||
+              removeMutation.isPending ||
+              toggleVolunteerMutation.isPending
+            }
+            onToggleVolunteer={() =>
+              setModalOpen({ mode: "toggle-volunteer", deliveryPerson })
             }
             onSetPassword={() =>
               setModalOpen({ mode: "password", deliveryPerson })
@@ -293,6 +304,23 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         onConfirm={() => {
           if (modalOpen?.mode === "toggle-status") {
             toggleStatusMutation.mutate(modalOpen.deliveryPerson);
+          }
+        }}
+      />
+
+      <VolunteerModal
+        isOpen={modalOpen?.mode === "toggle-volunteer"}
+        onClose={() => setModalOpen(null)}
+        mode={
+          modalOpen?.mode === "toggle-volunteer" &&
+          modalOpen.deliveryPerson.isVolunteer
+            ? "unmark"
+            : "mark"
+        }
+        canClose={!toggleVolunteerMutation.isPending}
+        onConfirm={() => {
+          if (modalOpen?.mode === "toggle-volunteer") {
+            toggleVolunteerMutation.mutate(modalOpen.deliveryPerson);
           }
         }}
       />

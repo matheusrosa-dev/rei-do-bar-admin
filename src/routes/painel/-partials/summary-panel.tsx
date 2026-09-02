@@ -95,7 +95,6 @@ export const SummaryPanel = () => {
           value={formatPrice(data.deliveryPersonBonusTotal)}
           icon={MdVolunteerActivism}
           iconClassName="text-amber-500"
-          hint="Inclui entregas canceladas"
         />
 
         <SummaryCard

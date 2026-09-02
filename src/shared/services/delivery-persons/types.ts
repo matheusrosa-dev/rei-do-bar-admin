@@ -1,11 +1,10 @@
 import type { IPagination } from "@shared/interfaces";
 import type {
   IDeliveryPerson,
-  IDeliveryPersonWithRecentDeliveries,
+  IDeliveryPersonWithAccess,
 } from "@shared/models";
 
-export type GetDeliveryPersonsResponse =
-  IPagination<IDeliveryPersonWithRecentDeliveries>;
+export type GetDeliveryPersonsResponse = IPagination<IDeliveryPersonWithAccess>;
 
 export type GetDeliveryPersons = (query?: {
   page?: number;
@@ -64,6 +63,14 @@ export type DeactivateDeliveryPerson = (
   deliveryPersonId: string,
 ) => Promise<IDeliveryPerson>;
 
+export type MarkDeliveryPersonAsVolunteer = (
+  deliveryPersonId: string,
+) => Promise<IDeliveryPerson>;
+
+export type UnmarkDeliveryPersonAsVolunteer = (
+  deliveryPersonId: string,
+) => Promise<IDeliveryPerson>;
+
 export type UpdateDeliveryPersonPasswordBody = {
   password: string;
 };
@@ -107,6 +114,8 @@ export type UseDeliveryPersonsService = () => {
   updateDeliveryPerson: UpdateDeliveryPerson;
   activateDeliveryPerson: ActivateDeliveryPerson;
   deactivateDeliveryPerson: DeactivateDeliveryPerson;
+  markDeliveryPersonAsVolunteer: MarkDeliveryPersonAsVolunteer;
+  unmarkDeliveryPersonAsVolunteer: UnmarkDeliveryPersonAsVolunteer;
   updateDeliveryPersonPassword: UpdateDeliveryPersonPassword;
   revokeDeliveryPersonAccess: RevokeDeliveryPersonAccess;
   revokeAllDeliveryPersonsAccess: RevokeAllDeliveryPersonsAccess;
