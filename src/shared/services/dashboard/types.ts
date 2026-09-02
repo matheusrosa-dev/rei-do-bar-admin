@@ -59,6 +59,7 @@ export interface GetSummaryResponse {
   highestOrderValue: number;
   redeemedCouponOrdersCount: number;
   revenue: number;
+  deliveryFeeTotal: number;
   restockCost: number;
   profit: number;
   profitPercentage: number;

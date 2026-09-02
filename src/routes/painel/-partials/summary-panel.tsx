@@ -8,6 +8,7 @@ import {
   MdCancel,
   MdCheckCircle,
   MdConfirmationNumber,
+  MdDeliveryDining,
   MdEmojiEvents,
   MdLocalOffer,
   MdGroupAdd,
@@ -73,11 +74,18 @@ export const SummaryPanel = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
           label="Faturamento"
           value={formatPrice(data.revenue)}
           icon={MdPayments}
+          iconClassName="text-amber-500"
+        />
+
+        <SummaryCard
+          label="Total de frete"
+          value={formatPrice(data.deliveryFeeTotal)}
+          icon={MdDeliveryDining}
           iconClassName="text-amber-500"
         />
 
