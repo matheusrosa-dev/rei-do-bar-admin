@@ -10,7 +10,6 @@ export { CurrencyInput } from "./form/currency-input";
 export { NumberInput } from "./form/number-input";
 export { PhoneInput } from "./form/phone-input";
 export { CpfInput } from "./form/cpf-input";
-export { ZipCodeInput } from "./form/zip-code-input";
 export { DatePicker } from "./form/date-picker";
 export { Toggle } from "./form/toggle";
 export { Textarea } from "./form/textarea";

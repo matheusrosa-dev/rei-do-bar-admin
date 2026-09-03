@@ -32,17 +32,10 @@ export type GetDeliveryPersonById = (
   deliveryPersonId: string,
 ) => Promise<IDeliveryPerson>;
 
-export type CreateDeliveryPersonBody = {
-  name: string;
-  phone: string;
-  cpf: string;
-  address: {
-    street: string;
-    number: string;
-    neighborhood: string;
-    zipCode: string;
-  };
-};
+export type CreateDeliveryPersonBody = Pick<
+  IDeliveryPerson,
+  "name" | "phone" | "cpf"
+>;
 
 export type CreateDeliveryPerson = (
   body: CreateDeliveryPersonBody,

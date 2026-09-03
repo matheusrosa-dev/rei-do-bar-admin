@@ -1,10 +1,3 @@
-export interface IDeliveryPersonAddress {
-  street: string;
-  number: string;
-  neighborhood: string;
-  zipCode: string;
-}
-
 interface IDeliveryPersonBase {
   id: string;
   name: string;
@@ -17,7 +10,6 @@ interface IDeliveryPersonBase {
 }
 
 export interface IDeliveryPerson extends IDeliveryPersonBase {
-  address: IDeliveryPersonAddress;
   ordersCount: number;
 }
 

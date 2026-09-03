@@ -1,12 +1,5 @@
-import {
-  Button,
-  CpfInput,
-  Input,
-  Modal,
-  PhoneInput,
-  ZipCodeInput,
-} from "@components";
-import { useDeliveryPersonsService, useViaCepService } from "@services";
+import { Button, CpfInput, Input, Modal, PhoneInput } from "@components";
+import { useDeliveryPersonsService } from "@services";
 import type { IDeliveryPerson } from "@shared/models";
 import * as RadixDialog from "@radix-ui/react-dialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -38,7 +31,6 @@ export const DeliveryPersonModal = ({
   const queryClient = useQueryClient();
   const { createDeliveryPerson, updateDeliveryPerson, getDeliveryPersons } =
     useDeliveryPersonsService();
-  const { lookupZipCode } = useViaCepService();
 
   const isEditing = !!deliveryPerson;
 
@@ -47,25 +39,12 @@ export const DeliveryPersonModal = ({
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors, isDirty },
   } = useForm<Form>({
     defaultValues,
     resolver,
     values: deliveryPerson ? deliveryPersonToForm(deliveryPerson) : undefined,
   });
-
-  const { mutate: triggerZipCodeLookup, isPending: isLookingUpZipCode } =
-    useMutation({
-      mutationFn: lookupZipCode,
-      onSuccess: (result) => {
-        if (!result) return;
-        setValue("address.street", result.street, { shouldDirty: true });
-        setValue("address.neighborhood", result.neighborhood, {
-          shouldDirty: true,
-        });
-      },
-    });
 
   const onCloseHandler = () => {
     reset();
@@ -103,12 +82,6 @@ export const DeliveryPersonModal = ({
           name: data.name,
           phone: data.phone,
           cpf: data.cpf,
-          address: {
-            street: data.address.street,
-            number: data.address.number,
-            neighborhood: data.address.neighborhood,
-            zipCode: data.address.zipCode,
-          },
         },
       });
       return;
@@ -118,12 +91,6 @@ export const DeliveryPersonModal = ({
       name: data.name,
       phone: data.phone,
       cpf: data.cpf,
-      address: {
-        street: data.address.street,
-        number: data.address.number,
-        neighborhood: data.address.neighborhood,
-        zipCode: data.address.zipCode,
-      },
     });
   };
 
@@ -180,62 +147,6 @@ export const DeliveryPersonModal = ({
               )}
             />
           </div>
-
-          <div className="flex flex-col gap-1">
-            <span className="text-zinc-300 text-sm font-medium">Endereço</span>
-
-            <hr className="border-white/10" />
-          </div>
-
-          <Controller
-            control={control}
-            name="address.zipCode"
-            render={({ field, fieldState }) => (
-              <ZipCodeInput
-                label="CEP"
-                value={field.value}
-                onChange={(value) => {
-                  field.onChange(value);
-                  if (value.length === 8) {
-                    triggerZipCodeLookup(value);
-                  }
-                }}
-                error={fieldState.error?.message}
-                disabled={isPending || isLookingUpZipCode}
-                isLoading={isLookingUpZipCode}
-              />
-            )}
-          />
-
-          <div className="grid grid-cols-10 gap-3">
-            <div className="col-span-7">
-              <Input
-                label="Rua"
-                placeholder="Nome da rua"
-                error={errors.address?.street?.message}
-                disabled={isPending || isLookingUpZipCode}
-                {...register("address.street")}
-              />
-            </div>
-
-            <div className="col-span-3">
-              <Input
-                label="Número"
-                placeholder="Nº"
-                error={errors.address?.number?.message}
-                disabled={isPending || isLookingUpZipCode}
-                {...register("address.number")}
-              />
-            </div>
-          </div>
-
-          <Input
-            label="Bairro"
-            placeholder="Bairro"
-            error={errors.address?.neighborhood?.message}
-            disabled={isPending || isLookingUpZipCode}
-            {...register("address.neighborhood")}
-          />
 
           <div className="flex justify-end gap-3 pt-2">
             <Button

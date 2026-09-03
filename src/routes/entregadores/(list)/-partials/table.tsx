@@ -5,7 +5,7 @@ import type {
   IDeliveryPerson,
   IDeliveryPersonWithAccess,
 } from "@shared/models";
-import { formatPhone, formatZipCode } from "@shared/helpers/string";
+import { formatPhone } from "@shared/helpers/string";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -130,16 +130,6 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         const digits = getValue<string>();
         return digits.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
       },
-    },
-    {
-      accessorKey: "address",
-      header: "Bairro",
-      cell: ({ row }) => row.original.address.neighborhood,
-    },
-    {
-      accessorKey: "address",
-      header: "CEP",
-      cell: ({ row }) => formatZipCode(row.original.address.zipCode),
     },
     {
       accessorKey: "isActive",
