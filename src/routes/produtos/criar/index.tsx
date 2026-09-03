@@ -100,20 +100,43 @@ function RouteComponent() {
             />
           </div>
 
-          <div className="flex gap-4">
-            <Input
-              label="Nome"
-              placeholder="Insira o nome do produto"
-              {...form.register("name")}
-              error={form.formState.errors.name?.message}
-              disabled={createProductMutation.isPending}
-            />
+          <div className="grid grid-cols-10 gap-4">
+            <div className="col-span-7">
+              <Input
+                label="Nome"
+                placeholder="Insira o nome do produto"
+                {...form.register("name")}
+                error={form.formState.errors.name?.message}
+                disabled={createProductMutation.isPending}
+              />
+            </div>
+
+            <div className="col-span-3">
+              <Controller
+                control={form.control}
+                name="categoryId"
+                render={({ field, fieldState }) => (
+                  <Select
+                    label="Categoria"
+                    options={categories.map((item) => ({
+                      label: item.name,
+                      value: item.id,
+                    }))}
+                    value={field.value}
+                    clearable
+                    error={fieldState.error?.message}
+                    onChange={field.onChange}
+                    disabled={createProductMutation.isPending}
+                  />
+                )}
+              />
+            </div>
           </div>
 
           <Textarea
             label="Descrição"
-            placeholder="Insira a descrição do produto"
             rows={4}
+            placeholder="Insira a descrição do produto"
             {...form.register("description")}
             disabled={createProductMutation.isPending}
           />
@@ -121,10 +144,10 @@ function RouteComponent() {
           <div className="grid md:grid-cols-2 gap-4">
             <Controller
               control={form.control}
-              name="price"
+              name="compareAtPrice"
               render={({ field, fieldState }) => (
                 <CurrencyInput
-                  label="Preço"
+                  label="Preço de comparação"
                   value={field.value}
                   onChange={field.onChange}
                   error={fieldState.error?.message}
@@ -135,15 +158,10 @@ function RouteComponent() {
 
             <Controller
               control={form.control}
-              name="categoryId"
+              name="price"
               render={({ field, fieldState }) => (
-                <Select
-                  label="Categoria"
-                  options={categories.map((item) => ({
-                    label: item.name,
-                    value: item.id,
-                  }))}
-                  clearable
+                <CurrencyInput
+                  label="Preço"
                   value={field.value}
                   onChange={field.onChange}
                   error={fieldState.error?.message}
