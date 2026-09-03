@@ -119,15 +119,19 @@ export const OrderDetailModal = ({ order, onClose }: Props) => {
             </RadixDialog.Description>
           </div>
 
-          {order.deliveryPerson && order.deliveryPersonBonus > 0 && (
-            <div className="flex items-center justify-between border-t border-white/10 pt-3">
-              <span className="text-gray-500 text-sm">Bônus do entregador</span>
+          {order.deliveryPerson &&
+            !order.deliveryPersonIsVolunteer &&
+            order.deliveryPersonBonus > 0 && (
+              <div className="flex items-center justify-between border-t border-white/10 pt-3">
+                <span className="text-gray-500 text-sm">
+                  Bônus do entregador
+                </span>
 
-              <span className="text-gray-300 text-sm font-bold">
-                {formatPrice(order.deliveryPersonBonus)}
-              </span>
-            </div>
-          )}
+                <span className="text-gray-300 text-sm font-bold">
+                  {formatPrice(order.deliveryPersonBonus)}
+                </span>
+              </div>
+            )}
 
           <div className="flex flex-col gap-2 border-t border-white/10 pt-3">
             <div className="flex items-center justify-between">
