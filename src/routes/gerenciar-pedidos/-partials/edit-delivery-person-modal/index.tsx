@@ -6,14 +6,16 @@ import { DeliveryPersonSelect } from "../delivery-person-select";
 type Props = {
   isOpen: boolean;
   orderNumber?: number;
+  currentDeliveryPersonId: string | null;
   isPending: boolean;
   onClose: () => void;
   onConfirm: (deliveryPersonId: string) => void;
 };
 
-export const ShipOrderModal = ({
+export const EditDeliveryPersonModal = ({
   isOpen,
   orderNumber,
+  currentDeliveryPersonId,
   isPending,
   onClose,
   onConfirm,
@@ -21,8 +23,8 @@ export const ShipOrderModal = ({
   const [deliveryPersonId, setDeliveryPersonId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen) setDeliveryPersonId(null);
-  }, [isOpen]);
+    if (isOpen) setDeliveryPersonId(currentDeliveryPersonId);
+  }, [isOpen, currentDeliveryPersonId]);
 
   const handleConfirm = () => {
     if (deliveryPersonId) onConfirm(deliveryPersonId);
@@ -33,13 +35,13 @@ export const ShipOrderModal = ({
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
           <RadixDialog.Title className="text-white font-bold text-lg">
-            Enviar pedido
+            Editar entregador
           </RadixDialog.Title>
 
           {orderNumber !== undefined && (
             <RadixDialog.Description className="text-zinc-400 text-sm">
-              Selecione o entregador do pedido #{orderNumber}. Você poderá
-              alterar o entregador depois.
+              Selecione o novo entregador do pedido #{orderNumber}. O status do
+              pedido não será alterado.
             </RadixDialog.Description>
           )}
         </div>
@@ -63,9 +65,13 @@ export const ShipOrderModal = ({
           <Button
             type="button"
             onClick={handleConfirm}
-            disabled={isPending || !deliveryPersonId}
+            disabled={
+              isPending ||
+              !deliveryPersonId ||
+              deliveryPersonId === currentDeliveryPersonId
+            }
           >
-            Confirmar envio
+            Salvar
           </Button>
         </div>
       </div>

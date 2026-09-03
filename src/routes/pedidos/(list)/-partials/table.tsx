@@ -11,7 +11,6 @@ import type { IOrderWithItemsAndCustomer } from "@shared/models";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
-import { EditDeliveryPersonModal } from "./edit-delivery-person-modal";
 import { OrderDetailModal } from "./order-detail-modal";
 import { RiExternalLinkLine } from "react-icons/ri";
 
@@ -23,12 +22,9 @@ type Props = {
   isError?: boolean;
 };
 
-type ModalOpen =
-  | { mode: "detail"; order: IOrderWithItemsAndCustomer }
-  | { mode: "edit-delivery-person"; order: IOrderWithItemsAndCustomer };
-
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
-  const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
+  const [detailOrder, setDetailOrder] =
+    useState<IOrderWithItemsAndCustomer | null>(null);
 
   const navigate = useNavigate({ from: "/pedidos/" });
 
@@ -156,7 +152,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         isLoading={isLoading}
         isError={isError}
         limit={limit}
-        onRowClick={(order) => setModalOpen({ mode: "detail", order })}
+        onRowClick={setDetailOrder}
       />
 
       {meta?.totalPages && (
@@ -164,18 +160,8 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       )}
 
       <OrderDetailModal
-        order={modalOpen?.mode === "detail" ? modalOpen.order : null}
-        onClose={() => setModalOpen(null)}
-        onEditDeliveryPerson={(order) =>
-          setModalOpen({ mode: "edit-delivery-person", order })
-        }
-      />
-
-      <EditDeliveryPersonModal
-        order={
-          modalOpen?.mode === "edit-delivery-person" ? modalOpen.order : null
-        }
-        onClose={() => setModalOpen(null)}
+        order={detailOrder}
+        onClose={() => setDetailOrder(null)}
       />
     </div>
   );

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { ImagePreview, StatusBadge } from "@components";
+import { Button, ImagePreview, StatusBadge } from "@components";
 import type { IOrderWithItemsAndCustomer } from "@shared/models";
 import { formatPrice } from "@shared/helpers/number";
 import { formatTime } from "@shared/helpers/string";
 import { PiCaretDownBold } from "react-icons/pi";
-import { isOrderMovable } from "./-helpers";
+import { RiPencilLine } from "react-icons/ri";
+import { canEditDeliveryPerson, isOrderMovable } from "./-helpers";
 import { PAYMENT_TYPE_LABEL } from "@shared/helpers/order-status";
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
   onExpandOrderId: (id: string | null) => void;
   onDragStart: () => void;
   onDragEnd: () => void;
+  onEditDeliveryPerson: (order: IOrderWithItemsAndCustomer) => void;
 };
 
 export const OrderCard = ({
@@ -21,6 +23,7 @@ export const OrderCard = ({
   onExpandOrderId,
   onDragStart,
   onDragEnd,
+  onEditDeliveryPerson,
 }: Props) => {
   const [isDragging, setIsDragging] = useState(false);
 
@@ -37,6 +40,8 @@ export const OrderCard = ({
   };
 
   const isMovable = isOrderMovable(order.status);
+
+  const isDeliveryPersonEditable = canEditDeliveryPerson(order.status);
 
   const itemsCount = order.items.reduce((acc, cur) => acc + cur.quantity, 0);
 
@@ -79,18 +84,6 @@ export const OrderCard = ({
             <span className="font-bold text-white">{order.customer.name}</span>
           </span>
         </div>
-
-        {order.deliveryPerson && (
-          <div className="flex items-center gap-1.5 text-sm text-gray-400">
-            <span>
-              Entregador:
-              <span className="font-bold text-white">
-                {" "}
-                {order.deliveryPerson.name}
-              </span>
-            </span>
-          </div>
-        )}
 
         <div className="flex items-center gap-1.5 text-sm text-gray-400">
           <span>
@@ -181,6 +174,33 @@ export const OrderCard = ({
           </span>
         </div>
       </button>
+
+      {(order.deliveryPerson || isDeliveryPersonEditable) && (
+        <div className="flex flex-col gap-2 p-3 border-t border-white/10">
+          <span className="text-sm text-gray-400">
+            Entregador:
+            {order.deliveryPerson ? (
+              <span className="font-bold text-white">
+                {" "}
+                {order.deliveryPerson.name}
+              </span>
+            ) : (
+              <span className="font-bold text-gray-500"> Não atribuído</span>
+            )}
+          </span>
+
+          {isDeliveryPersonEditable && (
+            <Button
+              variant="secondary"
+              className="w-full"
+              onClick={() => onEditDeliveryPerson(order)}
+            >
+              <RiPencilLine />
+              Alterar entregador
+            </Button>
+          )}
+        </div>
+      )}
 
       {isExpanded && (
         <div className="flex flex-col gap-2 p-3 border-t border-white/10">

@@ -22,6 +22,7 @@ type Props = {
   onDropOrder: (orderId: string, status: OrderStatus) => void;
   onOrderDragStart: () => void;
   onOrderDragEnd: () => void;
+  onEditDeliveryPerson: (order: IOrderWithItemsAndCustomer) => void;
 };
 
 export const Column = ({
@@ -31,6 +32,7 @@ export const Column = ({
   onDropOrder,
   onOrderDragStart,
   onOrderDragEnd,
+  onEditDeliveryPerson,
 }: Props) => {
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [isOver, setIsOver] = useState(false);
@@ -95,6 +97,7 @@ export const Column = ({
                 onExpandOrderId={setExpandedOrderId}
                 onDragStart={onOrderDragStart}
                 onDragEnd={onOrderDragEnd}
+                onEditDeliveryPerson={onEditDeliveryPerson}
               />
             ))
           )}

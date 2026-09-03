@@ -8,10 +8,13 @@ import {
 } from "@components";
 import { useOrdersService } from "@services";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/gerenciar-pedidos/")({
   component: Index,
 });
+
+const EDITABLE_TAGS = ["INPUT", "TEXTAREA", "SELECT"];
 
 function Index() {
   const { getOrdersManagement } = useOrdersService();
@@ -27,6 +30,24 @@ function Index() {
     queryFn: getOrdersManagement.fn,
     retry: false,
   });
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key.toLowerCase() !== "r") return;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+      const target = event.target as HTMLElement | null;
+
+      if (target?.isContentEditable) return;
+      if (target && EDITABLE_TAGS.includes(target.tagName)) return;
+
+      refetch();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [refetch]);
 
   if (isLoading) {
     return <PageLoading title="Gerenciar pedidos" />;

@@ -4,6 +4,7 @@ import type { IOrderWithItemsAndCustomer } from "@shared/models";
 import { OrderStatus } from "@shared/models";
 import { Column } from "./column";
 import { CancelOrderModal } from "./cancel-order-modal";
+import { EditDeliveryPersonModal } from "./edit-delivery-person-modal";
 import { ShipOrderModal } from "./ship-order-modal";
 import { ORDER_STATUS_LABEL } from "@shared/helpers/order-status";
 import { useOrdersService } from "@services";
@@ -14,10 +15,13 @@ type Props = {
   orders: Record<OrderStatus, IOrderWithItemsAndCustomer[]>;
 };
 
-type PendingMove = {
-  order: IOrderWithItemsAndCustomer;
-  toStatus: OrderStatus;
-};
+type ModalOpen =
+  | {
+      mode: "move";
+      order: IOrderWithItemsAndCustomer;
+      toStatus: OrderStatus;
+    }
+  | { mode: "edit-delivery-person"; order: IOrderWithItemsAndCustomer };
 
 const COLUMN_ORDER: OrderStatus[] = [
   OrderStatus.PENDING,
@@ -28,13 +32,23 @@ const COLUMN_ORDER: OrderStatus[] = [
 ];
 
 export const Board = ({ orders }: Props) => {
-  const [pendingMove, setPendingMove] = useState<PendingMove | null>(null);
+  const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
   const [draggingStatus, setDraggingStatus] = useState<OrderStatus | null>(
     null,
   );
 
-  const { updateOrderStatus, getOrdersManagement } = useOrdersService();
+  const {
+    updateOrderStatus,
+    updateOrderDeliveryPerson,
+    getOrders,
+    getOrdersManagement,
+  } = useOrdersService();
   const queryClient = useQueryClient();
+
+  const pendingMove = modalOpen?.mode === "move" ? modalOpen : null;
+
+  const editingOrder =
+    modalOpen?.mode === "edit-delivery-person" ? modalOpen.order : null;
 
   const updateStatusMutation = useMutation({
     mutationFn: (input: { statusReason?: string; deliveryPersonId?: string }) =>
@@ -51,8 +65,24 @@ export const Board = ({ orders }: Props) => {
     onSuccess: (updatedOrders) => {
       toast.success("Pedido atualizado com sucesso!");
       queryClient.setQueryData([getOrdersManagement.key], updatedOrders);
+      queryClient.invalidateQueries({ queryKey: [getOrders.key] });
 
-      setPendingMove(null);
+      setModalOpen(null);
+    },
+  });
+
+  const updateDeliveryPersonMutation = useMutation({
+    mutationFn: (deliveryPersonId: string) =>
+      updateOrderDeliveryPerson({
+        orderId: editingOrder!.id,
+        body: { deliveryPersonId },
+      }),
+    onSuccess: () => {
+      toast.success("Entregador atualizado com sucesso!");
+      queryClient.invalidateQueries({ queryKey: [getOrdersManagement.key] });
+      queryClient.invalidateQueries({ queryKey: [getOrders.key] });
+
+      setModalOpen(null);
     },
   });
 
@@ -60,7 +90,7 @@ export const Board = ({ orders }: Props) => {
     const flatArrayOrders = Object.values(orders).flat();
     const order = flatArrayOrders.find((order) => order.id === orderId)!;
 
-    setPendingMove({ order, toStatus });
+    setModalOpen({ mode: "move", order, toStatus });
   };
 
   const isCancelling = pendingMove?.toStatus === OrderStatus.CANCELLED;
@@ -78,6 +108,9 @@ export const Board = ({ orders }: Props) => {
             onDropOrder={onDropOrder}
             onOrderDragStart={() => setDraggingStatus(status)}
             onOrderDragEnd={() => setDraggingStatus(null)}
+            onEditDeliveryPerson={(order) =>
+              setModalOpen({ mode: "edit-delivery-person", order })
+            }
           />
         ))}
       </div>
@@ -91,7 +124,7 @@ export const Board = ({ orders }: Props) => {
             : undefined
         }
         confirmLabel="Mover"
-        onClose={() => setPendingMove(null)}
+        onClose={() => setModalOpen(null)}
         onConfirm={() => updateStatusMutation.mutate({})}
       />
 
@@ -99,7 +132,7 @@ export const Board = ({ orders }: Props) => {
         isOpen={pendingMove !== null && isCancelling}
         orderNumber={pendingMove?.order.orderNumber}
         isPending={updateStatusMutation.isPending}
-        onClose={() => setPendingMove(null)}
+        onClose={() => setModalOpen(null)}
         onConfirm={(statusReason) =>
           updateStatusMutation.mutate({ statusReason })
         }
@@ -109,10 +142,19 @@ export const Board = ({ orders }: Props) => {
         isOpen={pendingMove !== null && isShipping}
         orderNumber={pendingMove?.order.orderNumber}
         isPending={updateStatusMutation.isPending}
-        onClose={() => setPendingMove(null)}
+        onClose={() => setModalOpen(null)}
         onConfirm={(deliveryPersonId) =>
           updateStatusMutation.mutate({ deliveryPersonId })
         }
+      />
+
+      <EditDeliveryPersonModal
+        isOpen={editingOrder !== null}
+        orderNumber={editingOrder?.orderNumber}
+        currentDeliveryPersonId={editingOrder?.deliveryPerson?.id ?? null}
+        isPending={updateDeliveryPersonMutation.isPending}
+        onClose={() => setModalOpen(null)}
+        onConfirm={updateDeliveryPersonMutation.mutate}
       />
     </>
   );
