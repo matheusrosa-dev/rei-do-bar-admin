@@ -10,7 +10,7 @@ export const Route = createFileRoute("/clientes/(list)/")({
   component: Index,
 });
 
-const LIMIT = 10;
+const LIMIT = 50;
 
 function Index() {
   const {

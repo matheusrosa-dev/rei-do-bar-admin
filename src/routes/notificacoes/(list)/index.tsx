@@ -11,7 +11,7 @@ export const Route = createFileRoute("/notificacoes/(list)/")({
   component: Index,
 });
 
-const LIMIT = 10;
+const LIMIT = 50;
 
 function Index() {
   const [isNotificationModalOpen, setIsNotificationModalOpen] = useState(false);

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/entregadores/(list)/")({
   component: Index,
 });
 
-const LIMIT = 20;
+const LIMIT = 50;
 
 type ModalOpen = { mode: "create" } | { mode: "revoke-all-access" };
 

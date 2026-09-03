@@ -11,7 +11,7 @@ export const Route = createFileRoute("/cupons/(list)/")({
   component: Index,
 });
 
-const LIMIT = 10;
+const LIMIT = 50;
 
 function Index() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
