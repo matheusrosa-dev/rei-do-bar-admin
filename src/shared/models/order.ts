@@ -15,6 +15,7 @@ export interface IOrder {
   statusReason: string | null;
   deliveryPerson: IOrderDeliveryPerson | null;
   deliveryPersonIsVolunteer: boolean;
+  deliveryPersonBonus: number;
   deliveryFee: number;
   paymentType: PaymentType;
   couponCode: string | null;
