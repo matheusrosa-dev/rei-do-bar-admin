@@ -10,7 +10,7 @@ export const CHART_COLORS = {
   cursor: "color-mix(in oklab, var(--color-white) 5%, transparent)",
 };
 
-export const CHART_HEIGHT = 260;
+export const CHART_HEIGHT = 320;
 
 export type SeriesKey = "newCustomersCount" | "newAnonymousCustomersCount";
 

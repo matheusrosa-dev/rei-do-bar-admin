@@ -11,6 +11,7 @@ interface IDeliveryPersonBase {
   phone: string;
   cpf: string;
   isActive: boolean;
+  isVolunteer: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -18,7 +19,6 @@ interface IDeliveryPersonBase {
 export interface IDeliveryPerson extends IDeliveryPersonBase {
   address: IDeliveryPersonAddress;
   ordersCount: number;
-  isVolunteer: boolean;
 }
 
 export interface IDeliveryPersonWithAccess extends IDeliveryPerson {

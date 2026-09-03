@@ -1,5 +1,6 @@
 import { Wrapper } from "@components";
 import type { DeliveryPersonPerformance } from "@shared/services/dashboard/types";
+import { useState } from "react";
 import { MdInbox } from "react-icons/md";
 import {
   Bar,
@@ -12,10 +13,14 @@ import {
 } from "recharts";
 import {
   CHART_COLORS,
+  formatDeliveryPersonChartLabel,
   formatName,
   getChartHeight,
-  getDeliveryPersonFooters,
+  getDeliveryPersonFooterGroups,
+  SERIES,
+  type SeriesKey,
 } from "./-helpers";
+import { ChartLegend } from "../chart-legend";
 import { ChartTooltip } from "../chart-tooltip";
 
 type Props = {
@@ -23,6 +28,18 @@ type Props = {
 };
 
 export const DeliveryPersonsChart = ({ data }: Props) => {
+  const [hiddenSeries, setHiddenSeries] = useState<SeriesKey[]>([]);
+
+  const isVisible = (key: SeriesKey) => !hiddenSeries.includes(key);
+
+  const onToggleSeries = (key: SeriesKey) => {
+    setHiddenSeries((previous) =>
+      previous.includes(key)
+        ? previous.filter((series) => series !== key)
+        : [...previous, key],
+    );
+  };
+
   return (
     <Wrapper>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -31,17 +48,11 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
         </h4>
 
         {data.length > 0 && (
-          <div className="flex items-center gap-4 text-xs text-zinc-400">
-            <span className="flex items-center gap-1.5">
-              <span className="size-2.5 rounded-full bg-amber-500" />
-              Entregues
-            </span>
-
-            <span className="flex items-center gap-1.5">
-              <span className="size-2.5 rounded-full bg-red-500" />
-              Falhas na entrega
-            </span>
-          </div>
+          <ChartLegend
+            series={SERIES}
+            hiddenSeries={hiddenSeries}
+            onToggleSeries={onToggleSeries}
+          />
         )}
       </div>
 
@@ -53,7 +64,7 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
       ) : (
         <div
           role="img"
-          aria-label="Pedidos entregues e falhas na entrega por entregador"
+          aria-label={formatDeliveryPersonChartLabel(hiddenSeries)}
         >
           <ResponsiveContainer
             width="100%"
@@ -83,7 +94,7 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
                 content={(props) => (
                   <ChartTooltip
                     {...props}
-                    footer={getDeliveryPersonFooters(
+                    footerGroups={getDeliveryPersonFooterGroups(
                       props.payload?.[0]?.payload,
                     )}
                   />
@@ -96,6 +107,16 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
                 fill={CHART_COLORS.delivered}
                 radius={[0, 4, 4, 0]}
                 maxBarSize={22}
+                hide={!isVisible("deliveredOrdersCount")}
+              />
+
+              <Bar
+                dataKey="volunteeredDeliveriesCount"
+                name="Voluntárias"
+                fill={CHART_COLORS.volunteered}
+                radius={[0, 4, 4, 0]}
+                maxBarSize={22}
+                hide={!isVisible("volunteeredDeliveriesCount")}
               />
 
               <Bar
@@ -104,6 +125,7 @@ export const DeliveryPersonsChart = ({ data }: Props) => {
                 fill={CHART_COLORS.cancelled}
                 radius={[0, 4, 4, 0]}
                 maxBarSize={22}
+                hide={!isVisible("cancelledOrdersCount")}
               />
             </BarChart>
           </ResponsiveContainer>

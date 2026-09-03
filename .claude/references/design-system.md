@@ -39,6 +39,7 @@ The app is **dark-theme only**, rendered over a black body background.
 | Average order value | `violet-400` | "Ticket médio" line; also the icon of the "Ticket médio" and "Maior pedido" KPI cards. |
 | Discount | `green-400` | "Desconto em cupons" line; "Pedidos com cupom" line (order-volume chart). |
 | Count | `zinc-300` | "Pedidos entregues" line (order-volume chart); "Clientes anônimos" line (accounts chart). |
+| Volunteer | `green-400` | "Voluntárias" bars (delivery-persons chart); "Economia voluntária" (tooltip value pill of the delivery-persons chart, icon of the summary KPI card). |
 | Cancelled | `red-500` | "Cancelados" bars. |
 | Acquisition | `sky-400` | "Primeiros pedidos" line (order-volume chart); "Clientes cadastrados" line (accounts chart); icon of the acquisition KPI cards ("Clientes cadastrados", "Primeiros pedidos"). |
 

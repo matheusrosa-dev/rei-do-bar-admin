@@ -68,17 +68,23 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         if (!deliveryPerson) return "-";
 
         return (
-          <Link
-            className="text-gray-400 text-sm underline flex w-fit flex-nowrap items-center gap-1 duration-150 hover:text-white"
-            to="/entregadores"
-            search={{ searchTerm: deliveryPerson.name }}
-            target="_blank"
-            rel="noreferrer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {deliveryPerson.name}
-            <RiExternalLinkLine />
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              className="text-gray-400 text-sm underline flex w-fit flex-nowrap items-center gap-1 duration-150 hover:text-white"
+              to="/entregadores"
+              search={{ searchTerm: deliveryPerson.name }}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {deliveryPerson.name}
+              <RiExternalLinkLine />
+            </Link>
+
+            {row.original.deliveryPersonIsVolunteer && (
+              <StatusBadge variant="active">Voluntário</StatusBadge>
+            )}
+          </div>
         );
       },
     },

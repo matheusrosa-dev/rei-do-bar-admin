@@ -180,7 +180,14 @@ export const OrderDetailModal = ({
             )}
 
             <div className="flex items-center justify-between">
-              <span className="text-gray-500 text-sm">Frete</span>
+              <div className="flex items-center gap-2">
+                <span className="text-gray-500 text-sm">Frete</span>
+
+                {order.deliveryPerson && order.deliveryPersonIsVolunteer && (
+                  <StatusBadge variant="active">Voluntário</StatusBadge>
+                )}
+              </div>
+
               <span className="text-gray-300 text-sm font-bold">
                 {formatPrice(order.deliveryFee)}
               </span>

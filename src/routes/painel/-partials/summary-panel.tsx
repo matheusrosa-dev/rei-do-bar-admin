@@ -3,6 +3,7 @@ import { formatMinutes } from "@shared/helpers/duration";
 import { formatPercentage, formatPrice } from "@shared/helpers/number";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useSearch } from "@tanstack/react-router";
+import { LuHeartHandshake } from "react-icons/lu";
 import {
   MdAvTimer,
   MdCancel,
@@ -75,7 +76,7 @@ export const SummaryPanel = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <SummaryCard
           label="Faturamento"
           value={formatPrice(data.revenue)}
@@ -102,6 +103,13 @@ export const SummaryPanel = () => {
           value={formatPrice(data.restockCost)}
           icon={MdInventory2}
           iconClassName="text-amber-500"
+        />
+
+        <SummaryCard
+          label="Economia voluntária"
+          value={formatPrice(data.volunteeredSavingsTotal)}
+          icon={LuHeartHandshake}
+          iconClassName="text-green-400"
         />
 
         <SummaryCard

@@ -32,7 +32,7 @@ export const ChartLegend = <Key extends string>({
   hiddenSeries,
   onToggleSeries,
 }: Props<Key>) => (
-  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-zinc-400">
+  <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-zinc-400">
     {series.map(({ key, label, dotClassName }) => {
       const isVisible = !hiddenSeries.includes(key);
 

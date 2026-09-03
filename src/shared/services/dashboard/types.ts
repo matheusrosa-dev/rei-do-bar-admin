@@ -1,9 +1,11 @@
 export type DeliveryPersonPerformance = {
   name: string;
   deliveredOrdersCount: number;
+  volunteeredDeliveriesCount: number;
   cancelledOrdersCount: number;
   deliveryFeeTotal: number;
   deliveryPersonBonusTotal: number;
+  volunteeredSavingsTotal: number;
   payoutTotal: number;
 };
 
@@ -64,6 +66,7 @@ export interface GetSummaryResponse {
   deliveryFeeTotal: number;
   restockCost: number;
   deliveryPersonBonusTotal: number;
+  volunteeredSavingsTotal: number;
   profit: number;
   profitPercentage: number;
   couponDiscount: number;

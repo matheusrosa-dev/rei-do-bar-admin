@@ -47,7 +47,7 @@ function Index() {
         <Filters onRefetch={onRefetch} isRefetching={isRefetching} />
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 pb-24">
         <SummaryPanel />
         <SeriesPanel />
         <AccountsPanel />

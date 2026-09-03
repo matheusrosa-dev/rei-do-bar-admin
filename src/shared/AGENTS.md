@@ -36,6 +36,12 @@ business workflows or stateful logic.
 - Timestamps and ids arrive as `string` (ISO / opaque id), not `Date`/`number`.
 - Enumerable directions/states use a shared enum or literal union, declared once
   in interfaces and reused.
+- A value the API **freezes at transaction time** lives as a scalar on the owning
+  entity, beside — not inside — the relation it was copied from. The relation
+  carries the related entity's *current* values, the scalar carries the value as
+  of the transaction, and the two are expected to disagree. Never derive one from
+  the other: read the scalar wherever the historical value is what matters, and
+  guard on the relation separately when rendering it.
 
 ## helpers/ rules
 

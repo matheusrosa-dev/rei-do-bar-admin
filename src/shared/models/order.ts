@@ -14,6 +14,7 @@ export interface IOrder {
   orderNumber: number;
   statusReason: string | null;
   deliveryPerson: IOrderDeliveryPerson | null;
+  deliveryPersonIsVolunteer: boolean;
   deliveryFee: number;
   paymentType: PaymentType;
   couponCode: string | null;
