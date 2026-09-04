@@ -1,5 +1,6 @@
 import {
   Controller,
+  useWatch,
   type Control,
   type UseFormRegister,
 } from "react-hook-form";
@@ -12,6 +13,7 @@ import {
   Toggle,
 } from "@components";
 import type { IProduct } from "@shared/models";
+import { formatPrice } from "@shared/helpers/number";
 
 type Props = {
   index: number;
@@ -37,6 +39,12 @@ export const ProductRow = ({
   const containerClass = isSelected
     ? "border-amber-500 bg-amber-500/10"
     : "border-white/10";
+
+  const quantity = useWatch({ control, name: `products.${index}.quantity` });
+  const totalCost = useWatch({ control, name: `products.${index}.totalCost` });
+  const rawUnitCost = (totalCost ?? 0) / (quantity ?? 0);
+  const unitCost =
+    Number.isFinite(rawUnitCost) && rawUnitCost > 0 ? rawUnitCost : null;
 
   return (
     <div
@@ -73,31 +81,41 @@ export const ProductRow = ({
       </div>
 
       {isSelected && (
-        <div
-          className={`grid gap-3 ${showPrice ? "grid-cols-2" : "grid-cols-1"}`}
-        >
-          <NumberInput
-            label="Quantidade"
-            placeholder="0"
-            error={error}
-            disabled={isPending}
-            {...register(`products.${index}.quantity`, { valueAsNumber: true })}
-          />
+        <div className="flex flex-col gap-1.5">
+          <div
+            className={`grid gap-3 ${showPrice ? "grid-cols-2" : "grid-cols-1"}`}
+          >
+            <NumberInput
+              label="Quantidade"
+              placeholder="0"
+              error={error}
+              disabled={isPending}
+              {...register(`products.${index}.quantity`, {
+                valueAsNumber: true,
+              })}
+            />
+
+            {showPrice && (
+              <Controller
+                control={control}
+                name={`products.${index}.totalCost`}
+                render={({ field, fieldState }) => (
+                  <CurrencyInput
+                    label="Custo total"
+                    value={field.value ?? 0}
+                    onChange={field.onChange}
+                    error={fieldState.error?.message}
+                    disabled={isPending}
+                  />
+                )}
+              />
+            )}
+          </div>
 
           {showPrice && (
-            <Controller
-              control={control}
-              name={`products.${index}.totalCost`}
-              render={({ field, fieldState }) => (
-                <CurrencyInput
-                  label="Custo total"
-                  value={field.value ?? 0}
-                  onChange={field.onChange}
-                  error={fieldState.error?.message}
-                  disabled={isPending}
-                />
-              )}
-            />
+            <span className="text-sm font-medium text-amber-500">
+              Custo unitário: {formatPrice(unitCost)}
+            </span>
           )}
         </div>
       )}

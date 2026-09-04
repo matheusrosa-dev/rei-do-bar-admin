@@ -50,8 +50,8 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "items",
       header: "Itens",
       cell: ({ row }) => {
-        const variant =
-          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin].quantityVariant;
+        const { quantityVariant: variant, hasPrice } =
+          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin];
 
         const sign = variant === "active" ? "+" : "-";
         const { products } = row.original;
@@ -64,9 +64,11 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
                   {sign}
                   {item.quantity} {item.product.name}{" "}
                 </span>
-                <span className="text-gray-400 text-xs">
-                  ({formatPrice(item.price)} unidade)
-                </span>
+                {hasPrice && (
+                  <span className="text-gray-400 text-xs">
+                    ({formatPrice(item.price)} unidade)
+                  </span>
+                )}
               </span>
             ))}
           </div>
@@ -88,8 +90,13 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "total",
       header: "Total",
       cell: ({ row }) => {
-        const variant =
-          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin].totalVariant;
+        const { totalVariant: variant, hasPrice } =
+          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin];
+
+        if (!hasPrice) {
+          return "-";
+        }
+
         const sign = variant === "active" ? "+" : "-";
 
         const couponDiscount = row.original?.order?.couponDiscount ?? 0;
