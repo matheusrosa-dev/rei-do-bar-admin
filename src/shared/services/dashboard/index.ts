@@ -4,6 +4,8 @@ import type {
   GetAccountsSeriesResponse,
   GetDeliveryPersonsPerformance,
   GetDeliveryPersonsPerformanceResponse,
+  GetRankings,
+  GetRankingsResponse,
   GetSeries,
   GetSeriesResponse,
   GetSummary,
@@ -34,6 +36,14 @@ export const useDashboardService: UseDashboardService = () => {
     return response.data.data;
   };
 
+  const getRankings: GetRankings = async (queries) => {
+    const response = await api.get<GetRankingsResponse>(`${baseUrl}/rankings`, {
+      params: queries,
+    });
+
+    return response.data.data;
+  };
+
   const getSeries: GetSeries = async (queries) => {
     const response = await api.get<GetSeriesResponse>(`${baseUrl}/series`, {
       params: queries,
@@ -58,6 +68,10 @@ export const useDashboardService: UseDashboardService = () => {
     getDeliveryPersonsPerformance: {
       fn: getDeliveryPersonsPerformance,
       key: "get-delivery-persons-performance",
+    },
+    getRankings: {
+      fn: getRankings,
+      key: "get-rankings",
     },
     getSeries: {
       fn: getSeries,

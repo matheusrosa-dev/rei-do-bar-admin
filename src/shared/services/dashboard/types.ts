@@ -78,6 +78,29 @@ export type GetSummary = (queries?: {
   endDate?: Date;
 }) => Promise<GetSummaryResponse>;
 
+export interface ProductRanking {
+  name: string;
+  imageUrl: string;
+  soldQuantity: number;
+  ordersCount: number;
+}
+
+export interface CouponRanking {
+  code: string;
+  ordersCount: number;
+  discountTotal: number;
+}
+
+export interface GetRankingsResponse {
+  products: ProductRanking[];
+  coupons: CouponRanking[];
+}
+
+export type GetRankings = (queries?: {
+  startDate?: Date;
+  endDate?: Date;
+}) => Promise<GetRankingsResponse>;
+
 export type UseDashboardService = () => {
   getAccountsSeries: {
     fn: GetAccountsSeries;
@@ -85,6 +108,10 @@ export type UseDashboardService = () => {
   };
   getDeliveryPersonsPerformance: {
     fn: GetDeliveryPersonsPerformance;
+    key: string;
+  };
+  getRankings: {
+    fn: GetRankings;
     key: string;
   };
   getSeries: {

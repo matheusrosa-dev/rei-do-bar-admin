@@ -6,6 +6,7 @@ import {
   AccountsPanel,
   DeliveryPersonsPanel,
   Filters,
+  RankingsPanel,
   SeriesPanel,
   SummaryPanel,
 } from "./-partials";
@@ -49,6 +50,7 @@ function Index() {
 
       <div className="flex flex-col gap-4 pb-24">
         <SummaryPanel />
+        <RankingsPanel />
         <SeriesPanel />
         <AccountsPanel />
         <DeliveryPersonsPanel />
