@@ -38,8 +38,9 @@ export const ShipOrderModal = ({
 
           {orderNumber !== undefined && (
             <RadixDialog.Description className="text-zinc-400 text-sm">
-              Selecione o entregador do pedido #{orderNumber}. Você poderá
-              alterar o entregador depois.
+              Selecione o entregador do pedido{" "}
+              <strong className="font-bold text-white">#{orderNumber}</strong>.
+              Você poderá alterar o entregador depois.
             </RadixDialog.Description>
           )}
         </div>

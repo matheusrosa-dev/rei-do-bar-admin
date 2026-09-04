@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import * as RadixDialog from "@radix-ui/react-dialog";
+import { FiAlertTriangle } from "react-icons/fi";
 import { Button, Modal, Textarea } from "@components";
+
+const CONFIRM_CANCEL_DELAY_SECONDS = 5;
 
 type Props = {
   isOpen: boolean;
@@ -18,10 +21,22 @@ export const CancelOrderModal = ({
   onConfirm,
 }: Props) => {
   const [statusReason, setStatusReason] = useState("");
+  const [secondsLeft, setSecondsLeft] = useState(0);
 
   useEffect(() => {
-    if (isOpen) setStatusReason("");
+    if (!isOpen) return;
+
+    setStatusReason("");
+    setSecondsLeft(CONFIRM_CANCEL_DELAY_SECONDS);
   }, [isOpen]);
+
+  useEffect(() => {
+    if (secondsLeft <= 0) return;
+
+    const timeout = setTimeout(() => setSecondsLeft(secondsLeft - 1), 1000);
+
+    return () => clearTimeout(timeout);
+  }, [secondsLeft]);
 
   const handleConfirm = () => {
     onConfirm(statusReason.trim() || undefined);
@@ -31,14 +46,16 @@ export const CancelOrderModal = ({
     <Modal isOpen={isOpen} canClose={!isPending} onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
-          <RadixDialog.Title className="text-white font-bold text-lg">
+          <RadixDialog.Title className="flex items-center gap-2 text-white font-bold text-lg">
+            <FiAlertTriangle className="text-red-500 shrink-0" size={20} />
             Cancelar pedido
           </RadixDialog.Title>
 
           {orderNumber !== undefined && (
             <RadixDialog.Description className="text-zinc-400 text-sm">
-              Cancelar o pedido #{orderNumber}? Informe o motivo abaixo, se
-              quiser.
+              Informe o motivo do cancelamento do pedido{" "}
+              <strong className="font-bold text-white">#{orderNumber}</strong>,
+              se quiser.
             </RadixDialog.Description>
           )}
         </div>
@@ -66,9 +83,11 @@ export const CancelOrderModal = ({
             type="button"
             variant="danger"
             onClick={handleConfirm}
-            disabled={isPending}
+            disabled={isPending || secondsLeft > 0}
           >
-            Cancelar pedido
+            {secondsLeft > 0
+              ? `Cancelar pedido (${secondsLeft})`
+              : "Cancelar pedido"}
           </Button>
         </div>
       </div>

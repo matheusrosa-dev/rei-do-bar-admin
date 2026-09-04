@@ -23,6 +23,8 @@ type ModalOpen =
     }
   | { mode: "edit-delivery-person"; order: IOrderWithItemsAndCustomer };
 
+const CONFIRM_DELIVERY_DELAY_SECONDS = 5;
+
 const COLUMN_ORDER: OrderStatus[] = [
   OrderStatus.PENDING,
   OrderStatus.PREPARING,
@@ -95,6 +97,7 @@ export const Board = ({ orders }: Props) => {
 
   const isCancelling = pendingMove?.toStatus === OrderStatus.CANCELLED;
   const isShipping = pendingMove?.toStatus === OrderStatus.SHIPPED;
+  const isDelivering = pendingMove?.toStatus === OrderStatus.DELIVERED;
 
   return (
     <>
@@ -116,14 +119,45 @@ export const Board = ({ orders }: Props) => {
       </div>
 
       <ConfirmModal
-        isOpen={pendingMove !== null && !isCancelling && !isShipping}
+        isOpen={
+          pendingMove !== null && !isCancelling && !isShipping && !isDelivering
+        }
         title="Mover pedido"
         description={
-          pendingMove
-            ? `Mover o pedido #${pendingMove.order.orderNumber} para "${ORDER_STATUS_LABEL[pendingMove.toStatus]}"?`
-            : undefined
+          pendingMove ? (
+            <>
+              Mover o pedido{" "}
+              <strong className="font-bold text-white">
+                #{pendingMove.order.orderNumber}
+              </strong>{" "}
+              para "{ORDER_STATUS_LABEL[pendingMove.toStatus]}"?
+            </>
+          ) : undefined
         }
         confirmLabel="Mover"
+        onClose={() => setModalOpen(null)}
+        onConfirm={() => updateStatusMutation.mutate({})}
+      />
+
+      <ConfirmModal
+        isOpen={pendingMove !== null && isDelivering}
+        variant="danger"
+        title="Confirmar entrega"
+        description={
+          pendingMove ? (
+            <>
+              A confirmação de entrega normalmente deve ser feita pelo
+              entregador. Confirme apenas se tiver certeza de que o pedido{" "}
+              <strong className="font-bold text-white">
+                #{pendingMove.order.orderNumber}
+              </strong>{" "}
+              foi entregue.
+            </>
+          ) : undefined
+        }
+        confirmLabel="Confirmar entrega"
+        confirmDelaySeconds={CONFIRM_DELIVERY_DELAY_SECONDS}
+        canClose={!updateStatusMutation.isPending}
         onClose={() => setModalOpen(null)}
         onConfirm={() => updateStatusMutation.mutate({})}
       />

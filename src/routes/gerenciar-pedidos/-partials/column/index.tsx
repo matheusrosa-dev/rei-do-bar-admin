@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FiAlertTriangle } from "react-icons/fi";
 import { MdInbox } from "react-icons/md";
 import { StatusBadge } from "@components";
 import type { IOrderWithItemsAndCustomer } from "@shared/models";
@@ -40,6 +41,9 @@ export const Column = ({
   const isValidTarget =
     draggingStatus !== null && canMoveOrder(draggingStatus, status);
 
+  const isDangerTarget =
+    status === OrderStatus.DELIVERED || status === OrderStatus.CANCELLED;
+
   const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     setIsOver(false);
@@ -48,6 +52,9 @@ export const Column = ({
   };
 
   const getDropAreaClass = () => {
+    if (isValidTarget && isOver && isDangerTarget)
+      return "bg-red-500/10 outline-2 outline-dashed outline-red-500/40";
+
     if (isValidTarget && isOver)
       return "bg-white/5 outline-2 outline-dashed outline-amber-500/40";
 
@@ -72,7 +79,7 @@ export const Column = ({
         )}
       </div>
 
-      <div className="overflow-y-auto h-full">
+      <div className="relative overflow-y-auto h-full">
         <div
           className={`flex flex-col gap-3 rounded-lg transition-colors h-[99%] m-px ${getDropAreaClass()}`}
           onDragOver={(event) => {
@@ -102,6 +109,14 @@ export const Column = ({
             ))
           )}
         </div>
+
+        {isOver && isValidTarget && isDangerTarget && (
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div className="bg-red-900/80 p-4 rounded-full">
+              <FiAlertTriangle className="text-red-500" size={48} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
