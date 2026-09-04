@@ -14,6 +14,7 @@ import {
 } from "@components";
 import type { IProduct } from "@shared/models";
 import { formatPrice } from "@shared/helpers/number";
+import { getUnitCost } from "../-helpers";
 
 type Props = {
   index: number;
@@ -42,9 +43,7 @@ export const ProductRow = ({
 
   const quantity = useWatch({ control, name: `products.${index}.quantity` });
   const totalCost = useWatch({ control, name: `products.${index}.totalCost` });
-  const rawUnitCost = (totalCost ?? 0) / (quantity ?? 0);
-  const unitCost =
-    Number.isFinite(rawUnitCost) && rawUnitCost > 0 ? rawUnitCost : null;
+  const unitCost = getUnitCost(totalCost, quantity);
 
   return (
     <div

@@ -8,7 +8,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { MOVEMENT_PROPS_BY_ORIGIN } from "../../-helpers";
 import { defaultValues, resolver, type Form } from "./form";
-import { ProductRow } from "./partials";
+import { ConfirmMovementModal, ProductRow } from "./partials";
 import { FiSearch } from "react-icons/fi";
 
 type Props = {
@@ -23,6 +23,8 @@ const ORIGIN_OPTIONS = [
 
 export const StockMovementModal = ({ isOpen, onClose }: Props) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [pendingMovement, setPendingMovement] = useState<Form | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const queryClient = useQueryClient();
   const { incrementInventory, decrementInventory, getInventoryMovements } =
@@ -70,6 +72,7 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
   const onCloseHandler = () => {
     reset();
     setSearchTerm("");
+    setIsConfirmOpen(false);
     onClose();
   };
 
@@ -93,8 +96,17 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
     },
   });
 
+  const isPending = incrementMutation.isPending || decrementMutation.isPending;
+
   const onSubmit = (data: Form) => {
-    const movementProducts = data.products
+    setPendingMovement(data);
+    setIsConfirmOpen(true);
+  };
+
+  const onConfirmMovement = () => {
+    if (!pendingMovement) return;
+
+    const movementProducts = pendingMovement.products
       .filter((product) => product.selected)
       .map((product) => ({
         productId: product.productId,
@@ -102,7 +114,7 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
         totalCost: Number(product.totalCost),
       }));
 
-    if (data.origin === InventoryMovementOrigin.ADMIN_REMOVAL) {
+    if (pendingMovement.origin === InventoryMovementOrigin.ADMIN_REMOVAL) {
       decrementMutation.mutate({ movementProducts });
       return;
     }
@@ -110,6 +122,10 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
       movementProducts,
     });
   };
+
+  const pendingProducts = (pendingMovement?.products ?? []).filter(
+    (product) => product.selected,
+  );
 
   const selectionError = errors.products?.root?.message;
 
@@ -132,120 +148,127 @@ export const StockMovementModal = ({ isOpen, onClose }: Props) => {
   }, [isOpen, products, replace]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      canClose={!incrementMutation.isPending}
-      onClose={onCloseHandler}
-    >
-      <div className="flex flex-col gap-6 pr-1">
-        <div className="flex flex-col gap-1">
-          <RadixDialog.Title className="text-white font-bold text-lg">
-            Movimentar estoque
-          </RadixDialog.Title>
+    <>
+      <Modal isOpen={isOpen} canClose={!isPending} onClose={onCloseHandler}>
+        <div className="flex flex-col gap-6 pr-1">
+          <div className="flex flex-col gap-1">
+            <RadixDialog.Title className="text-white font-bold text-lg">
+              Movimentar estoque
+            </RadixDialog.Title>
 
-          <RadixDialog.Description className="text-zinc-400 text-sm">
-            Selecione os produtos e informe a quantidade e o preço da
-            movimentação.
-          </RadixDialog.Description>
-        </div>
+            <RadixDialog.Description className="text-zinc-400 text-sm">
+              Selecione os produtos e informe a quantidade e o preço da
+              movimentação.
+            </RadixDialog.Description>
+          </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <Controller
-            control={control}
-            name="origin"
-            render={({ field, fieldState }) => (
-              <Select
-                label="Tipo de movimentação"
-                options={ORIGIN_OPTIONS.map((origin) => ({
-                  label: MOVEMENT_PROPS_BY_ORIGIN[origin].originTranslation,
-                  value: origin,
-                }))}
-                value={field.value}
-                onChange={field.onChange}
-                disabled={incrementMutation.isPending}
-                error={fieldState.error?.message}
-              />
-            )}
-          />
-
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-zinc-300 text-sm font-medium">
-                Produtos
-              </span>
-            </div>
-
-            <Input
-              placeholder="Pesquisar"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              leftIcon={<FiSearch className="size-4" />}
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-4"
+          >
+            <Controller
+              control={control}
+              name="origin"
+              render={({ field, fieldState }) => (
+                <Select
+                  label="Tipo de movimentação"
+                  options={ORIGIN_OPTIONS.map((origin) => ({
+                    label: MOVEMENT_PROPS_BY_ORIGIN[origin].originTranslation,
+                    value: origin,
+                  }))}
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={isPending}
+                  error={fieldState.error?.message}
+                />
+              )}
             />
 
-            <span className="text-sm block text-end my-1 text-amber-500 font-medium">
-              {selectedCount} selecionado{selectedCount !== 1 ? "s" : ""}
-            </span>
-
-            <div className="h-80 max-h-80 overflow-y-auto pr-1">
-              {isLoading && (
-                <span className="text-zinc-500 text-sm text-center block">
-                  Carregando produtos...
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-zinc-300 text-sm font-medium">
+                  Produtos
                 </span>
-              )}
+              </div>
 
-              {Boolean(!isLoading && !filteredFields.length) && (
-                <span className="text-zinc-500 text-sm text-center block">
-                  Nenhum produto encontrado.
-                </span>
-              )}
+              <Input
+                placeholder="Pesquisar"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                leftIcon={<FiSearch className="size-4" />}
+              />
 
-              {Boolean(!isLoading && !!filteredFields.length) && (
-                <div className="flex flex-col gap-2">
-                  {filteredFields.map(({ field, index }) => (
-                    <ProductRow
-                      key={field.id}
-                      index={index}
-                      product={{
-                        imageUrl: field.imageUrl,
-                        name: field.name,
-                        stockQuantity: field.stockQuantity,
-                        isActive: field.isActive,
-                      }}
-                      isSelected={!!watch(`products.${index}.selected`)}
-                      isPending={incrementMutation.isPending}
-                      showPrice={showPrice}
-                      control={control}
-                      register={register}
-                      error={errors.products?.[index]?.quantity?.message}
-                    />
-                  ))}
-                </div>
+              <span className="text-sm block text-end my-1 text-amber-500 font-medium">
+                {selectedCount} selecionado{selectedCount !== 1 ? "s" : ""}
+              </span>
+
+              <div className="h-80 max-h-80 overflow-y-auto pr-1">
+                {isLoading && (
+                  <span className="text-zinc-500 text-sm text-center block">
+                    Carregando produtos...
+                  </span>
+                )}
+
+                {Boolean(!isLoading && !filteredFields.length) && (
+                  <span className="text-zinc-500 text-sm text-center block">
+                    Nenhum produto encontrado.
+                  </span>
+                )}
+
+                {Boolean(!isLoading && !!filteredFields.length) && (
+                  <div className="flex flex-col gap-2">
+                    {filteredFields.map(({ field, index }) => (
+                      <ProductRow
+                        key={field.id}
+                        index={index}
+                        product={{
+                          imageUrl: field.imageUrl,
+                          name: field.name,
+                          stockQuantity: field.stockQuantity,
+                          isActive: field.isActive,
+                        }}
+                        isSelected={!!watch(`products.${index}.selected`)}
+                        isPending={isPending}
+                        showPrice={showPrice}
+                        control={control}
+                        register={register}
+                        error={errors.products?.[index]?.quantity?.message}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {selectionError && (
+                <span className="text-red-500 text-xs">{selectionError}</span>
               )}
             </div>
 
-            {selectionError && (
-              <span className="text-red-500 text-xs">{selectionError}</span>
-            )}
-          </div>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={onCloseHandler}
+                disabled={isPending}
+              >
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={isPending || isLoading}>
+                {isPending ? "Salvando..." : "Confirmar"}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </Modal>
 
-          <div className="flex justify-end gap-3 pt-2">
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={onCloseHandler}
-              disabled={incrementMutation.isPending}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              disabled={incrementMutation.isPending || isLoading}
-            >
-              {incrementMutation.isPending ? "Salvando..." : "Confirmar"}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </Modal>
+      <ConfirmMovementModal
+        isOpen={isConfirmOpen}
+        origin={pendingMovement?.origin ?? origin}
+        products={pendingProducts}
+        isPending={isPending}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={onConfirmMovement}
+      />
+    </>
   );
 };
