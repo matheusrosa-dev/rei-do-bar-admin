@@ -40,8 +40,9 @@ export const EditDeliveryPersonModal = ({
 
           {orderNumber !== undefined && (
             <RadixDialog.Description className="text-zinc-400 text-sm">
-              Selecione o novo entregador do pedido #{orderNumber}. O status do
-              pedido não será alterado.
+              Selecione o novo entregador do pedido{" "}
+              <strong className="font-bold text-white">#{orderNumber}</strong>.
+              O status do pedido não será alterado.
             </RadixDialog.Description>
           )}
         </div>
