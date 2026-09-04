@@ -94,8 +94,8 @@ Use the standard Tailwind spacing scale. Recurring values:
 | Control padding | `px-4 py-2.5` (buttons/inputs/select). |
 | Cell padding | `px-5 py-3.5` (table). |
 | Container padding | `p-5` (page content, cards), `p-6` (modal). |
-| Bar heights | `h-18` (page header / sidebar header), `h-14` (mobile top bar). |
-| Sidebar width | `w-60`. |
+| Bar heights | `h-18` (page header / sidebar header), `h-14` (mobile top bar), `min-h-10` (app-shell status strip). |
+| Sidebar width | `w-64` expanded, `w-16` collapsed (desktop). |
 
 ## Radius
 
@@ -117,11 +117,22 @@ Elevation is carried mostly by **border + translucent surface**, not shadows.
 
 ## Layout archetypes
 
-- **App shell** — fixed/relative sidebar (`w-60`) + main column with the router
+- **App shell** — an optional full-bleed status strip across the top, then a
+  fixed/relative sidebar (`w-64`, `w-16` collapsed) + main column with the router
   outlet. On mobile the sidebar is off-canvas with a backdrop and a hamburger top
-  bar.
-- **Page shell** — sticky header (`h-18`, bottom border, title + optional header
-  action) over scrollable content (`p-5`); optional "back" affordance.
+  bar, and the open drawer paints over the strip.
+- **Page shell** — header (`h-18`, bottom border, title + optional header action)
+  over scrollable content (`p-5`); the scroll lives on the content element, not
+  the header. Optional "back" affordance.
+- **Status strip** — one or more full-bleed rows stacked above the shell, no
+  radius, each closed by the primary border. A row carries a semantic status wash
+  + text (the same pairs as the badges), an icon, a centered message and a
+  compact action on the right. A row whose message is operator-authored content
+  rather than a fixed string prefixes it with a `font-semibold` label naming
+  where that content is shown. Mutually exclusive conditions (e.g. a closed
+  reason) resolve by priority into a single row rather than stacking; an
+  informational condition that can coexist with a base state stacks below it
+  instead of replacing it.
 - **List page** — filter bar (search + selects + sort + clear + refetch) above a
   bordered card table, with a total-count line and pagination.
 - **Form page** — a bordered card (`max-w-*`) wrapping a vertical form (`gap-4`),

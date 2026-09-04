@@ -3,39 +3,44 @@ import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { useState } from "react";
 import { HiMenu } from "react-icons/hi";
+import { StoreStatusBanners } from "./-partials";
 
 const RootLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="flex h-dvh w-full">
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        collapsed={collapsed}
-        onToggleCollapse={() => setCollapsed((current) => !current)}
-      />
+    <div className="flex flex-col h-dvh w-full">
+      <StoreStatusBanners />
 
-      <main className="flex-1 flex flex-col overflow-hidden">
-        <div className="md:hidden flex items-center h-14 px-4 border-b border-white/10 shrink-0">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            className="text-gray-400 hover:text-white transition-colors"
-            aria-label="Abrir menu"
-          >
-            <HiMenu size={24} />
-          </button>
-          <span className="ml-4 text-white font-bold tracking-tight">
-            Rei do Bar
-          </span>
-        </div>
+      <div className="flex flex-1 min-h-0 w-full">
+        <Sidebar
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          collapsed={collapsed}
+          onToggleCollapse={() => setCollapsed((current) => !current)}
+        />
 
-        <div className="flex-1 overflow-auto">
-          <Outlet />
-        </div>
-      </main>
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <div className="md:hidden flex items-center h-14 px-4 border-b border-white/10 shrink-0">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              className="text-gray-400 hover:text-white transition-colors"
+              aria-label="Abrir menu"
+            >
+              <HiMenu size={24} />
+            </button>
+            <span className="ml-4 text-white font-bold tracking-tight">
+              Rei do Bar
+            </span>
+          </div>
+
+          <div className="flex-1 overflow-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
 
       <TanStackRouterDevtools />
     </div>

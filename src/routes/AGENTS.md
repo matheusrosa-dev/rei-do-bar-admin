@@ -39,7 +39,7 @@ export const Route = createFileRoute("/<path>/")({
 
 | Folder / file | Holds |
 | --- | --- |
-| `-partials/` | Non-route components scoped to a single route or shared across a feature's sub-routes (tables, filters, feature modals). |
+| `-partials/` | Non-route components scoped to a single route or shared across a feature's sub-routes (tables, filters, feature modals). At the routes root it belongs to the root layout — app-shell chrome rendered around every screen. |
 | `-helpers/` | Pure, non-route logic for the route (e.g. search-param validation/formatting). |
 | `-shared/` | Assets shared across a feature's sub-routes — notably form schemas. |
 | `-types.ts` | Types local to the route. |
@@ -106,6 +106,10 @@ exposes only what the route itself consumes.
 - A panel screen refreshes by refetching its **active** queries instead of
   enumerating each panel's key, so a new panel joins the refresh with no extra
   wiring in the route.
+- App-shell chrome is always mounted, so it has no page to early-return from: it
+  renders nothing while loading, and on error degrades to a **neutral state that
+  still states the failure** — for a status indicator, rendering nothing would
+  read as a valid status.
 
 ### Charts
 - A chart is a card: the shared wrapper surface, a header holding the title and a
