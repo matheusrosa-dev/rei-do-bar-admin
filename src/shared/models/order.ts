@@ -23,6 +23,7 @@ export interface IOrder {
   productsTotal: number;
   productsDiscount: number;
   total: number;
+  netRevenue: number;
 }
 
 export interface IOrderItem {

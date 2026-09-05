@@ -8,7 +8,9 @@ import {
   ORDER_STATUS_VARIANT,
   PAYMENT_TYPE_LABEL,
 } from "@shared/helpers/order-status";
+import { Link } from "@tanstack/react-router";
 import { PiCaretDownBold } from "react-icons/pi";
+import { RiExternalLinkLine } from "react-icons/ri";
 
 type Props = {
   orders: IOrderWithItems[];
@@ -44,11 +46,6 @@ export const Orders = ({ orders }: Props) => {
 
       <div className="flex flex-col gap-3">
         {orders.map((order) => {
-          const itemsTotal = order.items.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0,
-          );
-          const total = itemsTotal + order.deliveryFee - order.couponDiscount;
           const isExpanded = expandedIds.has(order.id);
 
           return (
@@ -56,45 +53,50 @@ export const Orders = ({ orders }: Props) => {
               key={order.id}
               className="flex flex-col rounded-lg bg-white/5 border border-white/10"
             >
-              <button
-                type="button"
+              <div
                 className="p-3 cursor-pointer flex flex-col gap-3 items-start"
                 onClick={() => toggle(order.id)}
               >
                 <div className="flex items-center justify-between gap-2 text-left w-full">
                   <div className="flex items-center gap-2">
-                    <span className="text-amber-500 font-bold text-md">
+                    <Link
+                      className="text-amber-500 font-bold text-md flex items-center gap-1 hover:underline"
+                      to="/pedidos"
+                      search={{ searchTerm: String(order.orderNumber) }}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       #{order.orderNumber}
-                    </span>
+                      <RiExternalLinkLine />
+                    </Link>
                     <StatusBadge variant={ORDER_STATUS_VARIANT[order.status]}>
                       {ORDER_STATUS_LABEL[order.status]}
                     </StatusBadge>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    className="flex items-center gap-2 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggle(order.id);
+                    }}
+                  >
                     <span className="text-gray-400 text-sm font-medium">
                       {formatDateTime(order.createdAt)}
                     </span>
                     <PiCaretDownBold
                       className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? "rotate-180" : ""}`}
                     />
-                  </div>
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-left text-gray-400">
+                <div className="flex gap-4 text-sm text-left text-gray-400">
                   <span>
                     <span className="text-gray-500">Pagamento: </span>
                     <span className="text-gray-300 font-bold">
                       {PAYMENT_TYPE_LABEL[order.paymentType]}
-                    </span>
-                  </span>
-
-                  <span>
-                    <span className="text-gray-500">Produtos: </span>
-                    <span className="text-gray-300 font-bold">
-                      {formatPrice(
-                        order.productsTotal - order.productsDiscount,
-                      )}
                     </span>
                   </span>
 
@@ -115,16 +117,9 @@ export const Orders = ({ orders }: Props) => {
                   )}
 
                   <span>
-                    <span className="text-gray-500">Frete: </span>
-                    <span className="text-gray-300 font-bold">
-                      {formatPrice(order.deliveryFee)}
-                    </span>
-                  </span>
-
-                  <span>
                     <span className="text-gray-500">Total: </span>
                     <span className="text-amber-500 font-bold">
-                      {formatPrice(total)}
+                      {formatPrice(order.total)}
                     </span>
                   </span>
                 </div>
@@ -134,7 +129,7 @@ export const Orders = ({ orders }: Props) => {
                     Motivo: {order.statusReason}
                   </span>
                 )}
-              </button>
+              </div>
 
               {isExpanded && (
                 <div className="flex flex-col gap-2 p-3 border-t border-white/10 ">

@@ -182,6 +182,13 @@ export const OrderDetailModal = ({ order, onClose }: Props) => {
                 {formatPrice(order.total)}
               </span>
             </div>
+
+            <div className="flex items-center justify-between">
+              <span className="text-gray-500 text-sm">Faturamento líquido</span>
+              <span className="text-amber-500 font-bold">
+                {formatPrice(order.netRevenue)}
+              </span>
+            </div>
           </div>
 
           <div className="flex flex-col gap-2 ">
