@@ -52,8 +52,15 @@ export function SortableItem({ product, index }: Props) {
           {product.name}
         </span>
 
-        <span className="text-sm text-gray-200 truncate w-20">
-          {formatPrice(product.price)}
+        <span className="flex items-baseline gap-2 w-32 shrink-0">
+          {product.compareAtPrice ? (
+            <span className="text-xs text-zinc-500 line-through">
+              {formatPrice(product.compareAtPrice)}
+            </span>
+          ) : null}
+          <span className="text-sm text-gray-200">
+            {formatPrice(product.price)}
+          </span>
         </span>
 
         <span className="w-34 flex gap-4">
