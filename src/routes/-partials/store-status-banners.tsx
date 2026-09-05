@@ -1,5 +1,9 @@
 import { Button } from "@components";
 import { useSettingsService } from "@services";
+import {
+  findActiveStorePauseKey,
+  type StorePauseKey,
+} from "@shared/helpers/setting";
 import { type ISetting, SettingKey } from "@shared/models";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
@@ -21,7 +25,7 @@ type Banner = {
 };
 
 const ALERT_BANNER_BY_KEY: Record<
-  typeof SettingKey.ON_BREAK | typeof SettingKey.OUTSIDE_BUSINESS_HOURS,
+  StorePauseKey,
   Banner & { variant: AlertVariant }
 > = {
   [SettingKey.ON_BREAK]: {
@@ -33,11 +37,6 @@ const ALERT_BANNER_BY_KEY: Record<
     message: "A loja está fora do horário de serviço.",
   },
 };
-
-const ALERT_KEYS_BY_PRIORITY = [
-  SettingKey.ON_BREAK,
-  SettingKey.OUTSIDE_BUSINESS_HOURS,
-] as const;
 
 const OPEN_BANNER: Banner = {
   variant: "open",
@@ -70,9 +69,7 @@ const buildBanners = (settings: ISetting[] | undefined): Banner[] => {
     return [UNKNOWN_BANNER];
   }
 
-  const activeAlertKey = ALERT_KEYS_BY_PRIORITY.find((key) =>
-    settings.some((setting) => setting.key === key && setting.isActive),
-  );
+  const activeAlertKey = findActiveStorePauseKey(settings);
 
   if (activeAlertKey) {
     return [ALERT_BANNER_BY_KEY[activeAlertKey]];

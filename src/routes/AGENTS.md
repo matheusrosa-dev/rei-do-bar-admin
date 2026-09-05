@@ -40,7 +40,7 @@ export const Route = createFileRoute("/<path>/")({
 | Folder / file | Holds |
 | --- | --- |
 | `-partials/` | Non-route components scoped to a single route or shared across a feature's sub-routes (tables, filters, feature modals). At the routes root it belongs to the root layout — app-shell chrome rendered around every screen. |
-| `-helpers/` | Pure, non-route logic for the route (e.g. search-param validation/formatting). |
+| `-helpers/` | Pure, non-route logic for the route (e.g. search-param validation/formatting). Logic a second feature also needs moves to the shared helpers layer instead — route-local code is not imported across features. |
 | `-shared/` | Assets shared across a feature's sub-routes — notably form schemas. |
 | `-types.ts` | Types local to the route. |
 
@@ -143,6 +143,10 @@ exposes only what the route itself consumes.
 - Disabling for a pending mutation carries no tooltip.
 
 ### Modal state
-- Model multiple modals per screen as a discriminated union in a single state
-  slot: `useState<ModalOpen | null>` where each variant carries a `mode` plus the
-  data that modal needs. Open by setting the variant, close by setting `null`.
+- Model multiple modals per screen as **one state slot**, never one boolean per
+  modal: `useState<ModalOpen | null>`. Open by setting the variant, close by
+  setting `null`.
+- The variant's shape follows what the modal needs: a modal acting on a row or
+  entity is a discriminated union member — an object carrying a `mode` plus that
+  data; a set of modals that need no data is a plain string-literal union of the
+  modes.

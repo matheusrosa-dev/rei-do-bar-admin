@@ -11,7 +11,7 @@ root `AGENTS.md`.
 | --- | --- | --- |
 | `models/` | Concrete domain **entity** types (the nouns the app manages). | Wildcard re-export barrel. |
 | `interfaces/` | **Generic, cross-domain** structural types not tied to one entity. | Wildcard re-export barrel. |
-| `helpers/` | **Pure** utility/formatting functions. | No barrel — imported by direct sub-path. |
+| `helpers/` | **Pure** functions over primitives or entity data — formatters, validators, predicates. | No barrel — imported by direct sub-path. |
 
 Types and pure functions only: no HTTP calls or query keys (those are the
 services layer), no React components, hooks, JSX or DOM side effects, and no
@@ -49,10 +49,16 @@ business workflows or stateful logic.
   I/O, no React.
 - Named exports grouped by subject into a single file per subject area, matching
   the declaration style already in that file (`function` declaration or `const`
-  arrow). A subject file may also export constant lookup maps beside its
-  functions.
-- Locale-aware formatting uses the platform `Intl` / locale APIs with the app
+  arrow). A subject file may also export constants beside its functions —
+  lookup maps, or a priority-ordered key list and the type derived from it.
+- A predicate over entity data reads the shape the API returns, including its
+  absent state, and states the condition it can actually prove: a caller holding
+  no data yet falls back at the call site rather than being told the negative.
+- **Locale-aware formatting** uses the platform `Intl` / locale APIs with the app
   locale (pt-BR) and returns display strings. Formatting helpers never throw on
   unexpected input — they degrade to the original/empty value.
+- Pure logic used by a single route stays in that route's `-helpers/` folder;
+  it belongs here once a second feature needs it, since route-local code is
+  never imported across features.
 - Imported by direct sub-path (no barrel), since each subject file is consumed
   independently.
