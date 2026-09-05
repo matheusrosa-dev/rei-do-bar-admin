@@ -1,4 +1,6 @@
+import { useRef } from "react";
 import { MdOutlineArrowBackIosNew } from "react-icons/md";
+import { ScrollContainerContext } from "./scroll-container";
 
 export type Props = {
   title: string;
@@ -13,6 +15,8 @@ export const PageWrapper = ({
   headerContent: HeaderContent,
   goBack,
 }: Props) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className="h-full flex flex-col">
       <header className="flex justify-between items-center px-5 h-18 border-b border-white/10 bg-white/3 select-none">
@@ -25,19 +29,24 @@ export const PageWrapper = ({
         {HeaderContent && <HeaderContent />}
       </header>
 
-      <div className="p-5 overflow-auto flex-1 flex flex-col">
-        {goBack && (
-          <button
-            onClick={() => window.history.back()}
-            type="button"
-            className="text-white flex items-center gap-2 font-medium cursor-pointer mb-5 w-fit pr-2"
-          >
-            <MdOutlineArrowBackIosNew />
-            Voltar
-          </button>
-        )}
-        {children}
-      </div>
+      <ScrollContainerContext.Provider value={scrollContainerRef}>
+        <div
+          ref={scrollContainerRef}
+          className="p-5 overflow-auto flex-1 flex flex-col"
+        >
+          {goBack && (
+            <button
+              onClick={() => window.history.back()}
+              type="button"
+              className="text-white flex items-center gap-2 font-medium cursor-pointer mb-5 w-fit pr-2"
+            >
+              <MdOutlineArrowBackIosNew />
+              Voltar
+            </button>
+          )}
+          {children}
+        </div>
+      </ScrollContainerContext.Provider>
     </div>
   );
 };

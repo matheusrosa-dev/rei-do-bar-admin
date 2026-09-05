@@ -1,5 +1,9 @@
 import type { IPagination } from "@shared/interfaces";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+// Relative import instead of the @components barrel: the barrel re-exports
+// Table, which re-exports this file, so importing the hook via @components
+// would close an import cycle back into this same module.
+import { useScrollContainer } from "../../page/scroll-container";
 
 type Props = {
   meta: IPagination<unknown>["meta"];
@@ -7,11 +11,18 @@ type Props = {
 };
 
 export const Pagination = ({ meta, onChangePage }: Props) => {
+  const scrollContainerRef = useScrollContainer();
+
+  const changePage = (page: number) => {
+    scrollContainerRef?.current?.scrollTo({ top: 0, behavior: "smooth" });
+    onChangePage(page);
+  };
+
   return (
     <div className="flex items-center justify-end gap-2 text-sm text-gray-400 select-none">
       <button
         type="button"
-        onClick={() => onChangePage(meta.page - 1)}
+        onClick={() => changePage(meta.page - 1)}
         disabled={meta.page <= 1}
         className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/10 not-disabled:hover:bg-white/5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
       >
@@ -24,7 +35,7 @@ export const Pagination = ({ meta, onChangePage }: Props) => {
 
       <button
         type="button"
-        onClick={() => onChangePage(meta.page + 1)}
+        onClick={() => changePage(meta.page + 1)}
         disabled={meta.page >= meta.totalPages}
         className="flex items-center justify-center w-8 h-8 rounded-lg border border-white/10 not-disabled:hover:bg-white/5 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
       >
