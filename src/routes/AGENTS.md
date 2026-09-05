@@ -150,3 +150,13 @@ exposes only what the route itself consumes.
   entity is a discriminated union member — an object carrying a `mode` plus that
   data; a set of modals that need no data is a plain string-literal union of the
   modes.
+- A confirmation is a route-local partial wrapping the shared confirm modal. It
+  owns its pt-BR copy — title, description, confirm label, danger variant — and
+  exposes only `isOpen`, `canClose`, `onClose` and `onConfirm`; the caller never
+  passes copy strings in.
+- When that copy varies, the wrapper takes a small string-literal `mode` prop and
+  branches on it internally. The same variant drives the mutation's success
+  toast, so the modal and the toast cannot name the action differently.
+- That variant lives in its own state, not in the modal state slot: the modal
+  stays mounted through its exit animation, so a variant cleared alongside the
+  slot would flip the copy while the modal fades out.

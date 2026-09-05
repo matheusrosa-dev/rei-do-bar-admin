@@ -37,11 +37,17 @@ type ModalOpen =
   | { mode: "edit"; movement: IInventoryMovement }
   | { mode: "revert"; movementId: string };
 
+type RevertMode = "restock" | "removal";
+
 const LOCKED_RESTOCK_MESSAGE =
   "Esta reposição não pode mais ser alterada porque um pedido ou remoção de estoque foi criado após ela.";
 
+const LOCKED_REMOVAL_MESSAGE =
+  "Esta remoção não pode mais ser revertida. Atualize a página para ver o estado atual da movimentação.";
+
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
+  const [revertMode, setRevertMode] = useState<RevertMode>("restock");
 
   const navigate = useNavigate({ from: "/movimentacoes-estoque/" });
   const queryClient = useQueryClient();
@@ -53,7 +59,11 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const revertMutation = useMutation({
     mutationFn: revertInventoryMovement,
     onSuccess: () => {
-      toast.success("Reposição revertida com sucesso!");
+      toast.success(
+        revertMode === "removal"
+          ? "Remoção revertida com sucesso!"
+          : "Reposição revertida com sucesso!",
+      );
       queryClient.invalidateQueries({ queryKey: [getInventoryMovements.key] });
       queryClient.invalidateQueries({ queryKey: [getProductsSimple.key] });
       setModalOpen(null);
@@ -169,37 +179,51 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       cell: ({ row }) => {
         const { origin, editable, id } = row.original;
 
-        if (origin !== InventoryMovementOrigin.ADMIN_RESTOCK) return null;
+        const isRestock = origin === InventoryMovementOrigin.ADMIN_RESTOCK;
+        const isRemoval = origin === InventoryMovementOrigin.ADMIN_REMOVAL;
+
+        if (!isRestock && !isRemoval) return null;
+
+        const lockedMessage = isRestock
+          ? LOCKED_RESTOCK_MESSAGE
+          : LOCKED_REMOVAL_MESSAGE;
 
         return (
           <div className="flex items-center justify-end gap-1">
-            <Tooltip disabled={editable} content={LOCKED_RESTOCK_MESSAGE}>
-              <span className="flex">
-                <button
-                  type="button"
-                  title="Editar"
-                  aria-label="Editar reposição de estoque"
-                  disabled={!editable || revertMutation.isPending}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setModalOpen({ mode: "edit", movement: row.original });
-                  }}
-                  className="cursor-pointer p-2 rounded-md text-zinc-400 transition-colors not-disabled:hover:bg-white/5 not-disabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <RiPencilLine className="size-4" />
-                </button>
-              </span>
-            </Tooltip>
+            {isRestock && (
+              <Tooltip disabled={editable} content={lockedMessage}>
+                <span className="flex">
+                  <button
+                    type="button"
+                    title="Editar"
+                    aria-label="Editar reposição de estoque"
+                    disabled={!editable || revertMutation.isPending}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModalOpen({ mode: "edit", movement: row.original });
+                    }}
+                    className="cursor-pointer p-2 rounded-md text-zinc-400 transition-colors not-disabled:hover:bg-white/5 not-disabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <RiPencilLine className="size-4" />
+                  </button>
+                </span>
+              </Tooltip>
+            )}
 
-            <Tooltip disabled={editable} content={LOCKED_RESTOCK_MESSAGE}>
+            <Tooltip disabled={editable} content={lockedMessage}>
               <span className="flex">
                 <button
                   type="button"
                   title="Reverter"
-                  aria-label="Reverter reposição de estoque"
+                  aria-label={
+                    isRestock
+                      ? "Reverter reposição de estoque"
+                      : "Reverter remoção de estoque"
+                  }
                   disabled={!editable || revertMutation.isPending}
                   onClick={(e) => {
                     e.stopPropagation();
+                    setRevertMode(isRestock ? "restock" : "removal");
                     setModalOpen({ mode: "revert", movementId: id });
                   }}
                   className="cursor-pointer p-2 rounded-md text-red-500 transition-colors not-disabled:hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
@@ -248,6 +272,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
 
       <RevertMovementModal
         isOpen={modalOpen?.mode === "revert"}
+        mode={revertMode}
         canClose={!revertMutation.isPending}
         onClose={() => setModalOpen(null)}
         onConfirm={() => {
