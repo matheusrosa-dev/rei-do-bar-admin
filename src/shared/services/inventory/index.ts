@@ -4,6 +4,7 @@ import type {
   GetInventoryMovements,
   GetInventoryMovementsResponse,
   IncrementInventory,
+  UpdateInventoryMovement,
   UseInventoryService,
 } from "./types";
 
@@ -27,6 +28,13 @@ export const useInventoryService: UseInventoryService = () => {
     await api.post(`${baseUrl}/decrement`, body);
   };
 
+  const updateInventoryMovement: UpdateInventoryMovement = async (
+    movementId,
+    body,
+  ) => {
+    await api.put(`${baseUrl}/movements/${movementId}`, body);
+  };
+
   return {
     getInventoryMovements: {
       fn: getInventoryMovements,
@@ -34,5 +42,6 @@ export const useInventoryService: UseInventoryService = () => {
     },
     incrementInventory,
     decrementInventory,
+    updateInventoryMovement,
   };
 };

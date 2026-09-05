@@ -14,13 +14,20 @@ export type GetInventoryMovements = (queries?: {
   productIds?: string[];
 }) => Promise<GetInventoryMovementsResponse>;
 
-export type IncrementInventory = (body: {
+export type MovementProductsBody = {
   movementProducts: Array<
     Pick<IInventoryMovementProduct, "productId" | "quantity"> & {
       totalCost: number;
     }
   >;
-}) => Promise<void>;
+};
+
+export type IncrementInventory = (body: MovementProductsBody) => Promise<void>;
+
+export type UpdateInventoryMovement = (
+  movementId: string,
+  body: MovementProductsBody,
+) => Promise<void>;
 
 export type DecrementInventory = (body: {
   movementProducts: Pick<IInventoryMovementProduct, "productId" | "quantity">[];
@@ -33,4 +40,5 @@ export type UseInventoryService = () => {
   };
   incrementInventory: IncrementInventory;
   decrementInventory: DecrementInventory;
+  updateInventoryMovement: UpdateInventoryMovement;
 };

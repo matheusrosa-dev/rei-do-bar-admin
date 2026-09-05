@@ -23,6 +23,7 @@ export interface IInventoryMovement {
   id: string;
   origin: InventoryMovementOrigin;
   orderId?: string;
+  editable: boolean;
   createdAt: string;
   order?: IOrder;
   products: Array<IInventoryMovementProduct>;

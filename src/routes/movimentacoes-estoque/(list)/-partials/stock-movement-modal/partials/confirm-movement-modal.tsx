@@ -9,14 +9,15 @@ import {
   MOVEMENT_QUANTITY_CLASS,
 } from "../../../-helpers";
 import { getUnitCost } from "../-helpers";
-import type { Form } from "../form";
+import type { Form, MovementOrigin } from "../form";
 
 const CONFIRM_DELAY_SECONDS = 5;
 
 type Props = {
   isOpen: boolean;
-  origin: Form["origin"];
+  origin: MovementOrigin;
   products: Form["products"];
+  isEditing: boolean;
   isPending: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -26,6 +27,7 @@ export const ConfirmMovementModal = ({
   isOpen,
   origin,
   products,
+  isEditing,
   isPending,
   onClose,
   onConfirm,
@@ -49,11 +51,13 @@ export const ConfirmMovementModal = ({
     MOVEMENT_PROPS_BY_ORIGIN[origin];
   const sign = isRestock ? "+" : "-";
 
-  const totalItems = products.reduce(
+  const selectedProducts = products.filter((product) => product.selected);
+
+  const totalItems = selectedProducts.reduce(
     (total, product) => total + (product.quantity ?? 0),
     0,
   );
-  const totalCost = products.reduce(
+  const totalCost = selectedProducts.reduce(
     (total, product) => total + (product.totalCost ?? 0),
     0,
   );
@@ -69,12 +73,13 @@ export const ConfirmMovementModal = ({
             {!isRestock && (
               <FiAlertTriangle className="text-red-500 shrink-0" size={20} />
             )}
-            Confirmar movimentação
+            {isEditing ? "Confirmar alterações" : "Confirmar movimentação"}
           </RadixDialog.Title>
 
           <RadixDialog.Description className="text-zinc-400 text-sm">
-            Revise os dados antes de confirmar. Essa ação não poderá ser
-            desfeita.
+            {isEditing
+              ? "Revise os dados antes de confirmar. O estoque será ajustado pela diferença."
+              : "Revise os dados antes de confirmar. Essa ação não poderá ser desfeita."}
           </RadixDialog.Description>
 
           <StatusBadge variant={originVariant}>{originTranslation}</StatusBadge>
@@ -82,10 +87,13 @@ export const ConfirmMovementModal = ({
 
         <div className="max-h-64 overflow-y-auto rounded-xl border border-white/10 bg-white/5 divide-y divide-white/10">
           {products.map((product) => {
-            const movedQuantity = product.quantity ?? 0;
-            const nextStock = isRestock
-              ? product.stockQuantity + movedQuantity
-              : product.stockQuantity - movedQuantity;
+            const movedQuantity = product.selected
+              ? (product.quantity ?? 0)
+              : 0;
+            const stockDelta = isRestock
+              ? movedQuantity - product.previousQuantity
+              : -movedQuantity;
+            const nextStock = product.stockQuantity + stockDelta;
             const unitCost = getUnitCost(product.totalCost, product.quantity);
 
             return (
@@ -103,14 +111,20 @@ export const ConfirmMovementModal = ({
                 </div>
 
                 <div className="flex flex-col items-end shrink-0">
-                  <span
-                    className={`text-sm ${MOVEMENT_QUANTITY_CLASS[quantityVariant]}`}
-                  >
-                    {sign}
-                    {movedQuantity} unidade{movedQuantity !== 1 ? "s" : ""}
-                  </span>
+                  {product.selected ? (
+                    <span
+                      className={`text-sm ${MOVEMENT_QUANTITY_CLASS[quantityVariant]}`}
+                    >
+                      {sign}
+                      {movedQuantity} unidade{movedQuantity !== 1 ? "s" : ""}
+                    </span>
+                  ) : (
+                    <span className="text-red-400 text-sm font-medium">
+                      Removido
+                    </span>
+                  )}
 
-                  {isRestock && (
+                  {Boolean(isRestock && product.selected) && (
                     <span className="text-gray-200 text-sm">
                       {formatPrice(product.totalCost ?? null)}{" "}
                       <span className="text-gray-400 text-xs">
@@ -126,8 +140,9 @@ export const ConfirmMovementModal = ({
 
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-gray-400 text-sm">
-            {products.length} produto{products.length !== 1 ? "s" : ""} ·{" "}
-            {totalItems} {totalItems !== 1 ? "itens" : "item"}
+            {selectedProducts.length} produto
+            {selectedProducts.length !== 1 ? "s" : ""} · {totalItems}{" "}
+            {totalItems !== 1 ? "itens" : "item"}
           </span>
 
           {isRestock && (

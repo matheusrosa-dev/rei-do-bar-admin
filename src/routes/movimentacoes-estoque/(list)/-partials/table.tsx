@@ -5,12 +5,14 @@ import type { IPagination } from "@shared/interfaces";
 import type { IInventoryMovement } from "@shared/models";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
-import { RiExternalLinkLine } from "react-icons/ri";
+import { useState } from "react";
+import { RiExternalLinkLine, RiPencilLine } from "react-icons/ri";
 import {
   ADMIN_ORIGINS,
   MOVEMENT_PROPS_BY_ORIGIN,
   MOVEMENT_QUANTITY_CLASS,
 } from "../-helpers";
+import { StockMovementModal } from "./stock-movement-modal";
 
 type Props = {
   data: IInventoryMovement[];
@@ -21,6 +23,9 @@ type Props = {
 };
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
+  const [editingMovement, setEditingMovement] =
+    useState<IInventoryMovement | null>(null);
+
   const navigate = useNavigate({ from: "/movimentacoes-estoque/" });
 
   const movementColumns: ColumnDef<IInventoryMovement>[] = [
@@ -132,6 +137,28 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       header: "Data",
       cell: ({ getValue }) => formatDateTime(getValue<string>()),
     },
+    {
+      id: "actions",
+      header: "",
+      cell: ({ row }) => {
+        if (!row.original.editable) return null;
+
+        return (
+          <button
+            type="button"
+            title="Editar"
+            aria-label="Editar reposição de estoque"
+            onClick={(e) => {
+              e.stopPropagation();
+              setEditingMovement(row.original);
+            }}
+            className="cursor-pointer p-2 rounded-md text-zinc-400 transition-colors hover:bg-white/5 hover:text-white"
+          >
+            <RiPencilLine className="size-4" />
+          </button>
+        );
+      },
+    },
   ];
 
   const setPage = (page: number) => {
@@ -159,6 +186,12 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       {meta?.totalPages && (
         <TableComponent.Pagination meta={meta} onChangePage={setPage} />
       )}
+
+      <StockMovementModal
+        isOpen={!!editingMovement}
+        movement={editingMovement ?? undefined}
+        onClose={() => setEditingMovement(null)}
+      />
     </div>
   );
 };

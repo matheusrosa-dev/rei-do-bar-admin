@@ -10,6 +10,7 @@ const productSchema = yup.object({
   stockQuantity: yup.number().required(),
   isActive: yup.boolean().required(),
   selected: yup.boolean().required(),
+  previousQuantity: yup.number().required(),
   quantity: yup
     .number()
     .transform((value) => (Number.isNaN(value) ? undefined : value))
@@ -36,6 +37,7 @@ const schema = yup.object({
     .oneOf([
       InventoryMovementOrigin.ADMIN_RESTOCK,
       InventoryMovementOrigin.ADMIN_REMOVAL,
+      "",
     ])
     .required("Campo obrigatório"),
   products: yup
@@ -48,8 +50,10 @@ const schema = yup.object({
 
 export type Form = yup.InferType<typeof schema>;
 
+export type MovementOrigin = Exclude<Form["origin"], "">;
+
 export const defaultValues: Form = {
-  origin: InventoryMovementOrigin.ADMIN_RESTOCK,
+  origin: "",
   products: [],
 };
 
