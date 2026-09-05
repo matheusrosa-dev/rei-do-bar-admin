@@ -29,21 +29,25 @@ export const RowActions = ({
 }: Props) => {
   return (
     <div className="flex justify-end gap-1">
-      <button
-        type="button"
-        title={isVolunteer ? "Desmarcar voluntário" : "Marcar como voluntário"}
-        aria-label={
-          isVolunteer ? "Desmarcar voluntário" : "Marcar como voluntário"
-        }
-        disabled={disabled}
-        onClick={(e) => {
-          e.stopPropagation();
-          onToggleVolunteer();
-        }}
-        className={ICON_BUTTON_CLASSES}
-      >
-        <LuHeartHandshake size={16} />
-      </button>
+      {isActive && (
+        <button
+          type="button"
+          title={
+            isVolunteer ? "Desmarcar voluntário" : "Marcar como voluntário"
+          }
+          aria-label={
+            isVolunteer ? "Desmarcar voluntário" : "Marcar como voluntário"
+          }
+          disabled={disabled}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleVolunteer();
+          }}
+          className={ICON_BUTTON_CLASSES}
+        >
+          <LuHeartHandshake size={16} />
+        </button>
+      )}
 
       {isActive && (
         <>
