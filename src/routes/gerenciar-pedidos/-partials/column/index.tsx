@@ -53,7 +53,7 @@ export const Column = ({
 
   const getDropAreaClass = () => {
     if (isValidTarget && isOver && isDangerTarget)
-      return "bg-red-500/10 outline-2 outline-dashed outline-red-500/40";
+      return "bg-red-900/80 outline-2 outline-dashed outline-red-500/40";
 
     if (isValidTarget && isOver)
       return "bg-white/5 outline-2 outline-dashed outline-amber-500/40";
@@ -112,7 +112,7 @@ export const Column = ({
 
         {isOver && isValidTarget && isDangerTarget && (
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <div className="bg-red-900/80 p-4 rounded-full">
+            <div className="bg-red-900 p-4 rounded-full">
               <FiAlertTriangle className="text-red-500" size={48} />
             </div>
           </div>

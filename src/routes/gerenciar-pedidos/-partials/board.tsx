@@ -23,7 +23,7 @@ type ModalOpen =
     }
   | { mode: "edit-delivery-person"; order: IOrderWithItemsAndCustomer };
 
-const CONFIRM_DELIVERY_DELAY_SECONDS = 5;
+const CONFIRM_DELIVERY_DELAY_SECONDS = 10;
 
 const COLUMN_ORDER: OrderStatus[] = [
   OrderStatus.PENDING,

@@ -3,7 +3,7 @@ import * as RadixDialog from "@radix-ui/react-dialog";
 import { FiAlertTriangle } from "react-icons/fi";
 import { Button, Modal, Textarea } from "@components";
 
-const CONFIRM_CANCEL_DELAY_SECONDS = 5;
+const CONFIRM_CANCEL_DELAY_SECONDS = 10;
 
 type Props = {
   isOpen: boolean;
