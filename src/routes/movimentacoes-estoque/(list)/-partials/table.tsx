@@ -1,9 +1,12 @@
-import { StatusBadge, Table as TableComponent } from "@components";
+import { StatusBadge, Table as TableComponent, Tooltip } from "@components";
 import { useInventoryService, useProductsService } from "@services";
 import { formatPrice } from "@shared/helpers/number";
 import { formatDateTime } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
-import type { IInventoryMovement } from "@shared/models";
+import {
+  type IInventoryMovement,
+  InventoryMovementOrigin,
+} from "@shared/models";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
@@ -33,6 +36,9 @@ type Props = {
 type ModalOpen =
   | { mode: "edit"; movement: IInventoryMovement }
   | { mode: "revert"; movementId: string };
+
+const LOCKED_RESTOCK_MESSAGE =
+  "Esta reposição não pode mais ser alterada porque um pedido ou remoção de estoque foi criado após ela.";
 
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
@@ -161,37 +167,47 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "actions",
       header: "",
       cell: ({ row }) => {
-        if (!row.original.editable) return null;
+        const { origin, editable, id } = row.original;
+
+        if (origin !== InventoryMovementOrigin.ADMIN_RESTOCK) return null;
 
         return (
           <div className="flex items-center justify-end gap-1">
-            <button
-              type="button"
-              title="Editar"
-              aria-label="Editar reposição de estoque"
-              disabled={revertMutation.isPending}
-              onClick={(e) => {
-                e.stopPropagation();
-                setModalOpen({ mode: "edit", movement: row.original });
-              }}
-              className="cursor-pointer p-2 rounded-md text-zinc-400 transition-colors not-disabled:hover:bg-white/5 not-disabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <RiPencilLine className="size-4" />
-            </button>
+            <Tooltip disabled={editable} content={LOCKED_RESTOCK_MESSAGE}>
+              <span className="flex">
+                <button
+                  type="button"
+                  title="Editar"
+                  aria-label="Editar reposição de estoque"
+                  disabled={!editable || revertMutation.isPending}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalOpen({ mode: "edit", movement: row.original });
+                  }}
+                  className="cursor-pointer p-2 rounded-md text-zinc-400 transition-colors not-disabled:hover:bg-white/5 not-disabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <RiPencilLine className="size-4" />
+                </button>
+              </span>
+            </Tooltip>
 
-            <button
-              type="button"
-              title="Reverter"
-              aria-label="Reverter reposição de estoque"
-              disabled={revertMutation.isPending}
-              onClick={(e) => {
-                e.stopPropagation();
-                setModalOpen({ mode: "revert", movementId: row.original.id });
-              }}
-              className="cursor-pointer p-2 rounded-md text-red-500 transition-colors not-disabled:hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <RiArrowGoBackLine className="size-4" />
-            </button>
+            <Tooltip disabled={editable} content={LOCKED_RESTOCK_MESSAGE}>
+              <span className="flex">
+                <button
+                  type="button"
+                  title="Reverter"
+                  aria-label="Reverter reposição de estoque"
+                  disabled={!editable || revertMutation.isPending}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalOpen({ mode: "revert", movementId: id });
+                  }}
+                  className="cursor-pointer p-2 rounded-md text-red-500 transition-colors not-disabled:hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <RiArrowGoBackLine className="size-4" />
+                </button>
+              </span>
+            </Tooltip>
           </div>
         );
       },
