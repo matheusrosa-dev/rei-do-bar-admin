@@ -1,2 +1,1 @@
-export { Table } from "./table";
-export { EditModal } from "./edit-modal";
+export { SettingsPanel } from "./settings-panel";

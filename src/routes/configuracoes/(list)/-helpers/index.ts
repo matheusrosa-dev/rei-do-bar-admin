@@ -1,1 +1,2 @@
-export * from "./setting-labels";
+export * from "./setting-metadata";
+export * from "./setting-groups";

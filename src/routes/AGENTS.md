@@ -98,6 +98,10 @@ exposes only what the route itself consumes.
   state before rendering content.
 - List screens pass `isLoading`/`isError` down to the generic table instead of
   early-returning.
+- A screen with no generic table (a single custom view — a board, a reorder
+  list, a settings panel) early-returns a page-level loading and error state
+  like a detail/create screen, even when it lives under a `(list)` route
+  segment.
 - Panel screens (a dashboard of independent data regions) split into **panel
   partials**: each owns its own query and early-returns a section-level loading
   and error state inside the content area. A failing endpoint then blanks only

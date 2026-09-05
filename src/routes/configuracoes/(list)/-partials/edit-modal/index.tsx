@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useSettingsService } from "@services";
 import { SettingType, type ISetting } from "@shared/models";
 import { resolver, defaultValues, type Form } from "./form";
-import { SETTING_KEY_LABEL } from "../../-helpers";
+import { SETTING_METADATA } from "../../-helpers";
 
 type Props = {
   setting: ISetting | null;
@@ -46,13 +46,9 @@ export function EditModal({ setting, onClose }: Props) {
   const onSubmit = (formData: Form) => {
     if (!setting) return;
 
-    let value = "";
-
-    value = formData.value || "";
-
     updateSettingMutation.mutate({
       settingKey: setting.key,
-      body: { value },
+      body: { value: formData.value || "" },
     });
   };
 
@@ -77,7 +73,7 @@ export function EditModal({ setting, onClose }: Props) {
               name="value"
               render={({ field, fieldState }) => (
                 <CurrencyInput
-                  label={SETTING_KEY_LABEL[setting.key]}
+                  label={SETTING_METADATA[setting.key].label}
                   value={Number(field.value)}
                   onChange={(value) => field.onChange(String(value))}
                   error={fieldState.error?.message}
@@ -89,7 +85,7 @@ export function EditModal({ setting, onClose }: Props) {
 
           {setting?.type === SettingType.TEXT && (
             <Input
-              label={SETTING_KEY_LABEL[setting.key]}
+              label={SETTING_METADATA[setting.key].label}
               placeholder="Insira a mensagem"
               error={errors.value?.message}
               disabled={isPending}
@@ -103,7 +99,7 @@ export function EditModal({ setting, onClose }: Props) {
               name="value"
               render={({ field, fieldState }) => (
                 <PhoneInput
-                  label={SETTING_KEY_LABEL[setting.key]}
+                  label={SETTING_METADATA[setting.key].label}
                   placeholder="Insira o telefone"
                   value={field.value ?? ""}
                   onChange={field.onChange}
