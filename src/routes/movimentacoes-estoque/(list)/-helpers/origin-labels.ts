@@ -14,7 +14,7 @@ export const MOVEMENT_PROPS_BY_ORIGIN: Record<
     originTranslation: string;
     totalVariant: MovementDirection;
     quantityVariant: MovementDirection;
-    hasPrice: boolean;
+    showsPrice: boolean;
   }
 > = {
   [InventoryMovementOrigin.ORDER_CREATION]: {
@@ -22,35 +22,35 @@ export const MOVEMENT_PROPS_BY_ORIGIN: Record<
     originTranslation: "Criação de pedido",
     totalVariant: "active",
     quantityVariant: "inactive",
-    hasPrice: true,
+    showsPrice: false,
   },
   [InventoryMovementOrigin.ORDER_CANCELLATION]: {
     originVariant: "inactive",
     originTranslation: "Cancelamento de pedido",
     totalVariant: "inactive",
     quantityVariant: "active",
-    hasPrice: true,
+    showsPrice: false,
   },
   [InventoryMovementOrigin.ADMIN_ORDER_CANCELLATION]: {
     originVariant: "inactive",
     originTranslation: "Cancelamento de pedido",
     totalVariant: "inactive",
     quantityVariant: "active",
-    hasPrice: true,
+    showsPrice: false,
   },
   [InventoryMovementOrigin.ADMIN_RESTOCK]: {
     originTranslation: "Reposição de estoque",
     originVariant: "active",
     totalVariant: "inactive",
     quantityVariant: "active",
-    hasPrice: true,
+    showsPrice: true,
   },
   [InventoryMovementOrigin.ADMIN_REMOVAL]: {
     originVariant: "inactive",
     originTranslation: "Remoção de estoque",
     totalVariant: "inactive",
     quantityVariant: "inactive",
-    hasPrice: false,
+    showsPrice: false,
   },
 };
 

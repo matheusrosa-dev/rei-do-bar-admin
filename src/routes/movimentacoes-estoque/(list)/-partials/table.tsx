@@ -50,7 +50,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "items",
       header: "Itens",
       cell: ({ row }) => {
-        const { quantityVariant: variant, hasPrice } =
+        const { quantityVariant: variant, showsPrice } =
           MOVEMENT_PROPS_BY_ORIGIN[row.original.origin];
 
         const sign = variant === "active" ? "+" : "-";
@@ -64,7 +64,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
                   {sign}
                   {item.quantity} {item.product.name}{" "}
                 </span>
-                {hasPrice && (
+                {showsPrice && (
                   <span className="text-gray-400 text-xs">
                     ({formatPrice(item.price)} unidade)
                   </span>
@@ -76,36 +76,22 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       },
     },
     {
-      id: "coupon-discount",
-      header: "Desconto",
-      cell: ({ row }) => {
-        if (!row.original?.order?.couponDiscount) {
-          return "-";
-        }
-
-        return formatPrice(-row.original.order.couponDiscount);
-      },
-    },
-    {
       id: "total",
       header: "Total",
       cell: ({ row }) => {
-        const { totalVariant: variant, hasPrice } =
+        const { totalVariant: variant, showsPrice } =
           MOVEMENT_PROPS_BY_ORIGIN[row.original.origin];
 
-        if (!hasPrice) {
+        if (!showsPrice) {
           return "-";
         }
 
         const sign = variant === "active" ? "+" : "-";
 
-        const couponDiscount = row.original?.order?.couponDiscount ?? 0;
-
-        const total =
-          row.original.products.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0,
-          ) - couponDiscount;
+        const total = row.original.products.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0,
+        );
 
         return (
           <span
