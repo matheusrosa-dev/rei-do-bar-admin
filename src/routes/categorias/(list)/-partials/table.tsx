@@ -183,7 +183,7 @@ export const Table = ({ data, isLoading, isError }: Props) => {
         }
         description={
           modalOpen?.mode === "toggle-status" && modalOpen.category.isActive
-            ? "A categoria ficará indisponível para seleção de produtos e todos os produtos vinculados serão automaticamente desativados."
+            ? "A categoria ficará indisponível para seleção de produtos."
             : "A categoria voltará a ficar disponível para seleção de produtos."
         }
         onClose={() => setModalOpen(null)}
