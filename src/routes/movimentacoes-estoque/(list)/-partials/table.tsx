@@ -1,17 +1,25 @@
 import { StatusBadge, Table as TableComponent } from "@components";
+import { useInventoryService, useProductsService } from "@services";
 import { formatPrice } from "@shared/helpers/number";
 import { formatDateTime } from "@shared/helpers/string";
 import type { IPagination } from "@shared/interfaces";
 import type { IInventoryMovement } from "@shared/models";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useState } from "react";
-import { RiExternalLinkLine, RiPencilLine } from "react-icons/ri";
+import {
+  RiArrowGoBackLine,
+  RiExternalLinkLine,
+  RiPencilLine,
+} from "react-icons/ri";
+import { toast } from "sonner";
 import {
   ADMIN_ORIGINS,
   MOVEMENT_PROPS_BY_ORIGIN,
   MOVEMENT_QUANTITY_CLASS,
 } from "../-helpers";
+import { RevertMovementModal } from "./revert-movement-modal";
 import { StockMovementModal } from "./stock-movement-modal";
 
 type Props = {
@@ -22,11 +30,29 @@ type Props = {
   isError?: boolean;
 };
 
+type ModalOpen =
+  | { mode: "edit"; movement: IInventoryMovement }
+  | { mode: "revert"; movementId: string };
+
 export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
-  const [editingMovement, setEditingMovement] =
-    useState<IInventoryMovement | null>(null);
+  const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
 
   const navigate = useNavigate({ from: "/movimentacoes-estoque/" });
+  const queryClient = useQueryClient();
+
+  const { getInventoryMovements, revertInventoryMovement } =
+    useInventoryService();
+  const { getProductsSimple } = useProductsService();
+
+  const revertMutation = useMutation({
+    mutationFn: revertInventoryMovement,
+    onSuccess: () => {
+      toast.success("Reposição revertida com sucesso!");
+      queryClient.invalidateQueries({ queryKey: [getInventoryMovements.key] });
+      queryClient.invalidateQueries({ queryKey: [getProductsSimple.key] });
+      setModalOpen(null);
+    },
+  });
 
   const movementColumns: ColumnDef<IInventoryMovement>[] = [
     {
@@ -84,14 +110,11 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       id: "total",
       header: "Total",
       cell: ({ row }) => {
-        const { totalVariant: variant, showsPrice } =
-          MOVEMENT_PROPS_BY_ORIGIN[row.original.origin];
+        const { showsPrice } = MOVEMENT_PROPS_BY_ORIGIN[row.original.origin];
 
         if (!showsPrice) {
           return "-";
         }
-
-        const sign = variant === "active" ? "+" : "-";
 
         const total = row.original.products.reduce(
           (sum, item) => sum + item.price * item.quantity,
@@ -99,10 +122,7 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         );
 
         return (
-          <span
-            className={`whitespace-nowrap ${MOVEMENT_QUANTITY_CLASS[variant]}`}
-          >
-            {sign}
+          <span className="whitespace-nowrap font-medium">
             {formatPrice(total)}
           </span>
         );
@@ -144,18 +164,35 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
         if (!row.original.editable) return null;
 
         return (
-          <button
-            type="button"
-            title="Editar"
-            aria-label="Editar reposição de estoque"
-            onClick={(e) => {
-              e.stopPropagation();
-              setEditingMovement(row.original);
-            }}
-            className="cursor-pointer p-2 rounded-md text-zinc-400 transition-colors hover:bg-white/5 hover:text-white"
-          >
-            <RiPencilLine className="size-4" />
-          </button>
+          <div className="flex items-center justify-end gap-1">
+            <button
+              type="button"
+              title="Editar"
+              aria-label="Editar reposição de estoque"
+              disabled={revertMutation.isPending}
+              onClick={(e) => {
+                e.stopPropagation();
+                setModalOpen({ mode: "edit", movement: row.original });
+              }}
+              className="cursor-pointer p-2 rounded-md text-zinc-400 transition-colors not-disabled:hover:bg-white/5 not-disabled:hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <RiPencilLine className="size-4" />
+            </button>
+
+            <button
+              type="button"
+              title="Reverter"
+              aria-label="Reverter reposição de estoque"
+              disabled={revertMutation.isPending}
+              onClick={(e) => {
+                e.stopPropagation();
+                setModalOpen({ mode: "revert", movementId: row.original.id });
+              }}
+              className="cursor-pointer p-2 rounded-md text-red-500 transition-colors not-disabled:hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <RiArrowGoBackLine className="size-4" />
+            </button>
+          </div>
         );
       },
     },
@@ -188,9 +225,20 @@ export const Table = ({ data, meta, limit, isLoading, isError }: Props) => {
       )}
 
       <StockMovementModal
-        isOpen={!!editingMovement}
-        movement={editingMovement ?? undefined}
-        onClose={() => setEditingMovement(null)}
+        isOpen={modalOpen?.mode === "edit"}
+        movement={modalOpen?.mode === "edit" ? modalOpen.movement : undefined}
+        onClose={() => setModalOpen(null)}
+      />
+
+      <RevertMovementModal
+        isOpen={modalOpen?.mode === "revert"}
+        canClose={!revertMutation.isPending}
+        onClose={() => setModalOpen(null)}
+        onConfirm={() => {
+          if (modalOpen?.mode === "revert") {
+            revertMutation.mutate(modalOpen.movementId);
+          }
+        }}
       />
     </div>
   );

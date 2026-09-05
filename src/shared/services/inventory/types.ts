@@ -29,6 +29,8 @@ export type UpdateInventoryMovement = (
   body: MovementProductsBody,
 ) => Promise<void>;
 
+export type RevertInventoryMovement = (movementId: string) => Promise<void>;
+
 export type DecrementInventory = (body: {
   movementProducts: Pick<IInventoryMovementProduct, "productId" | "quantity">[];
 }) => Promise<void>;
@@ -41,4 +43,5 @@ export type UseInventoryService = () => {
   incrementInventory: IncrementInventory;
   decrementInventory: DecrementInventory;
   updateInventoryMovement: UpdateInventoryMovement;
+  revertInventoryMovement: RevertInventoryMovement;
 };

@@ -4,6 +4,7 @@ import type {
   GetInventoryMovements,
   GetInventoryMovementsResponse,
   IncrementInventory,
+  RevertInventoryMovement,
   UpdateInventoryMovement,
   UseInventoryService,
 } from "./types";
@@ -35,6 +36,12 @@ export const useInventoryService: UseInventoryService = () => {
     await api.put(`${baseUrl}/movements/${movementId}`, body);
   };
 
+  const revertInventoryMovement: RevertInventoryMovement = async (
+    movementId,
+  ) => {
+    await api.delete(`${baseUrl}/movements/${movementId}`);
+  };
+
   return {
     getInventoryMovements: {
       fn: getInventoryMovements,
@@ -43,5 +50,6 @@ export const useInventoryService: UseInventoryService = () => {
     incrementInventory,
     decrementInventory,
     updateInventoryMovement,
+    revertInventoryMovement,
   };
 };
