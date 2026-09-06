@@ -3,19 +3,17 @@ import type { Resolver } from "react-hook-form";
 import * as yup from "yup";
 
 const schema = yup.object({
-  name: yup.string().trim().required("Campo obrigatório"),
-  pluralName: yup.string().trim().required("Campo obrigatório"),
-  imageUrl: yup.string().url("Url inválida").required("Campo obrigatório"),
-  categoryGroupId: yup.string().required("Campo obrigatório"),
+  name: yup
+    .string()
+    .trim()
+    .max(100, "Máximo 100 caracteres")
+    .required("Campo obrigatório"),
 });
 
 export type Form = yup.InferType<typeof schema>;
 
 export const defaultValues: Form = {
   name: "",
-  pluralName: "",
-  imageUrl: "",
-  categoryGroupId: "",
 };
 
 export const resolver = yupResolver(schema) as Resolver<Form>;

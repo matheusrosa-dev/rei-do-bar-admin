@@ -1,10 +1,6 @@
-import type { ICategory } from "@shared/models";
+import type { ICategory, ICategoryWithProductsCount } from "@shared/models";
 
-export type GetCategoriesResponse = Array<
-  ICategory & {
-    productsCount: number;
-  }
->;
+export type GetCategoriesResponse = Array<ICategoryWithProductsCount>;
 
 export type GetCategories = (query?: {
   isActive?: boolean;
@@ -23,11 +19,10 @@ export type UpdateCategoriesOrder = (body: {
 
 export type RemoveCategory = (categoryId: string) => Promise<void>;
 
-export type CreateCategoryBody = {
-  name: string;
-  pluralName: string;
-  imageUrl: string;
-};
+export type CreateCategoryBody = Pick<
+  ICategory,
+  "name" | "pluralName" | "imageUrl" | "categoryGroupId"
+>;
 
 export type CreateCategory = (body: CreateCategoryBody) => Promise<ICategory>;
 
@@ -35,11 +30,10 @@ export type ActivateCategory = (categoryId: string) => Promise<ICategory>;
 
 export type DeactivateCategory = (categoryId: string) => Promise<ICategory>;
 
-export type UpdateCategoryBody = {
-  name: string;
-  pluralName: string;
-  imageUrl: string;
-};
+export type UpdateCategoryBody = Pick<
+  ICategory,
+  "name" | "pluralName" | "imageUrl" | "categoryGroupId"
+>;
 
 export type UpdateCategory = (params: {
   categoryId: string;

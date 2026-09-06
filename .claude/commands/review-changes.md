@@ -1,6 +1,7 @@
 ---
 description: Review changed files against the documented AGENTS.md conventions
 argument-hint: "[optional: comma-separated changed files; defaults to git diff]"
+model: claude-sonnet-5
 ---
 
 # Code Review (independent subagent)

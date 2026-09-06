@@ -74,6 +74,8 @@ export const useThingService: UseThingService = () => {
   and returns a bare entity array (no pagination envelope) — either `IEntity[]` or
   a trimmed `Omit<IEntity, …>[]` projection — for callers that just need the full
   option list.
+- A domain whose list read is **not** paginated already returns that bare array,
+  so option lists consume it directly and the domain gets no `Simple` variant.
 
 ### REST conventions
 - Group endpoints under the domain `baseUrl`.

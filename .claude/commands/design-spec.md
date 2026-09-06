@@ -1,5 +1,6 @@
 ---
 description: Produce an approved visual spec before writing or changing any UI
+model: claude-sonnet-5
 ---
 
 # Design Spec (pre-implementation)

@@ -1,5 +1,6 @@
 export { useProductsService } from "./products";
 export { useCategoriesService } from "./categories";
+export { useCategoryGroupsService } from "./category-groups";
 export { useCustomersService } from "./customers";
 export { useOrdersService } from "./orders";
 export { useSettingsService } from "./settings";

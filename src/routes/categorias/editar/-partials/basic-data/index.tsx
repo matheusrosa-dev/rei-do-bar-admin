@@ -1,17 +1,26 @@
-import { Button, ImagePreview, Input, StatusBadge, Wrapper } from "@components";
-import { useForm } from "react-hook-form";
-import type { ICategory } from "@shared/models";
-import { useCategoriesService } from "@services";
+import {
+  Button,
+  ImagePreview,
+  Input,
+  Select,
+  StatusBadge,
+  Wrapper,
+} from "@components";
+import { Controller, useForm } from "react-hook-form";
+import type { ICategory, ICategoryGroup } from "@shared/models";
+import { useCategoriesService, useCategoryGroupsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { resolver, type Form } from "../../../-shared/category-form";
 
 type Props = {
   category: ICategory;
+  categoryGroups: ICategoryGroup[];
 };
 
-export const BasicData = ({ category }: Props) => {
+export const BasicData = ({ category, categoryGroups }: Props) => {
   const { updateCategory, getCategories } = useCategoriesService();
+  const { getCategoryGroups } = useCategoryGroupsService();
   const queryClient = useQueryClient();
 
   const form = useForm<Form>({
@@ -19,6 +28,7 @@ export const BasicData = ({ category }: Props) => {
       name: category.name,
       pluralName: category.pluralName,
       imageUrl: category.imageUrl,
+      categoryGroupId: category.categoryGroupId,
     },
     resolver,
   });
@@ -28,6 +38,7 @@ export const BasicData = ({ category }: Props) => {
     onSuccess: () => {
       toast.success("Categoria atualizada com sucesso!");
       queryClient.invalidateQueries({ queryKey: [getCategories.key] });
+      queryClient.invalidateQueries({ queryKey: [getCategoryGroups.key] });
     },
   });
 
@@ -38,6 +49,7 @@ export const BasicData = ({ category }: Props) => {
         name: formData.name,
         pluralName: formData.pluralName,
         imageUrl: formData.imageUrl,
+        categoryGroupId: formData.categoryGroupId,
       },
     });
   };
@@ -71,6 +83,25 @@ export const BasicData = ({ category }: Props) => {
           {...form.register("imageUrl")}
           error={form.formState.errors.imageUrl?.message}
           disabled={updateCategoryMutation.isPending}
+        />
+
+        <Controller
+          control={form.control}
+          name="categoryGroupId"
+          render={({ field, fieldState }) => (
+            <Select
+              label="Grupo"
+              placeholder="Selecione o grupo"
+              options={categoryGroups.map((item) => ({
+                label: item.name,
+                value: item.id,
+              }))}
+              value={field.value}
+              error={fieldState.error?.message}
+              onChange={field.onChange}
+              disabled={updateCategoryMutation.isPending}
+            />
+          )}
         />
 
         <div className="grid md:grid-cols-2 gap-4">

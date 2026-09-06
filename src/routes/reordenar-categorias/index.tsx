@@ -1,4 +1,4 @@
-import { useCategoriesService } from "@services";
+import { useCategoriesService, useCategoryGroupsService } from "@services";
 import {
   DndContext,
   PointerSensor,
@@ -29,6 +29,7 @@ function ReorderCategories() {
 
   const { getCategoriesToSortOrder, updateCategoriesOrder } =
     useCategoriesService();
+  const { getCategoryGroups } = useCategoryGroupsService();
   const queryClient = useQueryClient();
 
   const { data, isLoading, isError } = useQuery({
@@ -48,6 +49,7 @@ function ReorderCategories() {
         [getCategoriesToSortOrder.key],
         updatedCategories,
       );
+      queryClient.invalidateQueries({ queryKey: [getCategoryGroups.key] });
       toast.success("Categorias reordenadas com sucesso!");
     },
   });

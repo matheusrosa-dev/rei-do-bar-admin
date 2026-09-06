@@ -1,1 +1,1 @@
-export { Table } from "./table";
+export { CategoryGroupsList } from "./category-groups-list";

@@ -6,8 +6,8 @@ import {
   Wrapper,
 } from "@components";
 import { useState } from "react";
-import type { ICategory } from "@shared/models";
-import { useCategoriesService } from "@services";
+import type { ICategoryWithProductsCount } from "@shared/models";
+import { useCategoriesService, useCategoryGroupsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
@@ -15,7 +15,7 @@ import { toast } from "sonner";
 type ModalOpen = "toggle-status" | "remove";
 
 type Props = {
-  category: ICategory & { productsCount: number };
+  category: ICategoryWithProductsCount;
 };
 
 export const Actions = ({ category }: Props) => {
@@ -27,6 +27,7 @@ export const Actions = ({ category }: Props) => {
     removeCategory,
     getCategories,
   } = useCategoriesService();
+  const { getCategoryGroups } = useCategoryGroupsService();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -43,6 +44,7 @@ export const Actions = ({ category }: Props) => {
         `Categoria ${updatedCategory.isActive ? "ativada" : "desativada"} com sucesso!`,
       );
       queryClient.invalidateQueries({ queryKey: [getCategories.key] });
+      queryClient.invalidateQueries({ queryKey: [getCategoryGroups.key] });
       setModalOpen(null);
     },
   });
@@ -52,6 +54,7 @@ export const Actions = ({ category }: Props) => {
     onSuccess: () => {
       toast.success("Categoria removida com sucesso!");
       queryClient.invalidateQueries({ queryKey: [getCategories.key] });
+      queryClient.invalidateQueries({ queryKey: [getCategoryGroups.key] });
       navigate({ to: "/categorias" });
     },
   });

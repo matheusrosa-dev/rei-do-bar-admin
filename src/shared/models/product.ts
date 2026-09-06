@@ -1,3 +1,5 @@
+import type { ICategory } from "./category";
+
 export interface IProduct {
   id: string;
   categoryId: string;
@@ -11,15 +13,6 @@ export interface IProduct {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface ICategory {
-  id: string;
-  name: string;
-  pluralName: string;
-  imageUrl: string;
-  sortOrder: number;
-  isActive: boolean;
 }
 
 export interface IProductWithCategory extends IProduct {
