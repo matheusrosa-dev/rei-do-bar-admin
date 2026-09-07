@@ -32,8 +32,8 @@ function RouteComponent() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: [getCategories.key, "active"],
-    queryFn: () => getCategories.fn({ isActive: true }),
+    queryKey: [getCategories.key],
+    queryFn: () => getCategories.fn(),
     retry: false,
     refetchOnWindowFocus: false,
   });

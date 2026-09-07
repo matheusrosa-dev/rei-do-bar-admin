@@ -23,6 +23,10 @@ export interface ICategoryWithProductsCount extends ICategory {
   productsCount: number;
 }
 
+export interface ICategoryWithGroup extends ICategoryWithProductsCount {
+  categoryGroup: ICategoryGroup;
+}
+
 export interface ICategoryGroupWithCategories extends ICategoryGroup {
   categories: ICategoryWithProductsCount[];
 }

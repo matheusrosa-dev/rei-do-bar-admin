@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ReordenarProdutosIndexRouteImport } from './routes/reordenar-produtos/index'
-import { Route as ReordenarCategoriasIndexRouteImport } from './routes/reordenar-categorias/index'
 import { Route as PainelIndexRouteImport } from './routes/painel/index'
 import { Route as GerenciarPedidosIndexRouteImport } from './routes/gerenciar-pedidos/index'
 import { Route as ProdutosCriarIndexRouteImport } from './routes/produtos/criar/index'
@@ -39,12 +38,6 @@ const ReordenarProdutosIndexRoute = ReordenarProdutosIndexRouteImport.update({
   path: '/reordenar-produtos/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReordenarCategoriasIndexRoute =
-  ReordenarCategoriasIndexRouteImport.update({
-    id: '/reordenar-categorias/',
-    path: '/reordenar-categorias/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const PainelIndexRoute = PainelIndexRouteImport.update({
   id: '/painel/',
   path: '/painel/',
@@ -133,7 +126,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gerenciar-pedidos/': typeof GerenciarPedidosIndexRoute
   '/painel/': typeof PainelIndexRoute
-  '/reordenar-categorias/': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos/': typeof ReordenarProdutosIndexRoute
   '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
   '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
@@ -154,7 +146,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gerenciar-pedidos': typeof GerenciarPedidosIndexRoute
   '/painel': typeof PainelIndexRoute
-  '/reordenar-categorias': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos': typeof ReordenarProdutosIndexRoute
   '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
   '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
@@ -176,7 +167,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/gerenciar-pedidos/': typeof GerenciarPedidosIndexRoute
   '/painel/': typeof PainelIndexRoute
-  '/reordenar-categorias/': typeof ReordenarCategoriasIndexRoute
   '/reordenar-produtos/': typeof ReordenarProdutosIndexRoute
   '/categorias/editar/$categoryId': typeof CategoriasEditarCategoryIdRoute
   '/clientes/visualizar/$customerId': typeof ClientesVisualizarCustomerIdRoute
@@ -199,7 +189,6 @@ export interface FileRouteTypes {
     | '/'
     | '/gerenciar-pedidos/'
     | '/painel/'
-    | '/reordenar-categorias/'
     | '/reordenar-produtos/'
     | '/categorias/editar/$categoryId'
     | '/clientes/visualizar/$customerId'
@@ -220,7 +209,6 @@ export interface FileRouteTypes {
     | '/'
     | '/gerenciar-pedidos'
     | '/painel'
-    | '/reordenar-categorias'
     | '/reordenar-produtos'
     | '/categorias/editar/$categoryId'
     | '/clientes/visualizar/$customerId'
@@ -241,7 +229,6 @@ export interface FileRouteTypes {
     | '/'
     | '/gerenciar-pedidos/'
     | '/painel/'
-    | '/reordenar-categorias/'
     | '/reordenar-produtos/'
     | '/categorias/editar/$categoryId'
     | '/clientes/visualizar/$customerId'
@@ -263,7 +250,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GerenciarPedidosIndexRoute: typeof GerenciarPedidosIndexRoute
   PainelIndexRoute: typeof PainelIndexRoute
-  ReordenarCategoriasIndexRoute: typeof ReordenarCategoriasIndexRoute
   ReordenarProdutosIndexRoute: typeof ReordenarProdutosIndexRoute
   CategoriasEditarCategoryIdRoute: typeof CategoriasEditarCategoryIdRoute
   ClientesVisualizarCustomerIdRoute: typeof ClientesVisualizarCustomerIdRoute
@@ -295,13 +281,6 @@ declare module '@tanstack/react-router' {
       path: '/reordenar-produtos'
       fullPath: '/reordenar-produtos/'
       preLoaderRoute: typeof ReordenarProdutosIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reordenar-categorias/': {
-      id: '/reordenar-categorias/'
-      path: '/reordenar-categorias'
-      fullPath: '/reordenar-categorias/'
-      preLoaderRoute: typeof ReordenarCategoriasIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/painel/': {
@@ -423,7 +402,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GerenciarPedidosIndexRoute: GerenciarPedidosIndexRoute,
   PainelIndexRoute: PainelIndexRoute,
-  ReordenarCategoriasIndexRoute: ReordenarCategoriasIndexRoute,
   ReordenarProdutosIndexRoute: ReordenarProdutosIndexRoute,
   CategoriasEditarCategoryIdRoute: CategoriasEditarCategoryIdRoute,
   ClientesVisualizarCustomerIdRoute: ClientesVisualizarCustomerIdRoute,

@@ -31,6 +31,7 @@ local component:
 ```tsx
 export const Route = createFileRoute("/<path>/")({
   validateSearch, // when the screen has URL state
+  beforeLoad, // when the screen must redirect before rendering
   component: ScreenComponent,
 });
 ```
@@ -40,7 +41,7 @@ export const Route = createFileRoute("/<path>/")({
 | Folder / file | Holds |
 | --- | --- |
 | `-partials/` | Non-route components scoped to a single route or shared across a feature's sub-routes (tables, filters, feature modals). At the routes root it belongs to the root layout — app-shell chrome rendered around every screen. |
-| `-helpers/` | Pure, non-route logic for the route (e.g. search-param validation/formatting). Logic a second feature also needs moves to the shared helpers layer instead — route-local code is not imported across features. |
+| `-helpers/` | Non-component logic for the route: pure helpers (e.g. search-param validation/formatting) and route-local hooks owning a screen's interaction state. Logic a second feature also needs moves to the shared helpers layer instead — route-local code is not imported across features. |
 | `-shared/` | Assets shared across a feature's sub-routes — notably form schemas. |
 | `-types.ts` | Types local to the route. |
 
@@ -68,6 +69,11 @@ exposes only what the route itself consumes.
 - **Omit defaults from the URL**: write `undefined` for the default value (e.g.
   first page, "all" filter) so clean URLs stay clean. Changing a filter resets
   page back to default in the same update.
+- A param the screen cannot render without is guarded in `beforeLoad`, which
+  throws a `redirect` back to the origin screen rather than letting the component
+  render an error. The same hook normalizes a partially-filled param set the
+  screen can complete on its own — it redirects with the resolved search instead
+  of holding the derived value in component state.
 
 ### Server state
 - Reads use `useQuery` with a query key of `[service.key, ...dependencies]`,

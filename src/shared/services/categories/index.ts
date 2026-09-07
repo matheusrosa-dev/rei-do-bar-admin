@@ -1,4 +1,4 @@
-import type { ICategory } from "@shared/models";
+import type { ICategory, ICategoryWithGroup } from "@shared/models";
 import { api } from "../api";
 import type {
   ActivateCategory,
@@ -6,8 +6,7 @@ import type {
   DeactivateCategory,
   GetCategories,
   GetCategoriesResponse,
-  GetCategoriesResponseToSortOrderResponse,
-  GetCategoriesToSortOrder,
+  GetCategoryById,
   RemoveCategory,
   UpdateCategoriesOrder,
   UpdateCategoriesOrderResponse,
@@ -18,17 +17,15 @@ import type {
 export const useCategoriesService: UseCategoriesService = () => {
   const baseUrl = "/categories";
 
-  const getCategories: GetCategories = async (query) => {
-    const response = await api.get<GetCategoriesResponse>(baseUrl, {
-      params: query,
-    });
+  const getCategories: GetCategories = async () => {
+    const response = await api.get<GetCategoriesResponse>(baseUrl);
 
     return response.data.data;
   };
 
-  const getCategoriesToSortOrder: GetCategoriesToSortOrder = async () => {
-    const response = await api.get<GetCategoriesResponseToSortOrderResponse>(
-      `${baseUrl}/sort-order`,
+  const getCategoryById: GetCategoryById = async (categoryId) => {
+    const response = await api.get<ICategoryWithGroup>(
+      `${baseUrl}/${categoryId}`,
     );
 
     return response.data.data;
@@ -78,9 +75,9 @@ export const useCategoriesService: UseCategoriesService = () => {
       fn: getCategories,
       key: "get-categories",
     },
-    getCategoriesToSortOrder: {
-      fn: getCategoriesToSortOrder,
-      key: "get-categories-to-sort-order",
+    getCategoryById: {
+      fn: getCategoryById,
+      key: "get-category-by-id",
     },
     updateCategoriesOrder,
     removeCategory,

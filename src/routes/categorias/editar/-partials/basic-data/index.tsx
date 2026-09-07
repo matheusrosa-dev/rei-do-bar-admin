@@ -1,34 +1,28 @@
-import {
-  Button,
-  ImagePreview,
-  Input,
-  Select,
-  StatusBadge,
-  Wrapper,
-} from "@components";
-import { Controller, useForm } from "react-hook-form";
-import type { ICategory, ICategoryGroup } from "@shared/models";
+import { Button, ImagePreview, Input, StatusBadge, Wrapper } from "@components";
+import { useForm } from "react-hook-form";
+import type { ICategoryWithGroup } from "@shared/models";
 import { useCategoriesService, useCategoryGroupsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { resolver, type Form } from "../../../-shared/category-form";
 
 type Props = {
-  category: ICategory;
-  categoryGroups: ICategoryGroup[];
+  category: ICategoryWithGroup;
 };
 
-export const BasicData = ({ category, categoryGroups }: Props) => {
-  const { updateCategory, getCategories } = useCategoriesService();
+export const BasicData = ({ category }: Props) => {
+  const { updateCategory, getCategories, getCategoryById } =
+    useCategoriesService();
   const { getCategoryGroups } = useCategoryGroupsService();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const form = useForm<Form>({
     values: {
       name: category.name,
       pluralName: category.pluralName,
       imageUrl: category.imageUrl,
-      categoryGroupId: category.categoryGroupId,
     },
     resolver,
   });
@@ -37,8 +31,12 @@ export const BasicData = ({ category, categoryGroups }: Props) => {
     mutationFn: updateCategory,
     onSuccess: () => {
       toast.success("Categoria atualizada com sucesso!");
+      queryClient.invalidateQueries({
+        queryKey: [getCategoryById.key, category.id],
+      });
       queryClient.invalidateQueries({ queryKey: [getCategories.key] });
       queryClient.invalidateQueries({ queryKey: [getCategoryGroups.key] });
+      navigate({ to: "/categorias" });
     },
   });
 
@@ -49,7 +47,6 @@ export const BasicData = ({ category, categoryGroups }: Props) => {
         name: formData.name,
         pluralName: formData.pluralName,
         imageUrl: formData.imageUrl,
-        categoryGroupId: formData.categoryGroupId,
       },
     });
   };
@@ -63,6 +60,14 @@ export const BasicData = ({ category, categoryGroups }: Props) => {
         <h2 className="text-white text-lg font-bold">Dados básicos</h2>
 
         <hr className="border-white/10" />
+
+        <div className="flex gap-1.5 items-center">
+          <span className="text-zinc-300 text-sm font-medium">Grupo:</span>
+
+          <span className="text-amber-500 font-medium">
+            {category.categoryGroup.name}
+          </span>
+        </div>
 
         <div className="flex items-center gap-4">
           <ImagePreview src={category.imageUrl} className="size-24" />
@@ -83,25 +88,6 @@ export const BasicData = ({ category, categoryGroups }: Props) => {
           {...form.register("imageUrl")}
           error={form.formState.errors.imageUrl?.message}
           disabled={updateCategoryMutation.isPending}
-        />
-
-        <Controller
-          control={form.control}
-          name="categoryGroupId"
-          render={({ field, fieldState }) => (
-            <Select
-              label="Grupo"
-              placeholder="Selecione o grupo"
-              options={categoryGroups.map((item) => ({
-                label: item.name,
-                value: item.id,
-              }))}
-              value={field.value}
-              error={fieldState.error?.message}
-              onChange={field.onChange}
-              disabled={updateCategoryMutation.isPending}
-            />
-          )}
         />
 
         <div className="grid md:grid-cols-2 gap-4">

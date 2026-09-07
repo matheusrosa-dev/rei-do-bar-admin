@@ -1,3 +1,11 @@
+import {
+  closestCenter,
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import { useCategoriesService, useCategoryGroupsService } from "@services";
 import type {
   ICategoryGroupWithCategories,
@@ -5,6 +13,7 @@ import type {
 } from "@shared/models";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { MdDragIndicator } from "react-icons/md";
 import { toast } from "sonner";
 import { AddGroupCard } from "./add-group-card";
 import { CategoryGroupBlock } from "./category-group-block";
@@ -16,6 +25,10 @@ import { GroupStatusModal } from "./group-status-modal";
 
 type Props = {
   groups: ICategoryGroupWithCategories[];
+  isReordering: boolean;
+  dirtyGroupIds: string[];
+  onDragEnd: (event: DragEndEvent) => void;
+  onResetGroup: (groupId: string) => void;
 };
 
 type ModalOpen =
@@ -25,7 +38,13 @@ type ModalOpen =
   | { mode: "toggle-group-status"; group: ICategoryGroupWithCategories }
   | { mode: "create-group" };
 
-export const CategoryGroupsList = ({ groups }: Props) => {
+export const CategoryGroupsList = ({
+  groups,
+  isReordering,
+  dirtyGroupIds,
+  onDragEnd,
+  onResetGroup,
+}: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
   const [categoryStatusMode, setCategoryStatusMode] = useState<
     "activate" | "deactivate"
@@ -35,6 +54,10 @@ export const CategoryGroupsList = ({ groups }: Props) => {
   >("activate");
 
   const queryClient = useQueryClient();
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
 
   const {
     removeCategory,
@@ -166,6 +189,21 @@ export const CategoryGroupsList = ({ groups }: Props) => {
     <AddGroupCard onClick={() => setModalOpen({ mode: "create-group" })} />
   );
 
+  const reorderBanner = (
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3">
+      <MdDragIndicator size={18} className="shrink-0 text-amber-500" />
+
+      <span className="text-sm font-medium text-amber-500">
+        Modo de reordenação ativo
+      </span>
+
+      <span className="text-sm text-gray-400">
+        Arraste as categorias dentro de cada grupo e salve para aplicar a nova
+        ordem.
+      </span>
+    </div>
+  );
+
   if (groups.length === 0) {
     return (
       <div className="flex flex-col gap-4">
@@ -182,24 +220,37 @@ export const CategoryGroupsList = ({ groups }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-6">
-        {groups.map((group) => (
-          <CategoryGroupBlock
-            key={group.id}
-            group={group}
-            isPending={pendingGroupId === group.id}
-            pendingCategoryId={pendingCategoryId}
-            onToggleGroup={() => onToggleGroup(group)}
-            onRemoveGroup={() => setModalOpen({ mode: "remove-group", group })}
-            onToggleCategory={onToggleCategory}
-            onRemoveCategory={(category) =>
-              setModalOpen({ mode: "remove-category", category })
-            }
-          />
-        ))}
-      </div>
+      {isReordering && reorderBanner}
 
-      {addGroupCard}
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={onDragEnd}
+      >
+        <div className="flex flex-col gap-6">
+          {groups.map((group) => (
+            <CategoryGroupBlock
+              key={group.id}
+              group={group}
+              isReordering={isReordering}
+              isDirty={dirtyGroupIds.includes(group.id)}
+              isPending={pendingGroupId === group.id}
+              pendingCategoryId={pendingCategoryId}
+              onToggleGroup={() => onToggleGroup(group)}
+              onRemoveGroup={() =>
+                setModalOpen({ mode: "remove-group", group })
+              }
+              onToggleCategory={onToggleCategory}
+              onRemoveCategory={(category) =>
+                setModalOpen({ mode: "remove-category", category })
+              }
+              onResetGroup={() => onResetGroup(group.id)}
+            />
+          ))}
+        </div>
+      </DndContext>
+
+      {!isReordering && addGroupCard}
 
       {groupModal}
 

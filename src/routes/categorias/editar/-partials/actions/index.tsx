@@ -26,6 +26,7 @@ export const Actions = ({ category }: Props) => {
     deactivateCategory,
     removeCategory,
     getCategories,
+    getCategoryById,
   } = useCategoriesService();
   const { getCategoryGroups } = useCategoryGroupsService();
   const queryClient = useQueryClient();
@@ -43,6 +44,9 @@ export const Actions = ({ category }: Props) => {
       toast.success(
         `Categoria ${updatedCategory.isActive ? "ativada" : "desativada"} com sucesso!`,
       );
+      queryClient.invalidateQueries({
+        queryKey: [getCategoryById.key, category.id],
+      });
       queryClient.invalidateQueries({ queryKey: [getCategories.key] });
       queryClient.invalidateQueries({ queryKey: [getCategoryGroups.key] });
       setModalOpen(null);

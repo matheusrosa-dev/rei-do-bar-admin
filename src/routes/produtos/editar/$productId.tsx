@@ -21,8 +21,8 @@ function RouteComponent() {
   });
 
   const { data: categories, ...categoriesQuery } = useQuery({
-    queryKey: [getCategories.key, "active"],
-    queryFn: () => getCategories.fn({ isActive: true }),
+    queryKey: [getCategories.key],
+    queryFn: () => getCategories.fn(),
     retry: false,
     refetchOnWindowFocus: false,
   });

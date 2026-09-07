@@ -4,11 +4,10 @@ import {
   PageError,
   PageLoading,
   PageWrapper,
-  Select,
   Wrapper,
 } from "@components";
-import { createFileRoute } from "@tanstack/react-router";
-import { Controller, useForm } from "react-hook-form";
+import { createFileRoute, Navigate, redirect } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
 import { defaultValues, resolver, type Form } from "../-shared/category-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCategoriesService, useCategoryGroupsService } from "@services";
@@ -18,6 +17,11 @@ import { validateSearch } from "./-helpers";
 export const Route = createFileRoute("/categorias/criar/")({
   component: RouteComponent,
   validateSearch,
+  beforeLoad: ({ search }) => {
+    if (!search.grupo) {
+      throw redirect({ to: "/categorias", replace: true });
+    }
+  },
 });
 
 function RouteComponent() {
@@ -54,20 +58,19 @@ function RouteComponent() {
     },
   });
 
-  const form = useForm({
-    defaultValues: {
-      ...defaultValues,
-      categoryGroupId: grupo ?? "",
-    },
+  const form = useForm<Form>({
+    defaultValues,
     resolver,
   });
+
+  const categoryGroup = categoryGroups?.find((item) => item.id === grupo);
 
   const onSubmit = (formData: Form) => {
     createCategoryMutation.mutate({
       name: formData.name,
       pluralName: formData.pluralName,
       imageUrl: formData.imageUrl,
-      categoryGroupId: formData.categoryGroupId,
+      categoryGroupId: grupo ?? "",
     });
   };
 
@@ -75,8 +78,12 @@ function RouteComponent() {
     return <PageLoading title="Criar categoria" goBack />;
   }
 
-  if (isError || !categoryGroups) {
+  if (isError) {
     return <PageError title="Criar categoria" goBack />;
+  }
+
+  if (!categoryGroup) {
+    return <Navigate to="/categorias" replace />;
   }
 
   return (
@@ -90,31 +97,20 @@ function RouteComponent() {
 
           <hr className="border-white/10" />
 
+          <div className="flex gap-1.5 items-center">
+            <span className="text-zinc-300 text-sm font-medium">Grupo:</span>
+
+            <span className="text-amber-500 font-medium">
+              {categoryGroup.name}
+            </span>
+          </div>
+
           <Input
             label="Imagem"
             placeholder="Insira a URL da imagem"
             {...form.register("imageUrl")}
             error={form.formState.errors.imageUrl?.message}
             disabled={createCategoryMutation.isPending}
-          />
-
-          <Controller
-            control={form.control}
-            name="categoryGroupId"
-            render={({ field, fieldState }) => (
-              <Select
-                label="Grupo"
-                placeholder="Selecione o grupo"
-                options={categoryGroups.map((item) => ({
-                  label: item.name,
-                  value: item.id,
-                }))}
-                value={field.value}
-                error={fieldState.error?.message}
-                onChange={field.onChange}
-                disabled={createCategoryMutation.isPending}
-              />
-            )}
           />
 
           <Input

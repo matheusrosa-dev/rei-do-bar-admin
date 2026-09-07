@@ -32,6 +32,7 @@ Only what changes a decision; the rest is in `package.json`.
 - **Radix UI** is always behind a local wrapper, never used raw.
 - **Recharts** colors arrive as props from a constant of theme color variables,
   never a raw hex.
+- **dnd-kit** is the drag-and-drop layer for every reorderable list.
 - **Motion**, **Sonner** and **React Icons** are the animation, toast and icon
   libraries — do not add a second of any.
 - **Biome** is the single source of style truth (2-space indent, double quotes).

@@ -1,21 +1,23 @@
-import type { ICategory, ICategoryWithProductsCount } from "@shared/models";
+import type {
+  ICategory,
+  ICategoryWithGroup,
+  ICategoryWithProductsCount,
+} from "@shared/models";
 
 export type GetCategoriesResponse = Array<ICategoryWithProductsCount>;
 
-export type GetCategories = (query?: {
-  isActive?: boolean;
-}) => Promise<GetCategoriesResponse>;
-
-export type GetCategoriesResponseToSortOrderResponse = Array<ICategory>;
-
-export type GetCategoriesToSortOrder =
-  () => Promise<GetCategoriesResponseToSortOrderResponse>;
+export type GetCategories = () => Promise<GetCategoriesResponse>;
 
 export type UpdateCategoriesOrderResponse = Array<ICategory>;
 
 export type UpdateCategoriesOrder = (body: {
+  categoryGroupId: string;
   orderedIds: string[];
 }) => Promise<UpdateCategoriesOrderResponse>;
+
+export type GetCategoryById = (
+  categoryId: string,
+) => Promise<ICategoryWithGroup>;
 
 export type RemoveCategory = (categoryId: string) => Promise<void>;
 
@@ -32,7 +34,7 @@ export type DeactivateCategory = (categoryId: string) => Promise<ICategory>;
 
 export type UpdateCategoryBody = Pick<
   ICategory,
-  "name" | "pluralName" | "imageUrl" | "categoryGroupId"
+  "name" | "pluralName" | "imageUrl"
 >;
 
 export type UpdateCategory = (params: {
@@ -45,8 +47,8 @@ export type UseCategoriesService = () => {
     fn: GetCategories;
     key: string;
   };
-  getCategoriesToSortOrder: {
-    fn: GetCategoriesToSortOrder;
+  getCategoryById: {
+    fn: GetCategoryById;
     key: string;
   };
   updateCategoriesOrder: UpdateCategoriesOrder;

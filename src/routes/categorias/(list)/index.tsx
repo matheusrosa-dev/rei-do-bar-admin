@@ -1,6 +1,7 @@
 import { useCategoryGroupsService } from "@services";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useCategoriesReorder } from "./-helpers";
 import { CategoryGroupsList } from "./-partials";
 import {
   Button,
@@ -21,24 +22,58 @@ function Index() {
     queryKey: [getCategoryGroups.key],
     queryFn: () => getCategoryGroups.fn(),
     retry: false,
+    refetchOnWindowFocus: false,
   });
 
-  const headerContent = () => (
+  const reorder = useCategoriesReorder(categoryGroups ?? []);
+
+  const canReorder = reorder.groups.some(
+    (group) => group.categories.length > 1,
+  );
+
+  const refetchButton = (
     <RefetchButton
       onRefetch={categoryGroupsQuery.refetch}
       isRefetching={categoryGroupsQuery.isRefetching}
     />
   );
 
-  const errorHeaderContent = () => (
-    <div className="flex items-center gap-3">
-      {headerContent()}
+  const headerContent = () => {
+    if (reorder.isReordering) {
+      return (
+        <div className="flex items-center gap-3">
+          <Button
+            variant="secondary"
+            disabled={reorder.isSaving}
+            onClick={reorder.cancel}
+          >
+            Cancelar
+          </Button>
 
-      <Link to="/categorias/criar">
-        <Button>Criar categoria</Button>
-      </Link>
-    </div>
-  );
+          <Button
+            disabled={!reorder.isDirty || reorder.isSaving}
+            onClick={reorder.save}
+          >
+            Salvar ordenação
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex items-center gap-3">
+        {refetchButton}
+
+        {canReorder && (
+          <Button variant="secondary" onClick={reorder.start}>
+            Reordenar
+          </Button>
+        )}
+      </div>
+    );
+  };
+
+  const errorHeaderContent = () => refetchButton;
 
   if (categoryGroupsQuery.isLoading) {
     return <PageLoading title="Categorias" />;
@@ -50,7 +85,13 @@ function Index() {
 
   return (
     <PageWrapper title="Categorias" headerContent={headerContent}>
-      <CategoryGroupsList groups={categoryGroups} />
+      <CategoryGroupsList
+        groups={reorder.groups}
+        isReordering={reorder.isReordering}
+        dirtyGroupIds={reorder.dirtyGroupIds}
+        onDragEnd={reorder.onDragEnd}
+        onResetGroup={reorder.resetGroup}
+      />
     </PageWrapper>
   );
 }

@@ -10,7 +10,6 @@ import {
 } from "@components";
 import { Controller, useForm } from "react-hook-form";
 import type { ICategory, IProductWithCategory } from "@shared/models";
-import { useMemo } from "react";
 import { useProductsService } from "@services";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -61,11 +60,6 @@ export const BasicData = ({ product, categories }: Props) => {
       },
     });
   };
-
-  const categoriesWithDeactivated = useMemo(() => {
-    if (product.category.isActive) return categories;
-    return [...categories, product.category];
-  }, [product, categories]);
 
   return (
     <Wrapper>
@@ -120,7 +114,7 @@ export const BasicData = ({ product, categories }: Props) => {
               render={({ field, fieldState }) => (
                 <Select
                   label="Categoria"
-                  options={categoriesWithDeactivated.map((item) => ({
+                  options={categories.map((item) => ({
                     label: item.name,
                     value: item.id,
                   }))}
