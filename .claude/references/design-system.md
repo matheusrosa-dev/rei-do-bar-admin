@@ -104,7 +104,7 @@ Use the standard Tailwind spacing scale. Recurring values:
 | `rounded-lg` | Controls: buttons, inputs, select, nav links. |
 | `rounded-xl` | Containers: cards, table, modal. |
 | `rounded-md` | Dropdown menu items. |
-| `rounded-full` | Badges, toggles, scrollbar thumb. |
+| `rounded-full` | Badges, toggles, filter chips, scrollbar thumb. |
 
 ## Elevation
 
@@ -149,6 +149,12 @@ Elevation is carried mostly by **border + translucent surface**, not shadows.
   focus visible.
 - **Active filter** — control gains amber border + `amber-500/10` background and
   an amber label, signaling a non-default value.
+- **Filter chips** — a compact pressable variant of that pattern: `rounded-full`
+  bordered pill, `text-xs font-medium`, neutral surface when off (`white/5` +
+  `white/10` border + muted text, brightening on hover) and the amber active-filter
+  triad when on, with the hover kept at the active tokens so a pressed chip does
+  not lighten. Pressable controls ring on `focus-visible`, not `focus` — a
+  click-then-blur must not leave the amber ring behind.
 - **Field errors** — message reveals below the control via `AnimatePresence`
   (height + opacity, ~0.15s), `red-500 text-xs`; the control border/ring turns
   red; suppressed while disabled.

@@ -1,32 +1,14 @@
-import type { IPagination, SortDirection } from "@shared/interfaces";
-import type { IProduct, IProductWithCategory } from "@shared/models";
+import type {
+  ICategoryGroupWithProducts,
+  IProduct,
+  IProductWithCategory,
+} from "@shared/models";
 
-export type GetProdutsResponse = IPagination<IProductWithCategory>;
+export type GetProdutsResponse = ICategoryGroupWithProducts[];
 
-export type GetProductsSortKey = "stockQuantity";
-
-export type GetProducts = (queries?: {
-  page?: number;
-  limit?: number;
-  categoryId?: string;
-  isActive?: boolean;
-  searchTerm?: string;
-  sortKey?: GetProductsSortKey;
-  sortDirection?: SortDirection;
-}) => Promise<GetProdutsResponse>;
+export type GetProducts = () => Promise<GetProdutsResponse>;
 
 export type GetProductsSimple = () => Promise<IProduct[]>;
-
-export type GetProductsToSortOrderResponse = Array<IProduct>;
-
-export type GetProductsToSortOrder =
-  () => Promise<GetProductsToSortOrderResponse>;
-
-export type UpdateProductsOrderResponse = Array<IProduct>;
-
-export type UpdateProductsOrder = (body: {
-  orderedIds: string[];
-}) => Promise<UpdateProductsOrderResponse>;
 
 export type GetProductById = (
   productId: string,
@@ -80,12 +62,7 @@ export type UseProductsService = () => {
     fn: GetProductById;
     key: string;
   };
-  getProductsToSortOrder: {
-    fn: GetProductsToSortOrder;
-    key: string;
-  };
   updateProduct: UpdateProduct;
-  updateProductsOrder: UpdateProductsOrder;
   activateProduct: ActivateProduct;
   deactivateProduct: DeactivateProduct;
   removeProduct: RemoveProduct;

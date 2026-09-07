@@ -1,83 +1,46 @@
-import { useProductsService, useCategoriesService } from "@services";
+import { useProductsService } from "@services";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Filters, Table } from "./-partials";
-import { Button, PageWrapper } from "@components";
-import { validateSearch } from "./-helpers";
+import { createFileRoute } from "@tanstack/react-router";
+import { ProductGroupsList } from "./-partials";
+import {
+  PageError,
+  PageLoading,
+  PageWrapper,
+  RefetchButton,
+} from "@components";
 
 export const Route = createFileRoute("/produtos/(list)/")({
-  validateSearch,
   component: Index,
 });
 
-const LIMIT = 50;
-
 function Index() {
-  const {
-    page = 1,
-    categoryId,
-    isActive,
-    sortDirection,
-    sortKey,
-    searchTerm,
-  } = Route.useSearch();
-
   const { getProducts } = useProductsService();
-  const { getCategories } = useCategoriesService();
 
-  const { data: products, ...productsQuery } = useQuery({
-    queryKey: [
-      getProducts.key,
-      page,
-      categoryId,
-      isActive,
-      sortDirection,
-      sortKey,
-      searchTerm,
-    ],
-    queryFn: () =>
-      getProducts.fn({
-        page,
-        limit: LIMIT,
-        categoryId,
-        isActive,
-        sortDirection,
-        sortKey,
-        searchTerm,
-      }),
+  const { data: groups, ...productsQuery } = useQuery({
+    queryKey: [getProducts.key],
+    queryFn: () => getProducts.fn(),
     retry: false,
+    refetchOnWindowFocus: false,
   });
 
-  const { data: categories, ...categoriesQuery } = useQuery({
-    queryKey: [getCategories.key],
-    queryFn: () => getCategories.fn(),
-    retry: false,
-  });
+  const headerContent = () => (
+    <RefetchButton
+      onRefetch={productsQuery.refetch}
+      isRefetching={productsQuery.isRefetching}
+    />
+  );
+
+  if (productsQuery.isLoading) {
+    return <PageLoading title="Produtos" />;
+  }
+
+  if (productsQuery.isError || !groups) {
+    return <PageError title="Produtos" headerContent={headerContent} />;
+  }
 
   return (
-    <PageWrapper
-      title="Produtos"
-      headerContent={() => (
-        <Link to="/produtos/criar">
-          <Button>Criar produto</Button>
-        </Link>
-      )}
-    >
-      <div className="mb-4">
-        <Filters
-          categories={categories ?? []}
-          onRefetch={productsQuery.refetch}
-          isRefetching={productsQuery.isRefetching}
-        />
-      </div>
-
-      <Table
-        data={products?.items ?? []}
-        meta={products?.meta}
-        limit={LIMIT}
-        isLoading={productsQuery.isLoading || categoriesQuery.isLoading}
-        isError={productsQuery.isError || categoriesQuery.isError}
-      />
+    <PageWrapper title="Produtos" headerContent={headerContent}>
+      <ProductGroupsList groups={groups} />
     </PageWrapper>
   );
 }

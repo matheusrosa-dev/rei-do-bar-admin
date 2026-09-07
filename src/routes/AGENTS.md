@@ -121,6 +121,68 @@ exposes only what the route itself consumes.
   still states the failure** — for a status indicator, rendering nothing would
   read as a valid status.
 
+### Grouped list screens
+- A screen whose list read arrives grouped renders one **card surface per group**:
+  the group name as the block heading, a divider, then a responsive grid of entity
+  cards. Groups and the items inside them keep the order the backend sent.
+- The group heading is read-only on every screen but the one that owns the groups;
+  the owning screen is the only place their status and removal live.
+- A block may narrow its own grid with filters under its divider, built from the
+  block's own items or from a fixed option pair — never from an extra request. They
+  are the one kind of filter that stays in **component state** instead of the URL:
+  each is scoped to a single block, several blocks filter independently, and a flat
+  search param cannot express that.
+- Each dimension is its own `fieldset` with a `legend` naming it, holding one toggle
+  chip per value — a `button` carrying `aria-pressed`, its selected styling from a
+  `Record<Variant, string>` map. Dimensions sit side by side in a wrapping row.
+  A dimension holds at most one chip: picking another replaces it, and clicking the
+  selected one clears it. The selection stays optional — an empty dimension means
+  "everything", so there is no "all" chip and unselecting is the reset. The
+  dimensions combine with **and**.
+- A dimension whose values partition the items (every item carries exactly one)
+  hides while fewer than two are present — selecting the only one would filter
+  nothing. A dimension of **predicates** that leaves items uncovered (a bounded
+  range beside an unbounded remainder) shows as soon as one of them matches
+  something, since even a single chip narrows the grid. The exception is a fixed
+  binary the operator reasons about directly (active/inactive): both chips stay
+  mounted for every non-empty block, so the same controls are always in the same
+  place, and one of them intentionally can come up empty.
+- Every dimension is modelled the same way — a key, a legend, and options carrying
+  their own predicate — and the block derives filtering, visibility and selection by
+  walking that list. A new dimension is then one entry, not another copy of the
+  filter/prune/select trio, and the selection is one value per key, so a dimension
+  holding two at once is not representable.
+- Chips stay `button`s with `aria-pressed` even though every dimension is
+  single-select: `radiogroup`/`radio` would promise exactly one checked option and
+  no way to un-check, which is the opposite of the contract, and would oblige
+  arrow-key roving these chips do not implement.
+- A selection is **pruned against the options actually rendered** on read and on
+  write — on write for *every* dimension, not only the one being toggled, since a
+  value carried over untouched would come back the moment its dimension renders
+  again. It is never trusted from state. Pruning against the raw values instead is not
+  enough: a dimension that hides itself (its values fell below the threshold, or
+  the block emptied) would leave a live filter with no chip on screen to clear it —
+  blanking the block, and silently re-filtering it if that value ever came back.
+  Pruning this way also makes the empty state honest: a block whose items are all
+  gone renders no filters, so it cannot blame one.
+- When a filter empties the grid, a dashed placeholder says so in pt-BR, carries
+  `role="status"`, and sits **before** the add card so the two dashed surfaces do
+  not read as a pair.
+- Whenever any dimension holds a selection, the filter row ends with the same
+  "Limpar filtros" control used by the page-level filter bar (`FiX` icon + text,
+  identical classes), resetting every dimension's selection at once.
+- An entity card carries its image, its name as the link to the edit route
+  (stretched over the card with an inset `after` overlay so the whole card is the
+  target), its meta lines, and a footer with the status toggle and the remove
+  button. Controls sitting above the link overlay are lifted with `relative z-10`.
+- Creation starts from a group: the grid ends with a dashed **add card** linking to
+  the create route with the group id in the search params, so the page header keeps
+  only the refetch control instead of a create button.
+- The create route validates that param, scopes its own options to the group and
+  names the group above the form. Reached without it the screen stays usable with
+  the unscoped option list; reached with a group that has no options it replaces
+  the form with a pt-BR message pointing at the screen that creates them.
+
 ### Charts
 - A chart is a card: the shared wrapper surface, a header holding the title and a
   legend of colored dots naming each series, then the plot area.

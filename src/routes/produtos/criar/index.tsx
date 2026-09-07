@@ -9,33 +9,46 @@ import {
   Textarea,
   Wrapper,
 } from "@components";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { Controller, useForm } from "react-hook-form";
 import { defaultValues, resolver, type Form } from "../-shared/basic-data-form";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useCategoriesService, useProductsService } from "@services";
+import {
+  useCategoriesService,
+  useCategoryGroupsService,
+  useProductsService,
+} from "@services";
 import { toast } from "sonner";
+import { validateSearch } from "./-helpers";
 
 export const Route = createFileRoute("/produtos/criar/")({
   component: RouteComponent,
+  validateSearch,
 });
 
 function RouteComponent() {
   const { getCategories } = useCategoriesService();
-  const { createProduct, getProductById } = useProductsService();
+  const { getCategoryGroupById } = useCategoryGroupsService();
+  const { createProduct, getProductById, getProducts } = useProductsService();
 
+  const { grupo } = Route.useSearch();
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
 
-  const {
-    data: categories,
-    isLoading,
-    isError,
-  } = useQuery({
+  const { data: categories, ...categoriesQuery } = useQuery({
     queryKey: [getCategories.key],
     queryFn: () => getCategories.fn(),
     retry: false,
     refetchOnWindowFocus: false,
+    enabled: !grupo,
+  });
+
+  const { data: categoryGroup, ...categoryGroupQuery } = useQuery({
+    queryKey: [getCategoryGroupById.key, grupo],
+    queryFn: () => getCategoryGroupById.fn(grupo ?? ""),
+    retry: false,
+    refetchOnWindowFocus: false,
+    enabled: !!grupo,
   });
 
   const createProductMutation = useMutation({
@@ -46,6 +59,7 @@ function RouteComponent() {
         [getProductById.key, createdProduct.id],
         () => createdProduct,
       );
+      queryClient.invalidateQueries({ queryKey: [getProducts.key] });
 
       navigate({
         to: "/produtos/editar/$productId",
@@ -60,6 +74,10 @@ function RouteComponent() {
     resolver,
   });
 
+  const groupCategories = grupo
+    ? (categoryGroup?.categories ?? [])
+    : (categories ?? []);
+
   const onSubmit = (formData: Form) => {
     createProductMutation.mutate({
       name: formData.name,
@@ -71,12 +89,29 @@ function RouteComponent() {
     });
   };
 
-  if (isLoading) {
+  if (categoriesQuery.isLoading || categoryGroupQuery.isLoading) {
     return <PageLoading title="Criar produto" goBack />;
   }
 
-  if (isError || !categories) {
+  if (categoryGroupQuery.isError) {
+    return <Navigate to="/produtos" replace />;
+  }
+
+  if (categoriesQuery.isError) {
     return <PageError title="Criar produto" goBack />;
+  }
+
+  if (categoryGroup && groupCategories.length === 0) {
+    return (
+      <PageWrapper title="Criar produto" goBack>
+        <Wrapper className="max-w-4xl">
+          <span className="text-sm text-gray-400">
+            O grupo {categoryGroup.name} ainda não possui categorias. Cadastre
+            uma categoria para ele em Categorias antes de criar um produto.
+          </span>
+        </Wrapper>
+      </PageWrapper>
+    );
   }
 
   return (
@@ -89,6 +124,16 @@ function RouteComponent() {
           <h2 className="text-white text-lg font-bold">Dados básicos</h2>
 
           <hr className="border-white/10" />
+
+          {categoryGroup && (
+            <div className="flex gap-1.5 items-center">
+              <span className="text-zinc-300 text-sm font-medium">Grupo:</span>
+
+              <span className="text-amber-500 font-medium">
+                {categoryGroup.name}
+              </span>
+            </div>
+          )}
 
           <div className="flex gap-4">
             <Input
@@ -118,7 +163,7 @@ function RouteComponent() {
                 render={({ field, fieldState }) => (
                   <Select
                     label="Categoria"
-                    options={categories.map((item) => ({
+                    options={groupCategories.map((item) => ({
                       label: item.name,
                       value: item.id,
                     }))}

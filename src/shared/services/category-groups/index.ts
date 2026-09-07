@@ -4,6 +4,8 @@ import type {
   ActivateCategoryGroup,
   CreateCategoryGroup,
   DeactivateCategoryGroup,
+  GetCategoryGroupById,
+  GetCategoryGroupByIdResponse,
   GetCategoryGroups,
   GetCategoryGroupsResponse,
   RemoveCategoryGroup,
@@ -18,6 +20,16 @@ export const useCategoryGroupsService: UseCategoryGroupsService = () => {
 
   const getCategoryGroups: GetCategoryGroups = async () => {
     const response = await api.get<GetCategoryGroupsResponse>(baseUrl);
+    return response.data.data;
+  };
+
+  const getCategoryGroupById: GetCategoryGroupById = async (
+    categoryGroupId,
+  ) => {
+    const response = await api.get<GetCategoryGroupByIdResponse>(
+      `${baseUrl}/${categoryGroupId}`,
+    );
+
     return response.data.data;
   };
 
@@ -75,6 +87,10 @@ export const useCategoryGroupsService: UseCategoryGroupsService = () => {
     getCategoryGroups: {
       fn: getCategoryGroups,
       key: "get-category-groups",
+    },
+    getCategoryGroupById: {
+      fn: getCategoryGroupById,
+      key: "get-category-group-by-id",
     },
     createCategoryGroup,
     updateCategoryGroup,

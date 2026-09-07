@@ -146,7 +146,12 @@ export const CategoryGroupBlock = ({
           ))}
         </SortableContext>
 
-        {!isReordering && <AddCategoryCard groupId={group.id} />}
+        {!isReordering && (
+          <AddCategoryCard
+            groupId={group.id}
+            className={hasCategories ? undefined : "col-span-full"}
+          />
+        )}
 
         {isReordering && !hasCategories && (
           <div className="col-span-full flex items-center justify-center p-8 rounded-lg border border-dashed border-white/10 text-gray-400 text-sm">

@@ -1,2 +1,1 @@
-export { Table } from "./table";
-export { Filters } from "./filters";
+export { ProductGroupsList } from "./product-groups-list";

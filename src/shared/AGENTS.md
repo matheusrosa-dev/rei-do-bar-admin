@@ -23,8 +23,12 @@ business workflows or stateful logic.
   compose by `extends` (a richer view extends the base entity) rather than
   duplicating fields.
 - A richer view is named after **what it adds** — `I<Entity>With<X>` — not after
-  the endpoint that returns it. A paginated list whose items carry more than the
-  base entity is typed with such a view, not with the base entity.
+  the endpoint that returns it. A list whose items carry more than the base
+  entity — paginated, or grouped under a parent that carries the children — is
+  typed with such a view, not with the base entity.
+- An entity the API returns with a different child collection per endpoint gets
+  **one `With<X>` view per collection**, each declaring that collection as a
+  required field, rather than a single view with optional child arrays.
 - An **interface** is reusable across domains and structural (e.g. a generic
   pagination envelope, a sort direction). If a type is parameterized by `T` or
   applies to any entity, it is an interface, not a model.

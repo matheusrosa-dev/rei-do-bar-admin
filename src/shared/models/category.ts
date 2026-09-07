@@ -1,3 +1,5 @@
+import type { IProductWithCategory } from "./product";
+
 export interface ICategoryGroup {
   id: string;
   name: string;
@@ -29,4 +31,12 @@ export interface ICategoryWithGroup extends ICategoryWithProductsCount {
 
 export interface ICategoryGroupWithCategories extends ICategoryGroup {
   categories: ICategoryWithProductsCount[];
+}
+
+export interface ICategoryGroupWithCategoryRows extends ICategoryGroup {
+  categories: ICategory[];
+}
+
+export interface ICategoryGroupWithProducts extends ICategoryGroup {
+  products: IProductWithCategory[];
 }

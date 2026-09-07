@@ -68,14 +68,22 @@ export const useThingService: UseThingService = () => {
   no value for the requested period arrives as `null`, not absent, and `null` is
   distinct from a zero the backend actually measured.
 
+### List reads
+- A domain's list read takes whichever shape the backend returns: a pagination
+  envelope, a bare entity array, or a **grouped** projection — an array of the
+  parent entity's `I<Parent>With<Children>` view, each carrying its children
+  already ordered. A grouped read takes no query params (the backend owns the
+  grouping and the ordering) and the screen renders the groups as they arrive; it
+  never regroups or re-sorts client-side.
+
 ### Simplified list reads
 - A domain that feeds a select/multi-select field exposes a `get<Domain>Simple`
-  read alongside its paginated `get<Domain>s`: hits `` `${baseUrl}?simple=true` ``
-  and returns a bare entity array (no pagination envelope) — either `IEntity[]` or
-  a trimmed `Omit<IEntity, …>[]` projection — for callers that just need the full
-  option list.
-- A domain whose list read is **not** paginated already returns that bare array,
-  so option lists consume it directly and the domain gets no `Simple` variant.
+  read alongside a `get<Domain>s` whose shape is **not** a flat entity list
+  (paginated or grouped): hits `` `${baseUrl}?simple=true` `` and returns a bare
+  entity array — either `IEntity[]` or a trimmed `Omit<IEntity, …>[]` projection —
+  for callers that just need the full option list.
+- A domain whose list read already returns that bare array gets no `Simple`
+  variant, so option lists consume the list read directly.
 
 ### REST conventions
 - Group endpoints under the domain `baseUrl`.

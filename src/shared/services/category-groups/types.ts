@@ -1,11 +1,18 @@
 import type {
   ICategoryGroup,
   ICategoryGroupWithCategories,
+  ICategoryGroupWithCategoryRows,
 } from "@shared/models";
 
 export type GetCategoryGroupsResponse = Array<ICategoryGroupWithCategories>;
 
 export type GetCategoryGroups = () => Promise<GetCategoryGroupsResponse>;
+
+export type GetCategoryGroupByIdResponse = ICategoryGroupWithCategoryRows;
+
+export type GetCategoryGroupById = (
+  categoryGroupId: string,
+) => Promise<GetCategoryGroupByIdResponse>;
 
 export type CreateCategoryGroupBody = {
   name: string;
@@ -51,6 +58,10 @@ export type RemoveCategoryGroup = (categoryGroupId: string) => Promise<void>;
 export type UseCategoryGroupsService = () => {
   getCategoryGroups: {
     fn: GetCategoryGroups;
+    key: string;
+  };
+  getCategoryGroupById: {
+    fn: GetCategoryGroupById;
     key: string;
   };
   createCategoryGroup: CreateCategoryGroup;

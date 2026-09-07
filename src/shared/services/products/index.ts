@@ -7,46 +7,23 @@ import type {
   GetProductById,
   GetProducts,
   GetProductsSimple,
-  GetProductsToSortOrder,
-  GetProductsToSortOrderResponse,
   GetProdutsResponse,
   RemoveProduct,
   UpdateProduct,
-  UpdateProductsOrder,
-  UpdateProductsOrderResponse,
   UseProductsService,
 } from "./types";
 
 export const useProductsService: UseProductsService = () => {
   const baseUrl = "/products";
 
-  const getProducts: GetProducts = async (queries) => {
-    const response = await api.get<GetProdutsResponse>(baseUrl, {
-      params: queries,
-    });
+  const getProducts: GetProducts = async () => {
+    const response = await api.get<GetProdutsResponse>(baseUrl);
 
     return response.data.data;
   };
 
   const getProductsSimple: GetProductsSimple = async () => {
     const response = await api.get<IProduct[]>(`${baseUrl}?simple=true`);
-
-    return response.data.data;
-  };
-
-  const getProductsToSortOrder: GetProductsToSortOrder = async () => {
-    const response = await api.get<GetProductsToSortOrderResponse>(
-      `${baseUrl}/sort-order`,
-    );
-
-    return response.data.data;
-  };
-
-  const updateProductsOrder: UpdateProductsOrder = async (body) => {
-    const response = await api.put<UpdateProductsOrderResponse>(
-      `${baseUrl}/sort-order`,
-      body,
-    );
 
     return response.data.data;
   };
@@ -107,11 +84,6 @@ export const useProductsService: UseProductsService = () => {
       fn: getProductById,
       key: "get-product-by-id",
     },
-    getProductsToSortOrder: {
-      fn: getProductsToSortOrder,
-      key: "get-products-to-sort-order",
-    },
-    updateProductsOrder,
     updateProduct,
     activateProduct,
     deactivateProduct,
