@@ -10,7 +10,6 @@ type Props = {
   isReordering: boolean;
   isPending: boolean;
   isDragging?: boolean;
-  originGroupName: string | null;
   onToggle: () => void;
   onRemove: () => void;
 };
@@ -21,18 +20,11 @@ export const CategoryCard = ({
   isReordering,
   isPending,
   isDragging,
-  originGroupName,
   onToggle,
   onRemove,
 }: Props) => {
   const hasProducts = category.productsCount > 0;
-  const hasMovedGroup = originGroupName !== null;
-  const isMoved =
-    isReordering && (hasMovedGroup || category.sortOrder !== position);
-
-  const movedLabel = hasMovedGroup
-    ? `Movida de: ${originGroupName}`
-    : `Posição original: ${category.sortOrder}`;
+  const isMoved = isReordering && category.sortOrder !== position;
 
   return (
     <div
@@ -83,7 +75,9 @@ export const CategoryCard = ({
       </span>
 
       {isMoved && (
-        <span className="text-xs text-amber-500 font-medium">{movedLabel}</span>
+        <span className="text-xs text-amber-500 font-medium">
+          Posição original: {category.sortOrder}
+        </span>
       )}
 
       {!isReordering && (

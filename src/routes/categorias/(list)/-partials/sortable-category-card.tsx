@@ -9,7 +9,6 @@ type Props = {
   position: number;
   isReordering: boolean;
   isPending: boolean;
-  originGroupName: string | null;
   onToggle: () => void;
   onRemove: () => void;
 };
@@ -19,7 +18,6 @@ export const SortableCategoryCard = ({
   position,
   isReordering,
   isPending,
-  originGroupName,
   onToggle,
   onRemove,
 }: Props) => {
@@ -60,7 +58,6 @@ export const SortableCategoryCard = ({
         isReordering={isReordering}
         isPending={isPending}
         isDragging={isDragging}
-        originGroupName={originGroupName}
         onToggle={onToggle}
         onRemove={onRemove}
       />

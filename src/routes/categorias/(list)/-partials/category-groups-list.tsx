@@ -3,15 +3,10 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
-  pointerWithin,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import type {
-  CollisionDetection,
-  DragEndEvent,
-  DragStartEvent,
-} from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -21,7 +16,6 @@ import type {
   ICategoryGroupWithCategories,
   ICategoryWithProductsCount,
 } from "@shared/models";
-import type { CategoryOrigin } from "../-helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { MdDragIndicator } from "react-icons/md";
@@ -35,19 +29,12 @@ import { GroupModal } from "./group-modal";
 import { GroupRemoveModal } from "./group-remove-modal";
 import { GroupStatusModal } from "./group-status-modal";
 
-const collisionDetection: CollisionDetection = (args) => {
-  const pointerCollisions = pointerWithin(args);
-
-  if (pointerCollisions.length > 0) return pointerCollisions;
-
-  return closestCorners(args);
-};
-
 type Props = {
   groups: ICategoryGroupWithCategories[];
   isReordering: boolean;
-  categoryOrigins: Record<string, CategoryOrigin>;
+  dirtyGroupIds: string[];
   activeCategoryId: string | null;
+  onResetGroupOrder: (groupId: string) => void;
   onDragStart: (event: DragStartEvent) => void;
   onDragEnd: (event: DragEndEvent) => void;
   onDragCancel: () => void;
@@ -63,8 +50,9 @@ type ModalOpen =
 export const CategoryGroupsList = ({
   groups,
   isReordering,
-  categoryOrigins,
+  dirtyGroupIds,
   activeCategoryId,
+  onResetGroupOrder,
   onDragStart,
   onDragEnd,
   onDragCancel,
@@ -227,8 +215,8 @@ export const CategoryGroupsList = ({
       </span>
 
       <span className="text-sm text-gray-400">
-        Arraste as categorias entre os grupos e arraste os grupos pelo cabeçalho
-        para reordenar. Salve para aplicar.
+        Arraste as categorias dentro de cada grupo e arraste os grupos pelo
+        cabeçalho para reordenar. Salve para aplicar.
       </span>
     </div>
   );
@@ -253,7 +241,7 @@ export const CategoryGroupsList = ({
 
       <DndContext
         sensors={sensors}
-        collisionDetection={collisionDetection}
+        collisionDetection={closestCorners}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}
         onDragCancel={onDragCancel}
@@ -270,8 +258,9 @@ export const CategoryGroupsList = ({
                 group={group}
                 isReordering={isReordering}
                 isPending={pendingGroupId === group.id}
+                isOrderDirty={dirtyGroupIds.includes(group.id)}
                 pendingCategoryId={pendingCategoryId}
-                categoryOrigins={categoryOrigins}
+                onResetOrder={() => onResetGroupOrder(group.id)}
                 onToggleGroup={() => onToggleGroup(group)}
                 onRemoveGroup={() =>
                   setModalOpen({ mode: "remove-group", group })
@@ -292,7 +281,6 @@ export const CategoryGroupsList = ({
               position={activeCategory.sortOrder}
               isReordering
               isPending={false}
-              originGroupName={null}
               onToggle={() => {}}
               onRemove={() => {}}
             />

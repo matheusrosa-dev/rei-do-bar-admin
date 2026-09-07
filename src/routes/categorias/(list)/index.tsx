@@ -51,14 +51,6 @@ function Index() {
           </Button>
 
           <Button
-            variant="secondary"
-            disabled={!reorder.isDirty || reorder.isSaving}
-            onClick={reorder.resetAll}
-          >
-            Resetar tudo
-          </Button>
-
-          <Button
             disabled={!reorder.isDirty || reorder.isSaving}
             onClick={reorder.save}
           >
@@ -96,8 +88,9 @@ function Index() {
       <CategoryGroupsList
         groups={reorder.groups}
         isReordering={reorder.isReordering}
-        categoryOrigins={reorder.categoryOrigins}
+        dirtyGroupIds={reorder.dirtyGroupIds}
         activeCategoryId={reorder.activeCategoryId}
+        onResetGroupOrder={reorder.resetGroup}
         onDragStart={reorder.onDragStart}
         onDragEnd={reorder.onDragEnd}
         onDragCancel={reorder.onDragCancel}

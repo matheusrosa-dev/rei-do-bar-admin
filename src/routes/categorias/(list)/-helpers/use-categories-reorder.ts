@@ -6,10 +6,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import {
   buildSortOrderBody,
-  getCategoryOrigins,
+  getDirtyGroupIds,
   isTreeDirty,
   moveCategory,
   moveGroup,
+  resetGroupOrder,
 } from "./reorder";
 
 export const useCategoriesReorder = (
@@ -70,16 +71,24 @@ export const useCategoriesReorder = (
     saveMutation.mutate(draft);
   };
 
+  const resetGroup = (groupId: string) => {
+    setDraft((current) => {
+      if (!current) return current;
+
+      return resetGroupOrder(groups, current, groupId);
+    });
+  };
+
   return {
     groups: draft ?? groups,
-    categoryOrigins: getCategoryOrigins(groups),
+    dirtyGroupIds: draft ? getDirtyGroupIds(groups, draft) : [],
     isReordering: draft !== null,
     isDirty: draft !== null && isTreeDirty(groups, draft),
     isSaving: saveMutation.isPending,
     activeCategoryId,
     start: () => setDraft(groups),
     cancel: () => setDraft(null),
-    resetAll: () => setDraft(groups),
+    resetGroup,
     save,
     onDragStart,
     onDragEnd,

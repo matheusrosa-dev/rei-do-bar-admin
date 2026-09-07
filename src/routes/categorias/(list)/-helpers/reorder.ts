@@ -2,21 +2,11 @@ import { arrayMove } from "@dnd-kit/sortable";
 import type { ICategoryGroupWithCategories } from "@shared/models";
 import type { UpdateCategoryGroupsOrderBody } from "@shared/services/category-groups/types";
 
-const GROUP_DROP_SUFFIX = "::drop";
-
-export const buildGroupDropId = (groupId: string) =>
-  `${groupId}${GROUP_DROP_SUFFIX}`;
-
-export const resolveDropId = (id: string) =>
-  id.endsWith(GROUP_DROP_SUFFIX) ? id.slice(0, -GROUP_DROP_SUFFIX.length) : id;
+const groupSignature = (group: ICategoryGroupWithCategories) =>
+  group.categories.map((category) => category.id).join(",");
 
 const treeSignature = (groups: ICategoryGroupWithCategories[]) =>
-  groups
-    .map(
-      (group) =>
-        `${group.id}:${group.categories.map((category) => category.id).join(",")}`,
-    )
-    .join("|");
+  groups.map((group) => `${group.id}:${groupSignature(group)}`).join("|");
 
 const findGroupIndex = (
   groups: ICategoryGroupWithCategories[],
@@ -34,7 +24,7 @@ export const moveGroup = (
   overId: string,
 ): ICategoryGroupWithCategories[] => {
   const oldIndex = findGroupIndex(groups, activeId);
-  const newIndex = findGroupIndex(groups, resolveDropId(overId));
+  const newIndex = findGroupIndex(groups, overId);
 
   if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) {
     return groups;
@@ -54,52 +44,23 @@ export const moveCategory = (
 
   if (!sourceGroup) return groups;
 
-  const targetId = resolveDropId(overId);
-
-  const targetGroup = groups.find(
-    (group) =>
-      group.id === targetId ||
-      group.categories.some((category) => category.id === targetId),
-  );
-
-  if (!targetGroup) return groups;
-
   const oldIndex = sourceGroup.categories.findIndex(
     (category) => category.id === activeId,
   );
 
-  if (targetGroup.id === sourceGroup.id) {
-    const newIndex = sourceGroup.categories.findIndex(
-      (category) => category.id === targetId,
-    );
+  const newIndex = sourceGroup.categories.findIndex(
+    (category) => category.id === overId,
+  );
 
-    if (newIndex === -1) return groups;
-
-    return groups.map((group) => {
-      if (group.id !== sourceGroup.id) return group;
-
-      return {
-        ...group,
-        categories: arrayMove(group.categories, oldIndex, newIndex),
-      };
-    });
-  }
-
-  const category = sourceGroup.categories[oldIndex];
+  if (newIndex === -1 || oldIndex === newIndex) return groups;
 
   return groups.map((group) => {
-    if (group.id === sourceGroup.id) {
-      return {
-        ...group,
-        categories: group.categories.filter((item) => item.id !== activeId),
-      };
-    }
+    if (group.id !== sourceGroup.id) return group;
 
-    if (group.id === targetGroup.id) {
-      return { ...group, categories: [...group.categories, category] };
-    }
-
-    return group;
+    return {
+      ...group,
+      categories: arrayMove(group.categories, oldIndex, newIndex),
+    };
   });
 };
 
@@ -108,23 +69,34 @@ export const isTreeDirty = (
   draft: ICategoryGroupWithCategories[],
 ): boolean => treeSignature(original) !== treeSignature(draft);
 
-export type CategoryOrigin = {
-  groupId: string;
-  groupName: string;
-};
-
-export const getCategoryOrigins = (
+export const getDirtyGroupIds = (
   original: ICategoryGroupWithCategories[],
-): Record<string, CategoryOrigin> => {
-  const origins: Record<string, CategoryOrigin> = {};
+  draft: ICategoryGroupWithCategories[],
+): string[] =>
+  draft
+    .filter((group) => {
+      const originalGroup = original.find((item) => item.id === group.id);
 
-  for (const group of original) {
-    for (const category of group.categories) {
-      origins[category.id] = { groupId: group.id, groupName: group.name };
-    }
-  }
+      if (!originalGroup) return false;
 
-  return origins;
+      return groupSignature(originalGroup) !== groupSignature(group);
+    })
+    .map((group) => group.id);
+
+export const resetGroupOrder = (
+  original: ICategoryGroupWithCategories[],
+  draft: ICategoryGroupWithCategories[],
+  groupId: string,
+): ICategoryGroupWithCategories[] => {
+  const originalGroup = original.find((group) => group.id === groupId);
+
+  if (!originalGroup) return draft;
+
+  return draft.map((group) => {
+    if (group.id !== groupId) return group;
+
+    return { ...group, categories: originalGroup.categories };
+  });
 };
 
 export const buildSortOrderBody = (

@@ -185,5 +185,18 @@ exposes only what the route itself consumes.
   the save button stays disabled until they differ.
 - The request carries ids in array position — the backend derives the order from
   the position, so no sort-order number is ever sent.
-- An item whose position changed is marked with an accent hint naming where it
-  came from, so the pending change is readable before saving.
+- Dragging only reorders within a container; it never moves an item between
+  containers. For category groups the backend rejects any payload that lists a
+  category under a group it does not already belong to — a category's group is
+  fixed at creation and no endpoint changes it.
+- An item whose position changed within its container is marked with an accent
+  hint showing its original position, so the pending change is readable before
+  saving.
+- Each container header carries its own reset control, shown only while that
+  container's internal order differs from the server's — a change in the
+  container's own position among containers does not reveal it, and resetting one
+  container leaves the others and the container ordering untouched. There is no
+  global reset: cancelling the reorder mode already discards every pending change.
+- Interactive controls never nest inside the element carrying the drag
+  listeners: the handle wraps the title block only, and the header's actions sit
+  beside it.
