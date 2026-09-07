@@ -32,13 +32,6 @@ export type DeactivateCategoryGroup = (
   categoryGroupId: string,
 ) => Promise<ICategoryGroup>;
 
-export type UpdateCategoryGroupsOrderResponse =
-  Array<ICategoryGroupWithCategories>;
-
-export type UpdateCategoryGroupsOrder = (body: {
-  orderedIds: string[];
-}) => Promise<UpdateCategoryGroupsOrderResponse>;
-
 export type RemoveCategoryGroup = (categoryGroupId: string) => Promise<void>;
 
 export type UseCategoryGroupsService = () => {
@@ -50,6 +43,5 @@ export type UseCategoryGroupsService = () => {
   updateCategoryGroup: UpdateCategoryGroup;
   activateCategoryGroup: ActivateCategoryGroup;
   deactivateCategoryGroup: DeactivateCategoryGroup;
-  updateCategoryGroupsOrder: UpdateCategoryGroupsOrder;
   removeCategoryGroup: RemoveCategoryGroup;
 };

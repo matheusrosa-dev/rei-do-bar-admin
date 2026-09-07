@@ -8,8 +8,6 @@ import type {
   GetCategoryGroupsResponse,
   RemoveCategoryGroup,
   UpdateCategoryGroup,
-  UpdateCategoryGroupsOrder,
-  UpdateCategoryGroupsOrderResponse,
   UseCategoryGroupsService,
 } from "./types";
 
@@ -58,15 +56,6 @@ export const useCategoryGroupsService: UseCategoryGroupsService = () => {
     return response.data.data;
   };
 
-  const updateCategoryGroupsOrder: UpdateCategoryGroupsOrder = async (body) => {
-    const response = await api.put<UpdateCategoryGroupsOrderResponse>(
-      `${baseUrl}/sort-order`,
-      body,
-    );
-
-    return response.data.data;
-  };
-
   const removeCategoryGroup: RemoveCategoryGroup = async (categoryGroupId) => {
     await api.delete(`${baseUrl}/${categoryGroupId}`);
   };
@@ -80,7 +69,6 @@ export const useCategoryGroupsService: UseCategoryGroupsService = () => {
     updateCategoryGroup,
     activateCategoryGroup,
     deactivateCategoryGroup,
-    updateCategoryGroupsOrder,
     removeCategoryGroup,
   };
 };
