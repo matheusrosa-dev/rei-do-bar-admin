@@ -1,21 +1,33 @@
 import {
-  closestCenter,
+  closestCorners,
   DndContext,
+  DragOverlay,
   PointerSensor,
+  pointerWithin,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+import type {
+  CollisionDetection,
+  DragEndEvent,
+  DragStartEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { useCategoriesService, useCategoryGroupsService } from "@services";
 import type {
   ICategoryGroupWithCategories,
   ICategoryWithProductsCount,
 } from "@shared/models";
+import type { CategoryOrigin } from "../-helpers";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { MdDragIndicator } from "react-icons/md";
 import { toast } from "sonner";
 import { AddGroupCard } from "./add-group-card";
+import { CategoryCard } from "./category-card";
 import { CategoryGroupBlock } from "./category-group-block";
 import { CategoryRemoveModal } from "./category-remove-modal";
 import { CategoryStatusModal } from "./category-status-modal";
@@ -23,12 +35,22 @@ import { GroupModal } from "./group-modal";
 import { GroupRemoveModal } from "./group-remove-modal";
 import { GroupStatusModal } from "./group-status-modal";
 
+const collisionDetection: CollisionDetection = (args) => {
+  const pointerCollisions = pointerWithin(args);
+
+  if (pointerCollisions.length > 0) return pointerCollisions;
+
+  return closestCorners(args);
+};
+
 type Props = {
   groups: ICategoryGroupWithCategories[];
   isReordering: boolean;
-  dirtyGroupIds: string[];
+  categoryOrigins: Record<string, CategoryOrigin>;
+  activeCategoryId: string | null;
+  onDragStart: (event: DragStartEvent) => void;
   onDragEnd: (event: DragEndEvent) => void;
-  onResetGroup: (groupId: string) => void;
+  onDragCancel: () => void;
 };
 
 type ModalOpen =
@@ -41,9 +63,11 @@ type ModalOpen =
 export const CategoryGroupsList = ({
   groups,
   isReordering,
-  dirtyGroupIds,
+  categoryOrigins,
+  activeCategoryId,
+  onDragStart,
   onDragEnd,
-  onResetGroup,
+  onDragCancel,
 }: Props) => {
   const [modalOpen, setModalOpen] = useState<ModalOpen | null>(null);
   const [categoryStatusMode, setCategoryStatusMode] = useState<
@@ -165,6 +189,11 @@ export const CategoryGroupsList = ({
     return null;
   };
 
+  const activeCategory =
+    groups
+      .flatMap((group) => group.categories)
+      .find((category) => category.id === activeCategoryId) ?? null;
+
   const pendingCategoryId = getPendingCategoryId();
   const pendingGroupId = getPendingGroupId();
 
@@ -198,8 +227,8 @@ export const CategoryGroupsList = ({
       </span>
 
       <span className="text-sm text-gray-400">
-        Arraste as categorias dentro de cada grupo e salve para aplicar a nova
-        ordem.
+        Arraste as categorias entre os grupos e arraste os grupos pelo cabeçalho
+        para reordenar. Salve para aplicar.
       </span>
     </div>
   );
@@ -224,30 +253,51 @@ export const CategoryGroupsList = ({
 
       <DndContext
         sensors={sensors}
-        collisionDetection={closestCenter}
+        collisionDetection={collisionDetection}
+        onDragStart={onDragStart}
         onDragEnd={onDragEnd}
+        onDragCancel={onDragCancel}
       >
-        <div className="flex flex-col gap-6">
-          {groups.map((group) => (
-            <CategoryGroupBlock
-              key={group.id}
-              group={group}
-              isReordering={isReordering}
-              isDirty={dirtyGroupIds.includes(group.id)}
-              isPending={pendingGroupId === group.id}
-              pendingCategoryId={pendingCategoryId}
-              onToggleGroup={() => onToggleGroup(group)}
-              onRemoveGroup={() =>
-                setModalOpen({ mode: "remove-group", group })
-              }
-              onToggleCategory={onToggleCategory}
-              onRemoveCategory={(category) =>
-                setModalOpen({ mode: "remove-category", category })
-              }
-              onResetGroup={() => onResetGroup(group.id)}
+        <SortableContext
+          disabled={!isReordering}
+          items={groups.map((group) => group.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <div className="flex flex-col gap-6">
+            {groups.map((group) => (
+              <CategoryGroupBlock
+                key={group.id}
+                group={group}
+                isReordering={isReordering}
+                isPending={pendingGroupId === group.id}
+                pendingCategoryId={pendingCategoryId}
+                categoryOrigins={categoryOrigins}
+                onToggleGroup={() => onToggleGroup(group)}
+                onRemoveGroup={() =>
+                  setModalOpen({ mode: "remove-group", group })
+                }
+                onToggleCategory={onToggleCategory}
+                onRemoveCategory={(category) =>
+                  setModalOpen({ mode: "remove-category", category })
+                }
+              />
+            ))}
+          </div>
+        </SortableContext>
+
+        <DragOverlay>
+          {activeCategory && (
+            <CategoryCard
+              category={activeCategory}
+              position={activeCategory.sortOrder}
+              isReordering
+              isPending={false}
+              originGroupName={null}
+              onToggle={() => {}}
+              onRemove={() => {}}
             />
-          ))}
-        </div>
+          )}
+        </DragOverlay>
       </DndContext>
 
       {!isReordering && addGroupCard}

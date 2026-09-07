@@ -170,3 +170,20 @@ exposes only what the route itself consumes.
 - That variant lives in its own state, not in the modal state slot: the modal
   stays mounted through its exit animation, so a variant cleared alongside the
   slot would flip the copy while the modal fades out.
+
+### Reordering (drag-and-drop)
+- Reorder state is route-local: a `-helpers` hook (or the route's own state) owns
+  it. The service layer only exposes the write — it knows nothing about drags.
+- One `DndContext` per screen wrapping every sortable container, with a
+  `SortableContext` per container and a `PointerSensor` under a small activation
+  distance, so clicks on controls inside an item still register as clicks.
+- The sortable item is its own partial: it calls the sortable hook, applies the
+  resulting transform/transition as inline style, and spreads the returned
+  attributes and listeners onto whichever element acts as the drag handle.
+- Dragging edits a **local draft** of the fetched data, never the query cache.
+  Dirtiness comes from comparing the draft's id order against the server's, and
+  the save button stays disabled until they differ.
+- The request carries ids in array position — the backend derives the order from
+  the position, so no sort-order number is ever sent.
+- An item whose position changed is marked with an accent hint naming where it
+  came from, so the pending change is readable before saving.

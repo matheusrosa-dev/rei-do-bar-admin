@@ -1,10 +1,16 @@
-import type { DragEndEvent } from "@dnd-kit/core";
+import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
 import { useCategoriesService, useCategoryGroupsService } from "@services";
 import type { ICategoryGroupWithCategories } from "@shared/models";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { getDirtyGroupIds, moveCategory, resetGroupOrder } from "./reorder";
+import {
+  buildSortOrderBody,
+  getCategoryOrigins,
+  isTreeDirty,
+  moveCategory,
+  moveGroup,
+} from "./reorder";
 
 export const useCategoriesReorder = (
   groups: ICategoryGroupWithCategories[],
@@ -13,24 +19,19 @@ export const useCategoriesReorder = (
     null,
   );
 
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
+
   const queryClient = useQueryClient();
 
-  const { updateCategoriesOrder, getCategories } = useCategoriesService();
-  const { getCategoryGroups } = useCategoryGroupsService();
-
-  const dirtyGroupIds = draft ? getDirtyGroupIds(groups, draft) : [];
+  const { getCategories } = useCategoriesService();
+  const { getCategoryGroups, updateCategoryGroupsOrder } =
+    useCategoryGroupsService();
 
   const saveMutation = useMutation({
-    mutationFn: async (dirtyGroups: ICategoryGroupWithCategories[]) => {
-      for (const group of dirtyGroups) {
-        await updateCategoriesOrder({
-          categoryGroupId: group.id,
-          orderedIds: group.categories.map((category) => category.id),
-        });
-      }
-    },
+    mutationFn: (tree: ICategoryGroupWithCategories[]) =>
+      updateCategoryGroupsOrder(buildSortOrderBody(tree)),
     onSuccess: () => {
-      toast.success("Categorias reordenadas com sucesso!");
+      toast.success("Ordenação salva com sucesso!");
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [getCategoryGroups.key] });
@@ -39,42 +40,49 @@ export const useCategoriesReorder = (
     },
   });
 
-  const onDragEnd = ({ active, over }: DragEndEvent) => {
-    if (saveMutation.isPending || !over || active.id === over.id) return;
+  const onDragStart = ({ active }: DragStartEvent) => {
+    if (active.data.current?.type !== "category") return;
 
-    setDraft((current) => {
-      if (!current) return current;
-
-      return moveCategory(current, String(active.id), String(over.id));
-    });
+    setActiveCategoryId(String(active.id));
   };
 
-  const resetGroup = (groupId: string) => {
+  const onDragEnd = ({ active, over }: DragEndEvent) => {
+    setActiveCategoryId(null);
+
+    if (saveMutation.isPending || !over || active.id === over.id) return;
+
+    const isGroup = active.data.current?.type === "group";
+
     setDraft((current) => {
       if (!current) return current;
 
-      return resetGroupOrder(groups, current, groupId);
+      if (isGroup) {
+        return moveGroup(current, String(active.id), String(over.id));
+      }
+
+      return moveCategory(current, String(active.id), String(over.id));
     });
   };
 
   const save = () => {
     if (!draft) return;
 
-    saveMutation.mutate(
-      draft.filter((group) => dirtyGroupIds.includes(group.id)),
-    );
+    saveMutation.mutate(draft);
   };
 
   return {
     groups: draft ?? groups,
+    categoryOrigins: getCategoryOrigins(groups),
     isReordering: draft !== null,
-    isDirty: dirtyGroupIds.length > 0,
-    dirtyGroupIds,
+    isDirty: draft !== null && isTreeDirty(groups, draft),
     isSaving: saveMutation.isPending,
+    activeCategoryId,
     start: () => setDraft(groups),
     cancel: () => setDraft(null),
+    resetAll: () => setDraft(groups),
     save,
-    resetGroup,
+    onDragStart,
     onDragEnd,
+    onDragCancel: () => setActiveCategoryId(null),
   };
 };

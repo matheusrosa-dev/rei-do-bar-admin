@@ -1,5 +1,3 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { ImagePreview, Toggle, Tooltip, TrashButton } from "@components";
 import type { ICategoryWithProductsCount } from "@shared/models";
 import { Link } from "@tanstack/react-router";
@@ -11,6 +9,8 @@ type Props = {
   position: number;
   isReordering: boolean;
   isPending: boolean;
+  isDragging?: boolean;
+  originGroupName: string | null;
   onToggle: () => void;
   onRemove: () => void;
 };
@@ -20,40 +20,28 @@ export const CategoryCard = ({
   position,
   isReordering,
   isPending,
+  isDragging,
+  originGroupName,
   onToggle,
   onRemove,
 }: Props) => {
   const hasProducts = category.productsCount > 0;
-  const isMoved = isReordering && category.sortOrder !== position;
+  const hasMovedGroup = originGroupName !== null;
+  const isMoved =
+    isReordering && (hasMovedGroup || category.sortOrder !== position);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: category.id, disabled: !isReordering });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
-  const dragProps = isReordering ? { ...attributes, ...listeners } : {};
+  const movedLabel = hasMovedGroup
+    ? `Movida de: ${originGroupName}`
+    : `Posição original: ${category.sortOrder}`;
 
   return (
     <div
-      ref={setNodeRef}
-      style={style}
-      {...dragProps}
       className={twMerge(
-        "relative p-4 rounded-lg border border-white/10 bg-white/5 transition-colors duration-150 flex flex-col gap-4 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500",
+        "relative h-full p-4 rounded-lg border border-white/10 bg-white/5 transition-colors duration-150 flex flex-col gap-4 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500",
         !isReordering && "hover:bg-white/10",
-        isReordering &&
-          "select-none cursor-grab active:cursor-grabbing focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500",
+        isReordering && "select-none",
         isMoved && "border-amber-500/40 bg-amber-500/5",
-        isDragging && "opacity-50 border-amber-500/10 bg-amber-500/5 z-50",
+        isDragging && "opacity-40 border-amber-500/10 bg-amber-500/5",
       )}
     >
       <div className="flex items-start gap-3">
@@ -95,9 +83,7 @@ export const CategoryCard = ({
       </span>
 
       {isMoved && (
-        <span className="text-xs text-amber-500 font-medium">
-          Posição original: {category.sortOrder}
-        </span>
+        <span className="text-xs text-amber-500 font-medium">{movedLabel}</span>
       )}
 
       {!isReordering && (

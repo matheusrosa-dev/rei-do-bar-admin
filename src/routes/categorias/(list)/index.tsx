@@ -27,9 +27,9 @@ function Index() {
 
   const reorder = useCategoriesReorder(categoryGroups ?? []);
 
-  const canReorder = reorder.groups.some(
-    (group) => group.categories.length > 1,
-  );
+  const canReorder =
+    reorder.groups.length > 1 ||
+    reorder.groups.some((group) => group.categories.length > 1);
 
   const refetchButton = (
     <RefetchButton
@@ -41,13 +41,21 @@ function Index() {
   const headerContent = () => {
     if (reorder.isReordering) {
       return (
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <Button
             variant="secondary"
             disabled={reorder.isSaving}
             onClick={reorder.cancel}
           >
             Cancelar
+          </Button>
+
+          <Button
+            variant="secondary"
+            disabled={!reorder.isDirty || reorder.isSaving}
+            onClick={reorder.resetAll}
+          >
+            Resetar tudo
           </Button>
 
           <Button
@@ -61,7 +69,7 @@ function Index() {
     }
 
     return (
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         {refetchButton}
 
         {canReorder && (
@@ -88,9 +96,11 @@ function Index() {
       <CategoryGroupsList
         groups={reorder.groups}
         isReordering={reorder.isReordering}
-        dirtyGroupIds={reorder.dirtyGroupIds}
+        categoryOrigins={reorder.categoryOrigins}
+        activeCategoryId={reorder.activeCategoryId}
+        onDragStart={reorder.onDragStart}
         onDragEnd={reorder.onDragEnd}
-        onResetGroup={reorder.resetGroup}
+        onDragCancel={reorder.onDragCancel}
       />
     </PageWrapper>
   );

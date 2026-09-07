@@ -1,59 +1,124 @@
-import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
+import { useDndContext, useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { Toggle, Tooltip, TrashButton, Wrapper } from "@components";
 import type {
   ICategoryGroupWithCategories,
   ICategoryWithProductsCount,
 } from "@shared/models";
-import { FiRotateCcw } from "react-icons/fi";
+import type { CategoryOrigin } from "../-helpers";
+import { buildGroupDropId, resolveDropId } from "../-helpers";
+import { MdDragIndicator } from "react-icons/md";
+import { twMerge } from "tailwind-merge";
 import { AddCategoryCard } from "./add-category-card";
-import { CategoryCard } from "./category-card";
+import { SortableCategoryCard } from "./sortable-category-card";
 
 type Props = {
   group: ICategoryGroupWithCategories;
   isReordering: boolean;
-  isDirty: boolean;
   isPending: boolean;
   pendingCategoryId: string | null;
+  categoryOrigins: Record<string, CategoryOrigin>;
   onToggleGroup: () => void;
   onRemoveGroup: () => void;
   onToggleCategory: (category: ICategoryWithProductsCount) => void;
   onRemoveCategory: (category: ICategoryWithProductsCount) => void;
-  onResetGroup: () => void;
 };
 
 export const CategoryGroupBlock = ({
   group,
   isReordering,
-  isDirty,
   isPending,
   pendingCategoryId,
+  categoryOrigins,
   onToggleGroup,
   onRemoveGroup,
   onToggleCategory,
   onRemoveCategory,
-  onResetGroup,
 }: Props) => {
   const hasCategories = group.categories.length > 0;
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: group.id,
+    data: { type: "group" },
+    disabled: !isReordering,
+  });
+
+  const { setNodeRef: setDropZoneRef } = useDroppable({
+    id: buildGroupDropId(group.id),
+    disabled: !isReordering,
+  });
+
+  const { active, over } = useDndContext();
+
+  const holdsCategory = (id: string | null) =>
+    id !== null && group.categories.some((category) => category.id === id);
+
+  const isCategoryDrag = active?.data.current?.type === "category";
+  const isCategorySource = isCategoryDrag && holdsCategory(String(active.id));
+
+  const overId = over ? resolveDropId(String(over.id)) : null;
+  const isOverGroup = overId === group.id || holdsCategory(overId);
+
+  const isDropTarget = isCategoryDrag && !isCategorySource && isOverGroup;
+
+  const dropPlaceholderLabel = hasCategories
+    ? "Solte aqui para mover para este grupo"
+    : "Solte uma categoria aqui";
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  const dragProps = isReordering ? { ...attributes, ...listeners } : {};
+
+  const getOriginGroupName = (categoryId: string) => {
+    const origin = categoryOrigins[categoryId];
+
+    if (!origin || origin.groupId === group.id) return null;
+
+    return origin.groupName;
+  };
+
   return (
-    <Wrapper className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <Wrapper
+      ref={setNodeRef}
+      style={style}
+      className={twMerge(
+        "flex flex-col gap-4 transition-colors duration-150",
+        isDropTarget && "border-amber-500/40 bg-amber-500/5",
+        isDragging && "opacity-50 border-amber-500/10 bg-amber-500/5",
+      )}
+    >
+      <div
+        {...dragProps}
+        className={twMerge(
+          "flex flex-wrap items-center justify-between gap-3",
+          isReordering &&
+            "select-none cursor-grab active:cursor-grabbing focus:outline-none focus:ring-1 focus:ring-amber-500 rounded-lg",
+        )}
+      >
         <div className="flex flex-wrap items-center gap-3">
           <h2 className="text-white text-lg font-bold">{group.name}</h2>
+
+          {isReordering && (
+            <MdDragIndicator size={18} className="shrink-0 text-zinc-500" />
+          )}
         </div>
 
-        {isReordering ? (
-          isDirty && (
-            <button
-              type="button"
-              onClick={onResetGroup}
-              className="select-none flex items-center gap-1.5 px-3 py-2.5 text-sm text-amber-500 hover:text-amber-400 transition-colors cursor-pointer"
-            >
-              <FiRotateCcw className="size-4" />
-              Resetar ordenação
-            </button>
-          )
-        ) : (
+        {!isReordering && (
           <div className="flex items-center gap-3">
             <Toggle
               checked={group.isActive}
@@ -90,12 +155,13 @@ export const CategoryGroupBlock = ({
           strategy={rectSortingStrategy}
         >
           {group.categories.map((category, index) => (
-            <CategoryCard
+            <SortableCategoryCard
               key={category.id}
               category={category}
               position={index + 1}
               isReordering={isReordering}
               isPending={pendingCategoryId === category.id}
+              originGroupName={getOriginGroupName(category.id)}
               onToggle={() => onToggleCategory(category)}
               onRemove={() => onRemoveCategory(category)}
             />
@@ -103,6 +169,18 @@ export const CategoryGroupBlock = ({
         </SortableContext>
 
         {!isReordering && <AddCategoryCard groupId={group.id} />}
+
+        {isReordering && (
+          <div
+            ref={setDropZoneRef}
+            className={twMerge(
+              "col-span-full flex items-center justify-center p-8 rounded-lg border border-dashed border-white/10 text-gray-400 text-sm transition-colors duration-150",
+              isDropTarget && "border-amber-500/40 text-amber-500",
+            )}
+          >
+            {dropPlaceholderLabel}
+          </div>
+        )}
       </div>
     </Wrapper>
   );

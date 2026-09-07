@@ -8,13 +8,6 @@ export type GetCategoriesResponse = Array<ICategoryWithProductsCount>;
 
 export type GetCategories = () => Promise<GetCategoriesResponse>;
 
-export type UpdateCategoriesOrderResponse = Array<ICategory>;
-
-export type UpdateCategoriesOrder = (body: {
-  categoryGroupId: string;
-  orderedIds: string[];
-}) => Promise<UpdateCategoriesOrderResponse>;
-
 export type GetCategoryById = (
   categoryId: string,
 ) => Promise<ICategoryWithGroup>;
@@ -51,7 +44,6 @@ export type UseCategoriesService = () => {
     fn: GetCategoryById;
     key: string;
   };
-  updateCategoriesOrder: UpdateCategoriesOrder;
   removeCategory: RemoveCategory;
   createCategory: CreateCategory;
   updateCategory: UpdateCategory;

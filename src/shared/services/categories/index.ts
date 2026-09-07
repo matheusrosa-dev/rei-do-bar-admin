@@ -8,8 +8,6 @@ import type {
   GetCategoriesResponse,
   GetCategoryById,
   RemoveCategory,
-  UpdateCategoriesOrder,
-  UpdateCategoriesOrderResponse,
   UpdateCategory,
   UseCategoriesService,
 } from "./types";
@@ -26,15 +24,6 @@ export const useCategoriesService: UseCategoriesService = () => {
   const getCategoryById: GetCategoryById = async (categoryId) => {
     const response = await api.get<ICategoryWithGroup>(
       `${baseUrl}/${categoryId}`,
-    );
-
-    return response.data.data;
-  };
-
-  const updateCategoriesOrder: UpdateCategoriesOrder = async (body) => {
-    const response = await api.put<UpdateCategoriesOrderResponse>(
-      `${baseUrl}/sort-order`,
-      body,
     );
 
     return response.data.data;
@@ -79,7 +68,6 @@ export const useCategoriesService: UseCategoriesService = () => {
       fn: getCategoryById,
       key: "get-category-by-id",
     },
-    updateCategoriesOrder,
     removeCategory,
     createCategory,
     updateCategory,
