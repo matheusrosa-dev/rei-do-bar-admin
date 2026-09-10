@@ -132,6 +132,11 @@ exposes only what the route itself consumes.
   are the one kind of filter that stays in **component state** instead of the URL:
   each is scoped to a single block, several blocks filter independently, and a flat
   search param cannot express that.
+- On a reorder-capable grouped screen the block filters are **hidden while
+  reordering** and the block renders its full, unfiltered item list: dragging must
+  act on the real order, not on a narrowed view. The block is keyed on the reorder
+  mode so entering and leaving it discards the block's filter selection instead of
+  restoring a stale one.
 - Each dimension is its own `fieldset` with a `legend` naming it, holding one toggle
   chip per value — a `button` carrying `aria-pressed`, its selected styling from a
   `Record<Variant, string>` map. Dimensions sit side by side in a wrapping row.
@@ -236,12 +241,30 @@ exposes only what the route itself consumes.
 ### Reordering (drag-and-drop)
 - Reorder state is route-local: a `-helpers` hook (or the route's own state) owns
   it. The service layer only exposes the write — it knows nothing about drags.
-- One `DndContext` per screen wrapping every sortable container, with a
-  `SortableContext` per container and a `PointerSensor` under a small activation
-  distance, so clicks on controls inside an item still register as clicks.
-- The sortable item is its own partial: it calls the sortable hook, applies the
-  resulting transform/transition as inline style, and spreads the returned
-  attributes and listeners onto whichever element acts as the drag handle.
+- Reorder mode is entered from the page header: outside it the header shows the
+  refetch control plus the enter control, inside it a cancel and a save button.
+  The enter control is hidden when nothing on the screen can be reordered, and a
+  page-level error header keeps only the refetch control.
+- While reordering, a pt-BR banner above the list states the mode and names
+  exactly what can be dragged, so a screen where only the items drag does not
+  promise more.
+- One `DndContext` per screen, with a `SortableContext` per container over its
+  items and a `PointerSensor` under a small activation distance, so clicks on
+  controls inside an item still register as clicks. **What drags is bounded by
+  what the write covers**: the containers are themselves sortable — wrapped in one
+  more `SortableContext` over the containers — only when the endpoint also writes
+  container order; when it writes item order only, the containers stay static and
+  merely group the payload.
+- Every `SortableContext` and sortable hook is `disabled` outside reorder mode,
+  and the drag attributes/listeners are spread only while it is on, so the normal
+  screen keeps its plain click behavior.
+- The sortable item is its own partial wrapping the presentational card: it calls
+  the sortable hook, applies the resulting transform/transition as inline style,
+  spreads the returned attributes and listeners onto whichever element acts as the
+  drag handle, and passes the hook's dragging flag down for the card's styling.
+- A `DragOverlay` renders the active item's presentational card in its reorder
+  styling, resolved by id from the current draft; the source card dims while it is
+  lifted.
 - Dragging edits a **local draft** of the fetched data, never the query cache.
   Dirtiness comes from comparing the draft's id order against the server's, and
   the save button stays disabled until they differ.
@@ -254,11 +277,17 @@ exposes only what the route itself consumes.
 - An item whose position changed within its container is marked with an accent
   hint showing its original position, so the pending change is readable before
   saving.
-- Each container header carries its own reset control, shown only while that
-  container's internal order differs from the server's — a change in the
-  container's own position among containers does not reveal it, and resetting one
-  container leaves the others and the container ordering untouched. There is no
-  global reset: cancelling the reorder mode already discards every pending change.
-- Interactive controls never nest inside the element carrying the drag
-  listeners: the handle wraps the title block only, and the header's actions sit
-  beside it.
+- Each container header carries its own reset control — also on a screen whose
+  containers do not drag — shown only while that container's internal order
+  differs from the server's: a change in the container's own position among
+  containers does not reveal it, and resetting one container leaves the others and
+  the container ordering untouched. There is no global reset: cancelling the
+  reorder mode already discards every pending change.
+- Interactive controls never nest inside the element carrying the drag listeners.
+  Where a container header is the handle, it wraps the title block only and the
+  header's actions sit beside it. Where the whole item card is the handle, the
+  card drops its interactive controls for the duration — its name link becomes
+  plain text and its footer controls unmount — and shows a drag-indicator icon in
+  their place.
+- A container holding no items renders a dashed pt-BR placeholder while
+  reordering, and the creation add card is hidden for the duration.

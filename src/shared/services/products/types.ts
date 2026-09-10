@@ -49,6 +49,19 @@ export type DeactivateProduct = (
 
 export type RemoveProduct = (productId: string) => Promise<void>;
 
+export type UpdateProductsOrderBody = {
+  categoryGroups: Array<{
+    categoryGroupId: string;
+    products: Array<{ productId: string }>;
+  }>;
+};
+
+export type UpdateProductsOrderResponse = ICategoryGroupWithProducts[];
+
+export type UpdateProductsOrder = (
+  body: UpdateProductsOrderBody,
+) => Promise<UpdateProductsOrderResponse>;
+
 export type UseProductsService = () => {
   getProducts: {
     fn: GetProducts;
@@ -67,4 +80,5 @@ export type UseProductsService = () => {
   deactivateProduct: DeactivateProduct;
   removeProduct: RemoveProduct;
   createProduct: CreateProduct;
+  updateProductsOrder: UpdateProductsOrder;
 };

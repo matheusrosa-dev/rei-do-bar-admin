@@ -10,6 +10,8 @@ import type {
   GetProdutsResponse,
   RemoveProduct,
   UpdateProduct,
+  UpdateProductsOrder,
+  UpdateProductsOrderResponse,
   UseProductsService,
 } from "./types";
 
@@ -65,6 +67,15 @@ export const useProductsService: UseProductsService = () => {
     return response.data.data;
   };
 
+  const updateProductsOrder: UpdateProductsOrder = async (body) => {
+    const response = await api.put<UpdateProductsOrderResponse>(
+      `${baseUrl}/sort-order`,
+      body,
+    );
+
+    return response.data.data;
+  };
+
   const createProduct: CreateProduct = async (body) => {
     const response = await api.post<IProductWithCategory>(`${baseUrl}`, body);
 
@@ -89,5 +100,6 @@ export const useProductsService: UseProductsService = () => {
     deactivateProduct,
     removeProduct,
     createProduct,
+    updateProductsOrder,
   };
 };

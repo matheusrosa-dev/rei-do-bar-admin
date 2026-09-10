@@ -95,6 +95,11 @@ export const useThingService: UseThingService = () => {
   for them: `PATCH` for a state flip, `PUT` when the action fully replaces a
   field, `POST` when it carries no body. A `204` action returns nothing — `await`
   the call without unwrapping `response.data.data`.
+- A collection-wide **ordering** write is a `PUT` on an ordering suffix: the body
+  carries the whole tree of ids in array position — each container with its
+  children — and the response type is the refreshed grouped projection of the
+  list. A domain that owns only the leaf order still sends the containers, purely
+  as the grouping the ids sit under.
 - A suffix on the collection also names a **read** — an alternate projection of
   the list, or a derived answer about it as a whole (a flag the UI needs before
   offering a collection-wide action). It stays a `GET`, takes no path params, and
