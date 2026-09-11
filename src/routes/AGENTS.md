@@ -126,7 +126,12 @@ exposes only what the route itself consumes.
   the group name as the block heading, a divider, then a responsive grid of entity
   cards. Groups and the items inside them keep the order the backend sent.
 - The group heading is read-only on every screen but the one that owns the groups;
-  the owning screen is the only place their status and removal live.
+  the owning screen is the only place their edit link, status and removal live.
+- The owning screen creates and edits the groups themselves in **dedicated routes**
+  nested under the feature, never in a modal: the list ends with a full-width dashed
+  add card linking to the group create route, and each block heading carries an icon
+  link to the group edit route. Both routes are form pages built from the same
+  feature-`-shared` form module, and both return to the list on success.
 - A block may narrow its own grid with filters under its divider, built from the
   block's own items or from a fixed option pair — never from an extra request. They
   are the one kind of filter that stays in **component state** instead of the URL:

@@ -9,7 +9,8 @@ import type {
   ICategoryGroupWithCategories,
   ICategoryWithProductsCount,
 } from "@shared/models";
-import { MdDragIndicator, MdUndo } from "react-icons/md";
+import { Link } from "@tanstack/react-router";
+import { MdDragIndicator, MdEdit, MdUndo } from "react-icons/md";
 import { twMerge } from "tailwind-merge";
 import { AddCategoryCard } from "./add-category-card";
 import { SortableCategoryCard } from "./sortable-category-card";
@@ -99,6 +100,15 @@ export const CategoryGroupBlock = ({
 
         {!isReordering && (
           <div className="flex items-center gap-3">
+            <Link
+              to="/categorias/grupos/editar/$categoryGroupId"
+              params={{ categoryGroupId: group.id }}
+              title="Editar"
+              className="p-2 rounded-md text-zinc-400 hover:text-amber-500 hover:bg-amber-500/10 transition-colors duration-150 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            >
+              <MdEdit className="size-5" />
+            </Link>
+
             <Toggle
               checked={group.isActive}
               onCheckedChange={onToggleGroup}

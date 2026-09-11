@@ -26,6 +26,8 @@ import { Route as CategoriaslistIndexRouteImport } from './routes/categorias/(li
 import { Route as ProdutosEditarProductIdRouteImport } from './routes/produtos/editar/$productId'
 import { Route as ClientesVisualizarCustomerIdRouteImport } from './routes/clientes/visualizar/$customerId'
 import { Route as CategoriasEditarCategoryIdRouteImport } from './routes/categorias/editar/$categoryId'
+import { Route as CategoriasGruposCriarIndexRouteImport } from './routes/categorias/grupos/criar/index'
+import { Route as CategoriasGruposEditarCategoryGroupIdRouteImport } from './routes/categorias/grupos/editar/$categoryGroupId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -115,6 +117,18 @@ const CategoriasEditarCategoryIdRoute =
     path: '/categorias/editar/$categoryId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const CategoriasGruposCriarIndexRoute =
+  CategoriasGruposCriarIndexRouteImport.update({
+    id: '/categorias/grupos/criar/',
+    path: '/categorias/grupos/criar/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const CategoriasGruposEditarCategoryGroupIdRoute =
+  CategoriasGruposEditarCategoryGroupIdRouteImport.update({
+    id: '/categorias/grupos/editar/$categoryGroupId',
+    path: '/categorias/grupos/editar/$categoryGroupId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -134,6 +148,8 @@ export interface FileRoutesByFullPath {
   '/pedidos/': typeof PedidoslistIndexRoute
   '/produtos/': typeof ProdutoslistIndexRoute
   '/produtos/criar/': typeof ProdutosCriarIndexRoute
+  '/categorias/grupos/editar/$categoryGroupId': typeof CategoriasGruposEditarCategoryGroupIdRoute
+  '/categorias/grupos/criar/': typeof CategoriasGruposCriarIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -153,6 +169,8 @@ export interface FileRoutesByTo {
   '/pedidos': typeof PedidoslistIndexRoute
   '/produtos': typeof ProdutoslistIndexRoute
   '/produtos/criar': typeof ProdutosCriarIndexRoute
+  '/categorias/grupos/editar/$categoryGroupId': typeof CategoriasGruposEditarCategoryGroupIdRoute
+  '/categorias/grupos/criar': typeof CategoriasGruposCriarIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -173,6 +191,8 @@ export interface FileRoutesById {
   '/pedidos/(list)/': typeof PedidoslistIndexRoute
   '/produtos/(list)/': typeof ProdutoslistIndexRoute
   '/produtos/criar/': typeof ProdutosCriarIndexRoute
+  '/categorias/grupos/editar/$categoryGroupId': typeof CategoriasGruposEditarCategoryGroupIdRoute
+  '/categorias/grupos/criar/': typeof CategoriasGruposCriarIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -194,6 +214,8 @@ export interface FileRouteTypes {
     | '/pedidos/'
     | '/produtos/'
     | '/produtos/criar/'
+    | '/categorias/grupos/editar/$categoryGroupId'
+    | '/categorias/grupos/criar/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -213,6 +235,8 @@ export interface FileRouteTypes {
     | '/pedidos'
     | '/produtos'
     | '/produtos/criar'
+    | '/categorias/grupos/editar/$categoryGroupId'
+    | '/categorias/grupos/criar'
   id:
     | '__root__'
     | '/'
@@ -232,6 +256,8 @@ export interface FileRouteTypes {
     | '/pedidos/(list)/'
     | '/produtos/(list)/'
     | '/produtos/criar/'
+    | '/categorias/grupos/editar/$categoryGroupId'
+    | '/categorias/grupos/criar/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -252,6 +278,8 @@ export interface RootRouteChildren {
   PedidoslistIndexRoute: typeof PedidoslistIndexRoute
   ProdutoslistIndexRoute: typeof ProdutoslistIndexRoute
   ProdutosCriarIndexRoute: typeof ProdutosCriarIndexRoute
+  CategoriasGruposEditarCategoryGroupIdRoute: typeof CategoriasGruposEditarCategoryGroupIdRoute
+  CategoriasGruposCriarIndexRoute: typeof CategoriasGruposCriarIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -375,6 +403,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategoriasEditarCategoryIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/categorias/grupos/criar/': {
+      id: '/categorias/grupos/criar/'
+      path: '/categorias/grupos/criar'
+      fullPath: '/categorias/grupos/criar/'
+      preLoaderRoute: typeof CategoriasGruposCriarIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categorias/grupos/editar/$categoryGroupId': {
+      id: '/categorias/grupos/editar/$categoryGroupId'
+      path: '/categorias/grupos/editar/$categoryGroupId'
+      fullPath: '/categorias/grupos/editar/$categoryGroupId'
+      preLoaderRoute: typeof CategoriasGruposEditarCategoryGroupIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -396,6 +438,9 @@ const rootRouteChildren: RootRouteChildren = {
   PedidoslistIndexRoute: PedidoslistIndexRoute,
   ProdutoslistIndexRoute: ProdutoslistIndexRoute,
   ProdutosCriarIndexRoute: ProdutosCriarIndexRoute,
+  CategoriasGruposEditarCategoryGroupIdRoute:
+    CategoriasGruposEditarCategoryGroupIdRoute,
+  CategoriasGruposCriarIndexRoute: CategoriasGruposCriarIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -25,7 +25,6 @@ import { CategoryCard } from "./category-card";
 import { CategoryGroupBlock } from "./category-group-block";
 import { CategoryRemoveModal } from "./category-remove-modal";
 import { CategoryStatusModal } from "./category-status-modal";
-import { GroupModal } from "./group-modal";
 import { GroupRemoveModal } from "./group-remove-modal";
 import { GroupStatusModal } from "./group-status-modal";
 
@@ -44,8 +43,7 @@ type ModalOpen =
   | { mode: "remove-category"; category: ICategoryWithProductsCount }
   | { mode: "toggle-category-status"; category: ICategoryWithProductsCount }
   | { mode: "remove-group"; group: ICategoryGroupWithCategories }
-  | { mode: "toggle-group-status"; group: ICategoryGroupWithCategories }
-  | { mode: "create-group" };
+  | { mode: "toggle-group-status"; group: ICategoryGroupWithCategories };
 
 export const CategoryGroupsList = ({
   groups,
@@ -195,16 +193,7 @@ export const CategoryGroupsList = ({
     setModalOpen({ mode: "toggle-group-status", group });
   };
 
-  const groupModal = (
-    <GroupModal
-      isOpen={modalOpen?.mode === "create-group"}
-      onClose={() => setModalOpen(null)}
-    />
-  );
-
-  const addGroupCard = (
-    <AddGroupCard onClick={() => setModalOpen({ mode: "create-group" })} />
-  );
+  const addGroupCard = <AddGroupCard />;
 
   const reorderBanner = (
     <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3">
@@ -229,8 +218,6 @@ export const CategoryGroupsList = ({
         </span>
 
         {addGroupCard}
-
-        {groupModal}
       </div>
     );
   }
@@ -289,8 +276,6 @@ export const CategoryGroupsList = ({
       </DndContext>
 
       {!isReordering && addGroupCard}
-
-      {groupModal}
 
       <CategoryRemoveModal
         isOpen={modalOpen?.mode === "remove-category"}

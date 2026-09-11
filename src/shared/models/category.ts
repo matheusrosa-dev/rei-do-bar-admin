@@ -3,6 +3,8 @@ import type { IProductWithCategory } from "./product";
 export interface ICategoryGroup {
   id: string;
   name: string;
+  allProductsImageUrl: string;
+  promotionsImageUrl: string;
   sortOrder: number;
   isActive: boolean;
   createdAt: string;

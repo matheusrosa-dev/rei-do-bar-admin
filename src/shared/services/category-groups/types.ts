@@ -14,17 +14,16 @@ export type GetCategoryGroupById = (
   categoryGroupId: string,
 ) => Promise<GetCategoryGroupByIdResponse>;
 
-export type CreateCategoryGroupBody = {
-  name: string;
-};
+export type CreateCategoryGroupBody = Pick<
+  ICategoryGroup,
+  "name" | "allProductsImageUrl" | "promotionsImageUrl"
+>;
 
 export type CreateCategoryGroup = (
   body: CreateCategoryGroupBody,
 ) => Promise<ICategoryGroup>;
 
-export type UpdateCategoryGroupBody = {
-  name: string;
-};
+export type UpdateCategoryGroupBody = CreateCategoryGroupBody;
 
 export type UpdateCategoryGroup = (params: {
   categoryGroupId: string;
