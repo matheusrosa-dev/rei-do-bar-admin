@@ -20,7 +20,7 @@ export const ORDER_STATUS_VARIANT: Record<
 };
 
 export const PAYMENT_TYPE_LABEL: Record<PaymentType, string> = {
-  CASH: "Dinheiro",
-  CARD: "Cartão",
+  CREDIT_CARD: "Cartão de Crédito",
+  DEBIT_CARD: "Cartão de Débito",
   PIX: "PIX",
 };

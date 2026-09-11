@@ -22,7 +22,7 @@ export const CouponsRankingCard = ({ data }: Props) => (
         meta={`-${formatPrice(coupon.discountTotal)} em desconto`}
         metaClassName="text-green-400"
         value={String(coupon.ordersCount)}
-        unit="pedidos com o cupom"
+        unit="pedidos"
       />
     ))}
   </RankingCard>
