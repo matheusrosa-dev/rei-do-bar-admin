@@ -26,8 +26,8 @@ const navItems = [
   { to: "/painel", label: "Painel", icon: MdDashboard },
   { to: "/gerenciar-pedidos", label: "Gerenciar pedidos", icon: FiShoppingBag },
   { to: "/pedidos", label: "Pedidos", icon: MdReceiptLong },
-  { to: "/produtos", label: "Produtos", icon: MdShoppingBasket },
   { to: "/categorias", label: "Categorias", icon: BiCategory },
+  { to: "/produtos", label: "Produtos", icon: MdShoppingBasket },
   { to: "/clientes", label: "Clientes", icon: FiUsers },
   {
     to: "/movimentacoes-estoque",
